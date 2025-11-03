@@ -5,7 +5,7 @@ Herencia: Usuario, Administrador
 POST	/auth/register	Registrar nuevo usuario
 POST	/auth/login	Iniciar sesión
 GET	/usuarios/{id}	Obtener perfil del usuario
-PUT	/usuarios/{id}	Actualizar datos del usuario
+PUT	/usuarios/{id, Persona pNueva}	Actualizar datos del usuario
 DELETE	/usuarios/{id}	Eliminar cuenta de usuario (admin o usuario propio)
 
 
