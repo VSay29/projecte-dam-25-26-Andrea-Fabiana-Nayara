@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# from odoo import models, fields, api
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
+class EtiquetaProducto(models.Model):
+    _name = 'loop_proyecto.etiqueta_producto'
+    _description = 'Etiqueta del producto'
+    _order = 'name'
 
-# class loop_proyecto(models.Model):
-#     _name = 'loop_proyecto.loop_proyecto'
-#     _description = 'loop_proyecto.loop_proyecto'
+    name = fields.Char(string='Nombre', required=True, index=True)
+    active = fields.Boolean(string='Activa', default=True)
+    #color = fields.Integer(string='Color')
 
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', 'Ya existe una etiqueta con ese nombre.'),
+    ]
+ 
+    @api.constrains('name')
+    def _check_name_not_empty(self):
+        for rec in self:
+            if rec.name and not rec.name.strip():
+                raise ValidationError(_('El nombre de la etiqueta no puede estar vacío.'))
