@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Catálogo",
+    'name': "Loop",
 
-    'summary': "Short (1 phrase/line) summary of the module's purpose",
+    'summary': "App para compra-venta de productos",
 
     'description': """
-Long description of module's purpose
+        Con Loop puedes comprar y vender productos de manera fácil y rápida.
+        Loop ofrece una plataforma intuitiva para que los usuarios publiquen sus productos y encuentren ofertas atractivas.
+        Loop facilita la comunicación entre compradores y vendedores, asegurando transacciones seguras y satisfactorias.
+        Loop es la solución ideal para quienes buscan una experiencia de compra-venta confiable y eficiente.
+        Loop: tu mercado en línea de confianza.
+        Loopea tus productos con un click.
     """,
 
-    'author': "My Company",
+    'author': "Andrea-Fabian-Nayara",
     'website': "https://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -17,14 +22,14 @@ Long description of module's purpose
     'category': 'Uncategorized',
     'version': '0.1',
 
+    'application': True,
+
     # any module necessary for this one to work correctly
     'depends': ['base'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
     ],
 }
 
