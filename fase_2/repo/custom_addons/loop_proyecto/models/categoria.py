@@ -6,4 +6,4 @@ class categoria(models.Model):
     _name='categoria'
     _description='Modelo de categoría'
 
-    nombre = fields.Char
+    nombre = fields.Char()
