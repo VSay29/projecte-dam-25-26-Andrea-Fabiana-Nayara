@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
 
 class denunciaReporte(models.Model):
     _name = 'loop_proyecto.denunciaReporte'
@@ -47,16 +46,3 @@ class denunciaReporte(models.Model):
     )
     
     fecha_revision = fields.Datetime(string='Fecha de revisión')
-    
-    def create(self, vals):
-        record = super().create(vals)
-        record.message_post(body='Nueva denuncia creada y pendiente de revisión.')
-        return record
-
-    @api.constrains('producto_id', 'comentario_id')
-    def _check_target(self):
-        for rec in self:
-            if not rec.producto_id and not rec.comentario_id:
-                raise ValidationError(('La denuncia debe referirse a un producto o a un comentario.'))
-            if rec.producto_id and rec.comentario_id:
-                raise ValidationError(('La denuncia no puede referirse a producto y comentario a la vez.'))
