@@ -67,7 +67,7 @@ class Producto(models.Model):
     # =========================
 
     imagen_ids = fields.One2many(
-        'marketplace.producto.imagen',
+        'loop_proyecto.producto_imagen',
         'producto_id',
         string='Imágenes'
     )
