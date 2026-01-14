@@ -5,4 +5,4 @@ access_loop_proyecto_categoria_user,access.loop_proyecto.categoria.user,model_lo
 access_loop_proyecto_etiqueta_user,access.loop_proyecto.etiqueta.user,model_loop_proyecto_etiqueta_producto,base.group_user,1,1,1,1
 access_loop_proyecto_comentario_user,access.loop_proyecto.comentario.user,model_loop_proyecto_comentario,base.group_user,1,1,1,1
 access_loop_proyecto_valoracion_user,access.loop_proyecto.valoracion.user,model_loop_proyecto_valoracion,base.group_user,1,1,1,1
-access_loop_proyecto_denuncia_user,access.loop_proyecto.denuncia.user,model_loop_proyecto_denunciaReporte,base.group_user,1,1,1,1
+access_loop_proyecto_denuncia_user,access.loop_proyecto.denuncia.user,model_loop_proyecto_denuncia_reporte,base.group_user,1,1,1,1

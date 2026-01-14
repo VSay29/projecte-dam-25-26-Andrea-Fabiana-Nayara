@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from . import categoria
-from . import Producto
-from . import Comentario
-from . import Denuncia
+from . import producto
+from . import comentario
+from . import denuncia
 from . import etiqueta
 from . import imagen_producto
 from . import valoracion
