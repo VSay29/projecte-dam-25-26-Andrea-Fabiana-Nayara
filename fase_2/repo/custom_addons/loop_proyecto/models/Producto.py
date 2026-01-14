@@ -4,7 +4,7 @@ from odoo.exceptions import ValidationError
 
 
 class Producto(models.Model):
-    _name = 'marketplace.producto'
+    _name = 'loop_proyecto.producto'
     _description = 'Producto del Marketplace'
 
     # =========================

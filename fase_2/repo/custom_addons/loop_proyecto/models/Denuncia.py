@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 class denunciaReporte(models.Model):
-    _name = 'loop_proyecto.denunciaReporte'
+    _name = 'loop_proyecto.denuncia_reporte'
     _description = 'Denuncia de comentarios o productos'
     _order = 'create_date desc'
 

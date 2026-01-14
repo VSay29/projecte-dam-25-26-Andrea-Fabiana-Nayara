@@ -27,8 +27,9 @@ class Valoracion(models.Model):
         required=True,
     )
 
-    valoracion = fields.Selection(
+    valoracion = fields.Integer(
         string='Valoracion',
         required=True,
+        default = 0,
         help='Valoracion de 1 a 5 estrellas.'
     )
