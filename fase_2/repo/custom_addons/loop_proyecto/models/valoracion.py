@@ -31,5 +31,5 @@ class Valoracion(models.Model):
         string='Valoracion',
         required=True,
         default = 0,
-        help='Valoracion de 1 a 5 estrellas.'
+        help='Valoracion de 0 a 5 estrellas.'
     )
