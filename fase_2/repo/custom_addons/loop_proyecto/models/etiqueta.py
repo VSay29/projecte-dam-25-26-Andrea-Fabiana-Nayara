@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
 
 class EtiquetaProducto(models.Model):
     _name = 'loop_proyecto.etiqueta_producto'
@@ -15,9 +14,3 @@ class EtiquetaProducto(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Ya existe una etiqueta con ese nombre.'),
     ]
- 
-    @api.constrains('name')
-    def _check_name_not_empty(self):
-        for rec in self:
-            if rec.name and not rec.name.strip():
-                raise ValidationError(_('El nombre de la etiqueta no puede estar vacío.'))
