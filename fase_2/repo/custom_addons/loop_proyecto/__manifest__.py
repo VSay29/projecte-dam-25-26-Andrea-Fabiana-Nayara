@@ -31,9 +31,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/vista_categoria.xml',
-        'views/vista_producto.xml',
-        'views/vista_denuncia.xml',
-        'views/vista_usuario.xml',
+       # 'views/vista_producto.xml',
+       # 'views/vista_denuncia.xml',
+       # 'views/vista_usuario.xml',
     ],
 }
 
