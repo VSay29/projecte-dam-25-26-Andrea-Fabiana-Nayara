@@ -9,6 +9,7 @@
             <list>
                 <field name="nombre"/>
                 <field name="descripcion"/>
+                <field name="imagen"/>
             </list>
         </field>
     </record>
@@ -22,6 +23,7 @@
                     <group>
                         <field name="nombre"/>
                         <field name="descripcion"/>
+                        <field name="imagen"/>
                     </group>
                 </sheet>
             </form>
