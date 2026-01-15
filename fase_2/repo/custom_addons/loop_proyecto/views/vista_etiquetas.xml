@@ -6,8 +6,8 @@
         <field name="model">loop_proyecto.etiqueta_producto</field>
         <field name="arch" type="xml">
             <list>
-                <field name="nombre"/>
-                <field name="activo"/>
+                <field name="name"/>
+                <field name="active"/>
                 <field name="color"/>
             </list>
         </field>
@@ -20,8 +20,8 @@
             <form string="Etiqueta">
                 <sheet>
                     <group>
-                        <field name="nombre"/>
-                        <field name="activo"/>
+                        <field name="name"/>
+                        <field name="active"/>
                         <field name="color"/>
                     </group>
                 </sheet>
