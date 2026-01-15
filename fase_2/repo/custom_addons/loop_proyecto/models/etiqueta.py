@@ -10,3 +10,7 @@ class EtiquetaProducto(models.Model):
     name = fields.Char(string='Nombre', required=True, index=True)
     active = fields.Boolean(string='Activa', default=True)
     color = fields.Integer(string='Color')
+    
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', 'Ya existe una etiqueta con ese nombre.'),
+    ]
