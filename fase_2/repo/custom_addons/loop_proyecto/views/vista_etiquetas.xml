@@ -35,6 +35,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_etiquetas" name="Etiquetas" action="action_etiquetas" sequence="20"/>
-    <!--  parent="menu_loop_root" -->
+    <menuitem id="menu_etiquetas" name="Etiquetas" parent="loop_base_menu" action="action_etiquetas" sequence="20"/>
 </odoo>
