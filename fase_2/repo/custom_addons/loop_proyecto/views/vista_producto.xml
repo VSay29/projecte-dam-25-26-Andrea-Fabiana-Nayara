@@ -72,6 +72,7 @@
 
                     <group>
                         <field name="nombre"/>
+                        <field name="categoria_id"/>
                         <field name="estado"/>
                     </group>
 
@@ -108,6 +109,26 @@
         </field>
     </record>
 
+<!--
+        <record id="view_producto_graph_categoria" model="ir.ui.view">
+    <field name="name">loop_proyecto.producto.graph.categoria</field>
+    <field name="model">loop_proyecto.producto</field>
+    <field name="arch" type="xml">
+        <graph string="Productos por Categoría" type="bar">
+            <field name="categoria_id" type="row"/>
+            <field name="id" type="measure"/>
+        </graph>
+    </field>
+</record>
+-->
+
+<record id="action_loop_producto_analisis" model="ir.actions.act_window">
+    <field name="name">Análisis de Productos</field>
+    <field name="res_model">loop_proyecto.producto</field>
+    <field name="view_mode">graph</field>
+</record>
+
+
 
     <!-- Acción y menú -->
 
@@ -115,12 +136,13 @@
     <record id="action_loop_producto" model="ir.actions.act_window">
         <field name="name">Productos</field>
         <field name="res_model">loop_proyecto.producto</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,list,form,graph</field>
     </record>
 
     <!-- Menús -->
+     
     <menuitem id="loop_base_menu"
-              name="Loop Proyecto"
+              name="Productos"
               sequence="10"/>
 
     <menuitem id="menu_producto"
@@ -128,4 +150,20 @@
               parent="loop_base_menu"
               action="action_loop_producto"
               sequence="10"/>
+
+
+              
+    <!--
+              
+              <menuitem id="menu_loop_analisis"
+          name="Análisis"
+          parent="loop_base_menu"
+          sequence="30"/>
+
+<menuitem id="menu_loop_producto_analisis"
+          name="Análisis de Productos"
+          parent="menu_loop_analisis"
+          action="action_loop_producto_analisis"
+          sequence="10"/>-->
+
 </odoo>

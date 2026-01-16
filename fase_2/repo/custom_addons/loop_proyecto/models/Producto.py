@@ -19,6 +19,12 @@ class Producto(models.Model):
         default=lambda self: self.env.user
     )
 
+    categoria_id = fields.Many2one(
+        'loop_proyecto.categoria',
+        string='Categoría',
+        required=True
+    )
+
     nombre = fields.Char(
         string='Nombre del producto',
         required=True
@@ -54,6 +60,7 @@ class Producto(models.Model):
         required=True
     )
 
+   
     # =========================
     # ETIQUETAS (MÁXIMO 5)
     # =========================
