@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_comentario_list" model="ir.ui.view">
+        <field name="name">loop_proyecto.comentario.list</field>
+        <field name="model">loop_proyecto.comentario</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="comentador_id"/>
+                <field name="producto_id"/>
+                <field name="estado"/>
+                <field name="moderador_id"/>
+                <field name="fecha_moderacion"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_comentario_form" model="ir.ui.view">
+        <field name="name">loop_proyecto.comentario.form</field>
+        <field name="model">loop_proyecto.comentario</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="comentador_id"/>
+                        <field name="producto_id"/>
+                        <field name="estado"/>
+                        <field name="moderador_id"/>
+                        <field name="fecha_moderacion"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+     <record id="view_comentario_kanban" model="ir.ui.view">
+        <field name="name">loop_proyecto.comentario.kanban</field>
+        <field name="model">loop_proyecto.comentario</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="comentador_id"/>
+                <field name="producto_id"/>
+                <field name="estado"/>
+                <field name="moderador_id"/>
+                <field name="fecha_moderacion"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><t t-esc="record.comentador_id.value"/></strong>
+                            <div><t t-esc="record.producto_id.value"/></div>
+                            <div><t t-esc="record.estado.value"/></div>
+                            <div><t t-esc="record.moderador_id.value"/></div>
+                            <div><t t-esc="record.fecha_moderacion.value"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+     </record>
+
+     
+     <record id="action_comentarios" model="ir.actions.act_window">
+        <field name="name">Comentarios</field>
+        <field name="res_model">loop_proyecto.comentario</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+     <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios" sequence="25"/>
+
+</odoo>

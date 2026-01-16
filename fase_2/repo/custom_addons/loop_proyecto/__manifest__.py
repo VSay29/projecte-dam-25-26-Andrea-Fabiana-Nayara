@@ -28,5 +28,6 @@
        # 'views/vista_denuncia.xml',
        # 'views/vista_usuario.xml',
         'views/vista_etiquetas.xml',
+        'views/vista_comentario.xml',
     ],
 }
