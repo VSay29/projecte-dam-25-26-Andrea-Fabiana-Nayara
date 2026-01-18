@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-
+    <!-- ===================== -->
+    <!-- VISTA LISTA PRODUCTO -->
+    <!-- ===================== -->
 
     <record id="view_producto_tree" model="ir.ui.view">
         <field name="name">loop_proyecto.producto.tree</field>
@@ -16,6 +18,11 @@
             </list>
         </field>
     </record>
+
+    
+    <!-- ===================== -->
+    <!-- VISTA KANBAN PRODUCTO -->
+    <!-- ===================== -->
 
     <record id="view_producto_kanban" model="ir.ui.view">
         <field name="name">loop_proyecto.producto.kanban</field>
@@ -55,6 +62,10 @@
         </field>
     </record>
 
+    
+    <!-- ===================== -->
+    <!-- VISTA FORMULARIO PRODUCTO -->
+    <!-- ===================== -->
 
     <record id="view_producto_form" model="ir.ui.view">
         <field name="name">loop_proyecto.producto.form</field>
@@ -108,29 +119,144 @@
             </form>
         </field>
     </record>
+    
+    <!-- ===================== -->
+    <!-- SEARCH PRODUCTO -->
+    <!-- ===================== -->
+    <record id="view_producto_search" model="ir.ui.view">
+        <field name="name">loop_proyecto.producto.search</field>
+        <field name="model">loop_proyecto.producto</field>
+        <field name="arch" type="xml">
+            <search>
 
-<!--
-        <record id="view_producto_graph_categoria" model="ir.ui.view">
-    <field name="name">loop_proyecto.producto.graph.categoria</field>
+                <!-- Campos de búsqueda rápida -->
+                <field name="nombre"/>
+                <field name="categoria_id"/>
+                <field name="estado"/>
+                <field name="propietario_id"/>
+
+                <!-- ===================== -->
+                <!-- FILTROS -->
+                <!-- ===================== -->
+                <filter name="nuevo"
+                        string="Productos nuevos"
+                        domain="[('estado','=','nuevo')]"/>
+
+                <filter name="segunda_mano"
+                        string="Segunda mano"
+                        domain="[('estado','=','segunda_mano')]"/>
+
+                <filter name="reacondicionado"
+                        string="Reacondicionados"
+                        domain="[('estado','=','reacondicionado')]"/>
+
+                <separator/>
+
+                <!-- ===================== -->
+                <!-- AGRUPAR POR -->
+                <!-- ===================== -->
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_categoria"
+                            string="Categoría"
+                            context="{'group_by':'categoria_id'}"/>
+
+                    <filter name="group_propietario"
+                            string="Propietario"
+                            context="{'group_by':'propietario_id'}"/>
+
+                    <filter name="group_estado"
+                            string="Estado"
+                            context="{'group_by':'estado'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ========================================================================================================= -->
+    <!--  LISTADO “USUARIOS MÁS ACTIVOS -->
+    <!-- ========================================================================================================= -->
+
+    <record id="view_producto_tree_usuarios_activos" model="ir.ui.view">
+    <field name="name">loop_proyecto.producto.tree.usuarios.activos</field>
     <field name="model">loop_proyecto.producto</field>
     <field name="arch" type="xml">
-        <graph string="Productos por Categoría" type="bar">
-            <field name="categoria_id" type="row"/>
-            <field name="id" type="measure"/>
-        </graph>
+        <list string="Usuarios más activos"
+              default_group_by="propietario_id"
+              default_order="id desc">
+            <field name="propietario_id"/>
+            <field name="nombre"/>
+            <field name="precio"/>
+            <field name="estado"/>
+        </list>
     </field>
 </record>
--->
 
-<record id="action_loop_producto_analisis" model="ir.actions.act_window">
-    <field name="name">Análisis de Productos</field>
+<record id="action_usuarios_mas_activos" model="ir.actions.act_window">
+    <field name="name">Usuarios más activos</field>
     <field name="res_model">loop_proyecto.producto</field>
-    <field name="view_mode">graph</field>
+    <field name="view_mode">list</field>
+    <field name="context">
+        {
+            'group_by': 'propietario_id'
+        }
+    </field>
+</record>
+
+<menuitem id="menu_usuarios_mas_activos"
+          name="* Usuarios más activos"
+          parent="loop_base_menu"
+          action="action_usuarios_mas_activos"
+          sequence="40"/>
+
+    <!-- ========================================================================================================= -->
+    <!--  LISTADO “PRODUCTOS MÁS DENUNCIADO -->
+    <!-- ========================================================================================================= -->
+
+
+<record id="view_denuncia_tree_productos_mas_denunciados" model="ir.ui.view">
+    <field name="name">loop_proyecto.denuncia.tree.productos</field>
+    <field name="model">loop_proyecto.denuncia_reporte</field>
+    <field name="arch" type="xml">
+        <list string="Productos más denunciados"
+              default_group_by="producto_id"
+              default_order="id desc">
+            <field name="producto_id"/>
+            <field name="state"/>
+            <field name="create_date"/>
+    </list>
+    </field>
 </record>
 
 
+<record id="action_productos_mas_denunciados" model="ir.actions.act_window">
+    <field name="name"> Productos más denunciados</field>
+    <field name="res_model">loop_proyecto.denuncia_reporte</field>
+    <field name="view_mode">list</field>
+    <field name="context">
+        {
+            'group_by': 'producto_id'
+        }
+    </field>
+</record>
 
-    <!-- Acción y menú -->
+<menuitem id="menu_productos_mas_denunciados"
+          name="* Productos más denunciados"
+          parent="loop_base_menu"
+          action="action_productos_mas_denunciados"
+          sequence="45"/>
+
+
+    <!-- ===================== -->
+    <!-- ACCION Y MENU -->
+    <!-- ===================== -->
+
+    <record id="action_loop_producto_analisis" model="ir.actions.act_window">
+        <field name="name">Análisis de Productos</field>
+        <field name="res_model">loop_proyecto.producto</field>
+        <field name="view_mode">graph</field>
+    </record>
 
    <!-- Acción -->
     <record id="action_loop_producto" model="ir.actions.act_window">
@@ -140,30 +266,7 @@
     </record>
 
     <!-- Menús -->
-     
-    <menuitem id="loop_base_menu"
-              name="Productos"
-              sequence="10"/>
-
-    <menuitem id="menu_producto"
-              name="Productos"
-              parent="loop_base_menu"
-              action="action_loop_producto"
-              sequence="10"/>
-
-
-              
-    <!--
-              
-              <menuitem id="menu_loop_analisis"
-          name="Análisis"
-          parent="loop_base_menu"
-          sequence="30"/>
-
-<menuitem id="menu_loop_producto_analisis"
-          name="Análisis de Productos"
-          parent="menu_loop_analisis"
-          action="action_loop_producto_analisis"
-          sequence="10"/>-->
+    <menuitem id="loop_base_menu" name="Productos" sequence="10"/>
+    <menuitem id="menu_producto" name="Productos" parent="loop_base_menu" action="action_loop_producto" sequence="10"/>
 
 </odoo>

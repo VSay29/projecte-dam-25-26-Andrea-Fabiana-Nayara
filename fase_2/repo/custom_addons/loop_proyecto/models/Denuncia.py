@@ -6,6 +6,7 @@ class denunciaReporte(models.Model):
     _name = 'loop_proyecto.denuncia_reporte'
     _description = 'Denuncia de comentarios o productos'
     _order = 'create_date desc'
+    _rec_name = 'nombre'
 
     denunciante_id = fields.Many2one(
         'res.users',
@@ -16,13 +17,13 @@ class denunciaReporte(models.Model):
     )
     
     producto_id = fields.Many2one(
-        'marketplace.producto',
+        'loop_proyecto.producto',
         string='Producto denunciado',
         index=True
     )
     
     comentario_id = fields.Many2one(
-        'fhm.comentario',
+        'loop_proyecto.comentario',
         string='Comentario denunciado',
         index=True
     )
