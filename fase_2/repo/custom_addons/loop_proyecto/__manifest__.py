@@ -25,15 +25,17 @@
     'application': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'hr'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/vista_categoria.xml',
-        'views/vista_producto.xml',
-        'views/vista_denuncia.xml',
-        'views/vista_usuario.xml',
+        #'views/vista_categoria.xml',
+        #'views/vista_producto.xml',
+        #'views/vista_denuncia.xml',
+        'views/vista_usuario_app.xml',
+        'views/vista_empleado.xml',
+        #'views/vista_etiqueta.xml',
     ],
 }
 
