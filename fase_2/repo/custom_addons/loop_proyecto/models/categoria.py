@@ -5,6 +5,7 @@ from odoo import models, fields
 class categoria(models.Model):
     _name='loop_proyecto.categoria'
     _description='Modelo de categoría'
+    _rec_name = 'nombre'
 
     nombre = fields.Char(
         string='Nombre de la categoría',

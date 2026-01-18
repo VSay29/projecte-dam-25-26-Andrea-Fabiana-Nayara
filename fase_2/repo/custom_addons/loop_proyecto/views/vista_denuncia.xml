@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ===================== -->
+    <!-- VISTA FORMULARIO -->
+    <!-- ===================== -->
+    <record id="view_denuncia_reporte_form" model="ir.ui.view">
+        <field name="name">loop_proyecto.denuncia_reporte.form</field>
+        <field name="model">loop_proyecto.denuncia_reporte</field>
+        <field name="arch" type="xml">
+            <form string="Denuncia">
+                <sheet>
+                    <group>
+                        <field name="denunciante_id" readonly="1"/>
+                        <field name="state"/>
+                    </group>
+
+                    <group>
+                        <field name="producto_id"/>
+                        <field name="comentario_id"/>
+                    </group>
+
+                    <group>
+                        <field name="motivoDenuncia"/>
+                    </group>
+
+                    <group string="Revisión">
+                        <field name="empleado_id"/>
+                        <field name="fecha_revision"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ===================== -->
+    <!-- VISTA GRAPH (ANÁLISIS) -->
+    <!-- ===================== -->
+    <record id="view_denuncia_reporte_graph_estado" model="ir.ui.view">
+        <field name="name">loop_proyecto.denuncia_reporte.graph.estado</field>
+        <field name="model">loop_proyecto.denuncia_reporte</field>
+        <field name="arch" type="xml">
+            <graph string="Denuncias por Estado" type="bar">
+                <field name="state" type="row"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+
+   <!-- ===================== -->
+    <!-- VISTA LISTA -->
+    <!-- ===================== -->
+<record id="view_denuncia_reporte_tree" model="ir.ui.view">
+    <field name="name">loop_proyecto.denuncia_reporte.tree</field>
+    <field name="model">loop_proyecto.denuncia_reporte</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="create_date"/>
+            <field name="denunciante_id"/>
+            <field name="producto_id"/>
+            <field name="comentario_id"/>
+            <field name="state"/>
+            <field name="empleado_id"/>
+        </list>
+    </field>
+</record>
+
+
+    <!-- ===================== -->
+    <!-- VISTA BUSQUEDA -->
+    <!-- ===================== -->  
+<record id="view_denuncia_reporte_search" model="ir.ui.view">
+    <field name="name">loop_proyecto.denuncia_reporte.search</field>
+    <field name="model">loop_proyecto.denuncia_reporte</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="state"/>
+            <field name="producto_id"/>
+
+            <!-- Filtros -->
+            <filter name="pendientes"
+                    string="Pendientes"
+                    domain="[('state','=','pendiente')]"/>
+
+            <filter name="revisadas"
+                    string="Revisadas"
+                    domain="[('state','=','revisada')]"/>
+
+            <!-- Agrupar por -->
+            <group expand="0" string="Agrupar por">
+                <filter name="group_estado"
+                        string="Estado"
+                        context="{'group_by':'state'}"/>
+
+                <filter name="group_producto"
+                        string="Producto"
+                        context="{'group_by':'producto_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+
+    <!-- ===================== -->
+    <!-- ACCIÓN -->
+    <!-- ===================== -->
+    <record id="action_denuncia" model="ir.actions.act_window">
+        <field name="name">Denuncias</field>
+        <field name="res_model">loop_proyecto.denuncia_reporte</field>
+        <field name="view_mode">list,form,graph</field>
+
+        <!-- CONTEXTO: filtros y agrupaciones por defecto -->
+        <field name="context">
+            {
+                'search_default_pendientes': 1,
+                'search_default_revisadas': 1,
+                'group_by': 'state'
+            }
+        </field>
+    </record>
+
+    <menuitem id="menu_denuncias" name="Denuncias" parent="loop_base_menu" action="action_denuncia" sequence="20"/>
+</odoo>

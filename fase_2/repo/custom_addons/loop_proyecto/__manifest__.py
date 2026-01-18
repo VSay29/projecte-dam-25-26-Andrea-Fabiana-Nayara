@@ -1,41 +1,33 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Loop",
-
     'summary': "App para compra-venta de productos",
-
     'description': """
         Con Loop puedes comprar y vender productos de manera fácil y rápida.
-        Loop ofrece una plataforma intuitiva para que los usuarios publiquen sus productos y encuentren ofertas atractivas.
-        Loop facilita la comunicación entre compradores y vendedores, asegurando transacciones seguras y satisfactorias.
-        Loop es la solución ideal para quienes buscan una experiencia de compra-venta confiable y eficiente.
-        Loop: tu mercado en línea de confianza.
-        Loopea tus productos con un click.
+        Plataforma de compra-venta para el proyecto DAM.
     """,
 
-    'author': "Andrea-Fabian-Nayara",
+    'author': "Andrea, Fabiana y Nayara",
     'website': "https://www.yourcompany.com",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
+    # CATEGORÍA VÁLIDA
+    'category': 'Productivity',
+    'version': '1.0',
 
+    # MUY IMPORTANTE
+    'installable': True,
     'application': True,
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'hr'],
 
-    # always loaded
     'data': [
         'security/ir.model.access.csv',
-        #'views/vista_categoria.xml',
-        #'views/vista_producto.xml',
-        #'views/vista_denuncia.xml',
+        'views/vista_categoria.xml',
+        'views/vista_producto.xml',
+        'views/vista_denuncia.xml',
         'views/vista_usuario_app.xml',
         'views/vista_empleado.xml',
-        #'views/vista_etiqueta.xml',
+        'views/vista_etiqueta.xml',
     ],
 }
-

@@ -5,7 +5,8 @@ from odoo.exceptions import ValidationError
 
 class Producto(models.Model):
     _name = 'loop_proyecto.producto'
-    _description = 'Producto del Marketplace'
+    _description = 'Producto del Loop'
+    _rec_name = 'nombre'
 
     # =========================
     # CAMPOS OBLIGATORIOS
@@ -16,6 +17,12 @@ class Producto(models.Model):
         string='Propietario',
         required=True,
         default=lambda self: self.env.user
+    )
+
+    categoria_id = fields.Many2one(
+        'loop_proyecto.categoria',
+        string='Categoría',
+        required=True
     )
 
     nombre = fields.Char(
@@ -53,14 +60,18 @@ class Producto(models.Model):
         required=True
     )
 
+   
     # =========================
     # ETIQUETAS (MÁXIMO 5)
     # =========================
 
     etiqueta_ids = fields.Many2many(
-        'marketplace.etiqueta',
-        string='Etiquetas'
-    )
+    'loop_proyecto.etiqueta_producto',
+    'loop_producto_etiqueta_rel',
+    'producto_id',
+    'etiqueta_id',
+    string='Etiquetas'
+)
 
     # =========================
     # IMÁGENES (1 A 10)
@@ -79,10 +90,11 @@ class Producto(models.Model):
     @api.constrains('etiqueta_ids')
     def _check_max_etiquetas(self):
         for record in self:
-            if len(record.etiqueta_ids) > 5:
+            if len(record.etiqueta_ids.ids) > 5:
                 raise ValidationError(
                     'Un producto no puede tener más de 5 etiquetas.'
                 )
+
 
     @api.constrains('imagen_ids')
     def _check_numero_imagenes(self):
