@@ -24,12 +24,21 @@
     'data': [
         'security/ir.model.access.csv',
         'views/report_producto.xml',
+<<<<<<< HEAD
         'views/vista_producto.xml',
         'views/vista_categoria.xml',
+=======
+        'views/vista_categoria.xml',
+        'views/vista_comentario.xml',
+>>>>>>> 25e5e64fb135ee5489503c0eb17d44f76030116c
         'views/vista_denuncia.xml',
-        'views/vista_usuario_app.xml',
         'views/vista_empleado.xml',
         'views/vista_etiquetas.xml',
+<<<<<<< HEAD
         'views/vista_comentario.xml',
+=======
+        'views/vista_producto.xml',
+        'views/vista_usuario_app.xml',
+>>>>>>> 25e5e64fb135ee5489503c0eb17d44f76030116c
     ],
 }
