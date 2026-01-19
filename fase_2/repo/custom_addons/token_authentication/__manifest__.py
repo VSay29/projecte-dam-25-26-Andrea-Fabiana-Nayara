@@ -22,10 +22,6 @@ Long description of module's purpose
     'external_dependencies': { 'python': ['PyJWT'] },
 
     # always loaded
-    'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
-    ],
+    'data': [ ],
 }
 
