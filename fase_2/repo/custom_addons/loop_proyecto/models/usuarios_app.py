@@ -7,7 +7,7 @@ class UsuariosApp(models.Model):
     _description = 'Usuarios de la App'
     _order= 'date_joined desc'
 
-    #username = fields.Char(string='Nombre de Usuario', required=True, index=True, help='Nombre único para iniciar sesión en la aplicación.')
+    username = fields.Char(string='Nombre de Usuario', required=True, index=True, help='Nombre único para iniciar sesión en la aplicación.')
 
     password = fields.Char(string='Password', required=True, hash='sha256', help='Contraseña para la autenticación del usuario.')
 
