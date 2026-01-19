@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+<<<<<<< HEAD
+=======
+
+    <record id="action_etiquetas" model="ir.actions.act_window">
+        <field name="name">Etiquetas</field>
+        <field name="res_model">loop_proyecto.etiqueta_producto</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_etiquetas" name="Etiquetas" parent="loop_base_menu" action="action_etiquetas"/>
+
+>>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
     <record id="view_etiquetas_list" model="ir.ui.view">
         <field name="name">etiquetas.list</field>
         <field name="model">loop_proyecto.etiqueta_producto</field>
@@ -29,11 +41,4 @@
         </field>
     </record>
 
-    <record id="action_etiquetas" model="ir.actions.act_window">
-        <field name="name">Etiquetas</field>
-        <field name="res_model">loop_proyecto.etiqueta_producto</field>
-        <field name="view_mode">list,form</field>
-    </record>
-
-    <menuitem id="menu_etiquetas" name="Etiquetas" parent="loop_base_menu" action="action_etiquetas" sequence="20"/>
 </odoo>

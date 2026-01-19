@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+<<<<<<< HEAD
+=======
+    <!-- ===================== -->
+    <!-- ACCIÓN -->
+    <!-- ===================== -->
+    <record id="action_denuncia" model="ir.actions.act_window">
+        <field name="name">Denuncias</field>
+        <field name="res_model">loop_proyecto.denuncia_reporte</field>
+        <field name="view_mode">list,form,graph</field>
+
+        <!-- CONTEXTO: filtros y agrupaciones por defecto -->
+        <field name="context">
+            {
+                'search_default_pendientes': 1,
+                'search_default_revisadas': 1,
+                'group_by': 'state'
+            }
+        </field>
+    </record>
+
+    <menuitem id="menu_denuncias" name="Denuncias" parent="loop_base_menu" action="action_denuncia" sequence="20"/>
+
+>>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
     <!-- ===================== -->
     <!-- VISTA FORMULARIO -->
     <!-- ===================== -->
@@ -102,24 +125,4 @@
     </field>
 </record>
 
-
-    <!-- ===================== -->
-    <!-- ACCIÓN -->
-    <!-- ===================== -->
-    <record id="action_denuncia" model="ir.actions.act_window">
-        <field name="name">Denuncias</field>
-        <field name="res_model">loop_proyecto.denuncia_reporte</field>
-        <field name="view_mode">list,form,graph</field>
-
-        <!-- CONTEXTO: filtros y agrupaciones por defecto -->
-        <field name="context">
-            {
-                'search_default_pendientes': 1,
-                'search_default_revisadas': 1,
-                'group_by': 'state'
-            }
-        </field>
-    </record>
-
-    <menuitem id="menu_denuncias" name="Denuncias" parent="loop_base_menu" action="action_denuncia" sequence="20"/>
 </odoo>

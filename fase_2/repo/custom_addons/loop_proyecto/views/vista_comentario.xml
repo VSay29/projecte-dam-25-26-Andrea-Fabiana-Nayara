@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+<<<<<<< HEAD
+=======
+    <record id="action_comentarios" model="ir.actions.act_window">
+        <field name="name">Comentarios</field>
+        <field name="res_model">loop_proyecto.comentario</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+
+    <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios"/>
+
+>>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
     <record id="view_comentario_list" model="ir.ui.view">
         <field name="name">loop_proyecto.comentario.list</field>
         <field name="model">loop_proyecto.comentario</field>
@@ -62,12 +73,6 @@
             </kanban>
         </field>
     </record>
-    
-    <record id="action_comentarios" model="ir.actions.act_window">
-        <field name="name">Comentarios</field>
-        <field name="res_model">loop_proyecto.comentario</field>
-        <field name="view_mode">list,form,kanban</field>
-    </record>
 
-     <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios" sequence="25"/>
+
 </odoo>
