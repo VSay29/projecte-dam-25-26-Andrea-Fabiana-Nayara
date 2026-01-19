@@ -24,19 +24,12 @@
     'data': [
         'security/ir.model.access.csv',
         'views/report_producto.xml',
-<<<<<<< HEAD
-=======
         'views/vista_producto.xml',
->>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
         'views/vista_categoria.xml',
         'views/vista_comentario.xml',
         'views/vista_denuncia.xml',
         'views/vista_empleado.xml',
         'views/vista_etiquetas.xml',
-<<<<<<< HEAD
-        'views/vista_producto.xml',
-=======
->>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
         'views/vista_usuario_app.xml',
     ],
 }
