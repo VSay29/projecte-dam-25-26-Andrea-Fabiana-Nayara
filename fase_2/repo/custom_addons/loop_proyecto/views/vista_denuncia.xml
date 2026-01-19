@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-<<<<<<< HEAD
-=======
     <!-- ===================== -->
     <!-- ACCIÓN -->
     <!-- ===================== -->
@@ -23,7 +21,6 @@
 
     <menuitem id="menu_denuncias" name="Denuncias" parent="loop_base_menu" action="action_denuncia" sequence="20"/>
 
->>>>>>> parent of 42605e0 (Revert "Ya funciona odoo con esta actualización 26.1.19")
     <!-- ===================== -->
     <!-- VISTA FORMULARIO -->
     <!-- ===================== -->

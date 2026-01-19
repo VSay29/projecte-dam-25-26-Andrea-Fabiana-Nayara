@@ -7,3 +7,4 @@ access_loop_proyecto_comentario_user,access.loop_proyecto.comentario.user,model_
 access_loop_proyecto_valoracion_user,access.loop_proyecto.valoracion.user,model_loop_proyecto_valoracion,base.group_user,1,1,1,1
 access_loop_proyecto_denuncia_user,access.loop_proyecto.denuncia.user,model_loop_proyecto_denuncia_reporte,base.group_user,1,1,1,1
 access_loop_etiqueta_producto,access_loop_etiqueta_producto,model_loop_proyecto_etiqueta_producto,base.group_user,1,1,1,1
+access_loop_usuario_app_user,access.loop.usuario_app.user,model_res_partner,base.group_user,1,1,1,1
