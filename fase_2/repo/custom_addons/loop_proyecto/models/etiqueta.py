@@ -14,3 +14,5 @@ class EtiquetaProducto(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Ya existe una etiqueta con ese nombre.'),
     ]
+    
+    # Esto es una prueba para mirar por qué no puedo descargar cambios en el repositorio
