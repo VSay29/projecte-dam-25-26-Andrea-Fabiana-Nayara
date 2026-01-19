@@ -6,7 +6,6 @@ class denunciaReporte(models.Model):
     _name = 'loop_proyecto.denuncia_reporte'
     _description = 'Denuncia de comentarios o productos'
     _order = 'create_date desc'
-    _rec_name = 'nombre'
 
     denunciante_id = fields.Many2one(
         'res.users',

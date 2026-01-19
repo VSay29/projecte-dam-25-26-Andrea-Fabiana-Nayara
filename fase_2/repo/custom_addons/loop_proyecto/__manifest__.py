@@ -23,11 +23,13 @@
 
     'data': [
         'security/ir.model.access.csv',
+        'views/report_producto.xml',
         'views/vista_categoria.xml',
-        'views/vista_producto.xml',
+        'views/vista_comentario.xml',
         'views/vista_denuncia.xml',
-        'views/vista_usuario_app.xml',
         'views/vista_empleado.xml',
-        'views/vista_etiqueta.xml',
+        'views/vista_etiquetas.xml',
+        'views/vista_producto.xml',
+        'views/vista_usuario_app.xml',
     ],
 }
