@@ -16,7 +16,7 @@ class Comentario(models.Model):
     )
     
     producto_id = fields.Many2one(
-        'marketplace.producto',
+        'loop_proyecto.producto',
         string='Producto',
         required=True,
         index=True,
