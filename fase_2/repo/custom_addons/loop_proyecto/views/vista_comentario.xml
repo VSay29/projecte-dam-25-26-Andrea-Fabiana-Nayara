@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios"/>
+
     <record id="view_comentario_list" model="ir.ui.view">
         <field name="name">loop_proyecto.comentario.list</field>
         <field name="model">loop_proyecto.comentario</field>

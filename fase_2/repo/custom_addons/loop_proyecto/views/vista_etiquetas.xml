@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+
+    <menuitem id="menu_etiquetas" name="Etiquetas" parent="loop_base_menu" action="action_etiquetas"/>
+
     <record id="view_etiquetas_list" model="ir.ui.view">
         <field name="name">etiquetas.list</field>
         <field name="model">loop_proyecto.etiqueta_producto</field>
