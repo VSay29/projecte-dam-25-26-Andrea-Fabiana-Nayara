@@ -16,3 +16,4 @@ class EtiquetaProducto(models.Model):
     ]
     
     # Esto es una prueba para mirar por qué no puedo descargar cambios en el repositorio
+    #...
