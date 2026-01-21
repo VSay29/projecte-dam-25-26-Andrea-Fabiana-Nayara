@@ -19,7 +19,9 @@ Long description of module's purpose
 
     # any module necessary for this one to work correctly
     'depends': ['base'],
-    'external_dependencies': { 'python': ['PyJWT'] },
+    'external_dependencies': {
+        'python': ['PyJWT']
+    },
 
     # always loaded
     'data': [ ],
