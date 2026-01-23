@@ -7,7 +7,7 @@
         <field name="domain">[('rol','=','cliente')]</field>
     </record>
 
-    <menuitem id="menu_usuarios_app" name="Usuarios App" parent="loop_base_menu" action="loop_usuarios_app_action"/>
+    <menuitem id="menu_usuarios_app" name="Usuarios App" parent="loop_base_menu" action="loop_usuarios_app_action" sequence="20"/>
 
     <record id="view_usuarios_app_list" model="ir.ui.view">
         <field name="name">res.partner.usuarios.app.list</field>
@@ -28,14 +28,16 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <list>
-                <field name="username"/>
-                <field name="mobile"/>
-                <field name="active" widget="boolean_toggle"/>
-                <field name="rol"/>
-                <field name="idioma"/>
-                <field name="date_joined"/>
-            </list>
+            <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="active" optional ="show"/>
+                    <field name="username"/>
+                    <field name="mobile"/>
+                    <field name="active" widget="boolean_toggle"/>
+                    <field name="rol"/>
+                    <field name="idioma"/>
+                    <field name="date_joined"/>
+                    <field name="valoracion_media"/>
+            </xpath>
 
         </field>
     </record>
@@ -95,6 +97,7 @@
                     <field name="rol"/>
                     <field name="idioma"/>
                     <field name="date_joined"/>
+                    <field name="valoracion_ids" widget="rating" options="{'readonly': True}"/>
                 </group>
             </xpath>
 

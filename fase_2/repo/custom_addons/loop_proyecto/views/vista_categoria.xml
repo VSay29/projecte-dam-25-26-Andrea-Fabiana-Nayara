@@ -8,7 +8,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_categoria" name="Categorías" parent="loop_base_menu" action="action_categoria"/>
+    <menuitem id="menu_categoria" name="Categorías" parent="loop_base_menu" action="action_categoria" sequence="20"/>
 
     <record id="view_categoria_list" model="ir.ui.view">
         <field name="name">categoria.list</field>

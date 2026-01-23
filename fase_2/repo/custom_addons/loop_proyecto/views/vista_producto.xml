@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Acción -->
+    <record id="action_loop_producto" model="ir.actions.act_window">
+        <field name="name">Productos</field>
+        <field name="res_model">loop_proyecto.producto</field>
+        <field name="view_mode">kanban,list,form,graph</field>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="loop_base_menu" name="Loop_Proyecto" sequence="10"/>
+    <menuitem id="menu_producto" name="Productos" parent="loop_base_menu" action="action_loop_producto" sequence="10"/>
+
     <!-- ===================== -->
     <!-- VISTA LISTA PRODUCTO -->
     <!-- ===================== -->
@@ -257,16 +268,5 @@
         <field name="res_model">loop_proyecto.producto</field>
         <field name="view_mode">graph</field>
     </record>
-
-   <!-- Acción -->
-    <record id="action_loop_producto" model="ir.actions.act_window">
-        <field name="name">Productos</field>
-        <field name="res_model">loop_proyecto.producto</field>
-        <field name="view_mode">kanban,list,form,graph</field>
-    </record>
-
-    <!-- Menús -->
-    <menuitem id="loop_base_menu" name="Productos" sequence="10"/>
-    <menuitem id="menu_producto" name="Productos" parent="loop_base_menu" action="action_loop_producto" sequence="10"/>
 
 </odoo>

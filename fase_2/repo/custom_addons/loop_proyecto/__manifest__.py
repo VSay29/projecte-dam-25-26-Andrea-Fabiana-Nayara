@@ -17,12 +17,14 @@
     # MUY IMPORTANTE
     'installable': True,
     'application': True,
+    'icon': '/base/static/description/icon.png',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'hr'],
 
     'data': [
         'security/ir.model.access.csv',
+        #'data/mail_template_usuarios.xml',
         'views/report_producto.xml',
         'views/vista_producto.xml',
         'views/vista_categoria.xml',

@@ -8,3 +8,4 @@ from . import etiqueta
 from . import imagen_producto
 from . import valoracion
 from . import usuarios_app
+from . import empleado

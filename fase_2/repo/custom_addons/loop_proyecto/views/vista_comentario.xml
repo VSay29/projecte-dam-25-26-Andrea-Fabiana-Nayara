@@ -7,7 +7,7 @@
         <field name="view_mode">list,form,kanban</field>
     </record>
 
-    <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios"/>
+    <menuitem id="menu_comentarios" name="Comentarios" parent="loop_base_menu" action="action_comentarios" sequence="20"/>
 
     <record id="view_comentario_list" model="ir.ui.view">
         <field name="name">loop_proyecto.comentario.list</field>
