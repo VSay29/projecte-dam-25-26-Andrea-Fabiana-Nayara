@@ -78,4 +78,3 @@ class JWTAuthController(http.Controller):
             'name': user.name,
             'email': user.email,
         }
-

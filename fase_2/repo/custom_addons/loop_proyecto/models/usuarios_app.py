@@ -20,8 +20,8 @@ class UsuariosApp(models.Model):
     idioma = fields.Selection([('es', 'Español'), ('en', 'Inglés'), ('ca', 'Catalán')], string='Idioma Preferido', default='es', help='Idioma preferido del usuario para la interfaz de la aplicación.')
 
     valoracion_ids = fields.One2many(
-        'loop_proyecto.valoracion', 
-        'usuario_valorado', 
+        'loop_proyecto.valoracion',
+        'usuario_valorado',
         string='Valoraciones recibidas'
     )
 
@@ -30,3 +30,10 @@ class UsuariosApp(models.Model):
         compute='_compute_valoracion_media',
         store=False
     )
+
+    def _compute_valoracion_media(self):
+        for record in self:
+            if record.valoracion_ids:
+                record.valoracion_media = sum(v.valoracion for v in record.valoracion_ids) / len(record.valoracion_ids)
+            else:
+                record.valoracion_media = 0.0

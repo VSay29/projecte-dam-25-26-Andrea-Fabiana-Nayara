@@ -78,6 +78,10 @@
             </xpath>
 
             <!-- ENVOLVER el grupo que contiene 'name', email, phone para ponerle título -->
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <xpath expr="//sheet/group[1]" position="replace">
                 <group string="Información Básica">
                     <group>
@@ -97,7 +101,8 @@
                     <field name="rol"/>
                     <field name="idioma"/>
                     <field name="date_joined"/>
-                    <field name="valoracion_ids" widget="rating" options="{'readonly': True}"/>
+                    <field name="valoracion_ids" options="{'no_create': True}"/>
+                    <field name="valoracion_media"/>
                 </group>
             </xpath>
 
@@ -111,11 +116,13 @@
             <kanban>
                 <field name="name"/>
                 <field name="email"/>
+                <field name="valoracion_media"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_card">
                             <strong><t t-esc="record.name.value"/></strong>
                             <div><t t-esc="record.email.value"/></div>
+                            <div>Valoración: <field name="valoracion_media"/></div>
                         </div>
                     </t>
                 </templates>

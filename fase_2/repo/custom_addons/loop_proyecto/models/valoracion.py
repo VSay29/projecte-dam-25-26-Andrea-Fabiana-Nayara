@@ -7,25 +7,26 @@ class Valoracion(models.Model):
     _description = 'Valoración de usuario'
 
     comentario = fields.Text(
-        string='Comentario',
-        required=True
+        string='Comentario'
     )
     
     usuario_comentador = fields.Many2one(
         comodel_name='res.partner',
         string='Usuario',
         required=True,
-        store=True
+        store=True,
+        domain="[('rol', '=', 'cliente')]"
     )
 
     usuario_valorado = fields.Many2one(
-        'res.partner',
+        comodel_name='res.partner',
         string='Usuario valorado',
         required=True,
-        ondelete='cascade'
+        ondelete='cascade',
+        domain="[('rol', '=', 'cliente')]"
     )
 
-    valoracion = fields.Integer(
+    valoracion = fields.Float(
         string='Valoración',
         required=True,
         default=0,
