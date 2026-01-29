@@ -70,7 +70,7 @@ class JWTAuthController(http.Controller):
         if not username or not password:
             return {"ok": False, 'error': 'Missing username/password'}
 
-        user = request.env['res.partner'].sudo().search([('username','=',username), ('password','=',password)], limit=1)
+        user = request.env['res.partner'].sudo().search([('username','=',username) ('password','=',password)], limit=1)
 
         if not user:
             return {'error': 'Invalid credentials'}
