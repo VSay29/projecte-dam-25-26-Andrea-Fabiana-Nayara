@@ -48,20 +48,33 @@ class JWTAuthController(http.Controller):
 
     @http.route('/api/auth', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def authenticate(self, **kw):
-        #params = request.jsonrequest or {}
-        _logger.info(kw.get('username'))
-        _logger.info(kw.get('password'))
-        username = kw.get('username') # username
-        password = kw.get('password') # password
+
+        params = kw.get("params",kw)
+        
+        username = (params.get("username") or "").strip()
+        password = params.get("password") or ""
+
+        """
+            Hay que enviar los datos a la API con esta estructura:
+
+            "jsonrpc": "2.0",
+            "method": "call",
+            "params": {
+                "username": "antonio",
+                "password": "123456"
+                }
+            }
+
+        """
 
         if not username or not password:
-            return {'error': 'Missing username/password'}
+            return {"ok": False, 'error': 'Missing username/password'}
 
-        user = request.env['res.partner'].sudo().search([('username','=',username)], limit=1)
+        user = request.env['res.partner'].sudo().search([('username','=',username), ('password','=',password)], limit=1)
 
         if not user:
             return {'error': 'Invalid credentials'}
-        7
+        
         now = datetime.datetime.now()
         payload = {
             'username': user.username,
