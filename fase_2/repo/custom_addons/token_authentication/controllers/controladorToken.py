@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 from odoo import http
 from odoo.http import request
 
-# Función para obtener una clave secreta
+# Función para obtener una clave secretaa
 
 def _get_secret_key():
     # Mejor que hardcodear: config param del sistema
