@@ -119,7 +119,7 @@ class CRUD_User_Controller(http.Controller):
         if not user:
             return {'error': 'Unauthorized'}
 
-        # borrar el propio usuario
+        # Borrar el propio usuario
 
         request.env['res.partner'].with_user(1).browse(user.id).unlink()
 
