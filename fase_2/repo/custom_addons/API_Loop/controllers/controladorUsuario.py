@@ -58,15 +58,6 @@ class CRUD_User_Controller(http.Controller):
             return {'success': True}
         except Exception as e:
             return {'error': str(e)}
-        
-        # No hace falta devolver objetos, es sólo un registro
-        #return {
-        #    'id': user.id,
-        #    'name': user.name,
-        #    'username': user.username,
-        #    'password': user.password,
-        #    'email': user.email
-        #}
 
     """
     ENDPOINT: OBTENER USUARIO

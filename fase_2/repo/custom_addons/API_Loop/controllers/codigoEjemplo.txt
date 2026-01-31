@@ -141,4 +141,4 @@ class ApiRest(http.Controller):
            'ultima_fecha_registro': ultima_fecha
         }
         
-        return http.Response(json.dumps(data, default=str), mimetype='application/json'
+        return http.Response(json.dumps(data, default=str), mimetype='application/json')
