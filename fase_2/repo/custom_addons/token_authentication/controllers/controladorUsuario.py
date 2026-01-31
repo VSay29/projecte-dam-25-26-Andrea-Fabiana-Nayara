@@ -54,6 +54,8 @@ class CRUD_User_Controller(http.Controller):
                 'password': data['password'],
                 'email': data.get('email')
             })
+
+            return {'success': True}
         except Exception as e:
             return {'error': str(e)}
         
@@ -92,7 +94,7 @@ class CRUD_User_Controller(http.Controller):
     ENDPOINT: MODIFICAR USUARIO
     """
 
-    @http.route('/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['PUT', 'PATCH'])
+    @http.route('/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['PATCH'])
     def api_patch_me(self, **params):
         user = get_current_user_from_token()
         if not user:
@@ -112,7 +114,8 @@ class CRUD_User_Controller(http.Controller):
         if not update_vals:
             return {'error': 'No valid fields to update'}
 
-        user.write(update_vals)
+        request.env['res.partner'].sudo().browse(user.id).write(update_vals)
+
         return {'success': True}
 
     """
