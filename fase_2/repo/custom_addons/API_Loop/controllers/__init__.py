@@ -2,4 +2,4 @@
 
 from . import controladorToken
 from . import controladorUsuario
-from . import comentarios
+from . import controladorComentario
