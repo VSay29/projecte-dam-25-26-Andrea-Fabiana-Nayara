@@ -114,7 +114,7 @@ class CRUD_User_Controller(http.Controller):
         if not update_vals:
             return {'error': 'No valid fields to update'}
 
-        request.env['res.partner'].sudo().browse(user.id).write(update_vals)
+        request.env['res.partner'].with_user(1).browse(user.id).write(update_vals)
 
         return {'success': True}
 
