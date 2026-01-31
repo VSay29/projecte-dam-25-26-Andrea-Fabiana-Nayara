@@ -128,7 +128,7 @@ class ApiRest(http.Controller):
     def estadisticas_socio(self, **kwargs):
         Socio = request.env['socio'].sudo()
 
-        total_socios = Socio.search_count([])
+        total_socios = Socio.search_count([]) 
         socios_por_nivel = Socio.read_group(
             [], ['nivel_membresia'], ['nivel_membresia']
         )
