@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Autenticación con Token JWT",
+    'name': "API Loop",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
