@@ -6,7 +6,7 @@ from odoo.http import request
 from .controladorToken import get_current_user_from_token
 
 class CRUD_User_Controller(http.Controller):
-
+ 
     """
     ENDPOINT: REGISTRAR USUARIO
     """

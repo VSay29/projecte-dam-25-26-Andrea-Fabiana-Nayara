@@ -20,7 +20,7 @@ Long description of module's purpose
     # any module necessary for this one to work correctly
     'depends': ['base', 'loop_proyecto'],
     'external_dependencies': {
-        'python': ['jwt']
+        'python': ['jwt'] 
     },
 
     # always loaded
