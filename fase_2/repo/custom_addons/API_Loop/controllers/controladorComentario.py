@@ -13,7 +13,7 @@ import json
 # - GET: consultar comentario
 # - DELETE: eliminar comentario
 
-class comentarios(http.Controller):
+class controladorComentario(http.Controller):
     
     # --------------------------------------------------------------------------
     #  CREAR COMENTARIO (POST)
