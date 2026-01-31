@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import json
+import base64
 from odoo import http
 from odoo.http import request
 from .controladorToken import get_current_user_from_token
+from pathlib import Path
+
+def img_a_base64(ruta):
+    """ Convierte una imagen de la ruta proporcionada a base64 """
+    try:
+        if not Path(ruta).exists():
+            raise FileNotFoundError(f"La ruta {ruta} no es válida.")
+        
+        with open(ruta, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+        
+    except Exception as e:
+        return None
 
 class CRUD_User_Controller(http.Controller):
  
@@ -11,7 +25,7 @@ class CRUD_User_Controller(http.Controller):
     ENDPOINT: REGISTRAR USUARIO
     """
 
-    @http.route('/loop/register', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
+    @http.route('/api/v1/loop/register', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def api_register(self, **params):
 
         data = params.get('data') # recoge data con los parametros que se le pasan
@@ -63,7 +77,7 @@ class CRUD_User_Controller(http.Controller):
     ENDPOINT: OBTENER USUARIO
     """
 
-    @http.route('/loop/me', type='json', auth="none", cors='*', csrf=False, methods=["GET"])
+    @http.route('/api/v1/loop/me', type='json', auth="none", cors='*', csrf=False, methods=["GET"])
     def api_get_user(self, **params):
         
         user = get_current_user_from_token()
@@ -85,7 +99,7 @@ class CRUD_User_Controller(http.Controller):
     ENDPOINT: MODIFICAR USUARIO
     """
 
-    @http.route('/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['PATCH'])
+    @http.route('/api/v1/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['PATCH'])
     def api_patch_me(self, **params):
         user = get_current_user_from_token()
         if not user:
@@ -95,25 +109,31 @@ class CRUD_User_Controller(http.Controller):
         if not data:
             return {'error': 'No data to update'}
 
-        allowed = {'name', 'username', 'email', 'phone', 'mobile', 'idioma'}
-        update_vals = {
-            k: v
-            for k, v in data.items()
-                if k in allowed
-            }
+        allowed = {'name', 'username', 'email', 'phone', 'mobile', 'idioma', 'image_1920'}
+        update_vals = {k: v for k, v in data.items() if k in allowed}
+
+        # Validar que image_1920 sea base64 si viene
+        if 'image_1920' in update_vals:
+            valor = update_vals['image_1920']
+            try:
+                # quitar espacios y saltos de línea
+                valor = valor.replace('\n', '').replace('\r', '')
+                base64.b64decode(valor)
+            except Exception:
+                return {'error': 'La imagen no está en formato base64 válido'}
 
         if not update_vals:
             return {'error': 'No valid fields to update'}
 
         request.env['res.partner'].with_user(1).browse(user.id).write(update_vals)
-
         return {'success': True}
+
 
     """
     ENDPOINT: BORRAR USUARIO
     """
 
-    @http.route('/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['DELETE'])
+    @http.route('/api/v1/loop/me', type='json', auth='none', csrf=False, cors='*', methods=['DELETE'])
     def api_delete_me(self, **params):
         user = get_current_user_from_token()
         if not user:
