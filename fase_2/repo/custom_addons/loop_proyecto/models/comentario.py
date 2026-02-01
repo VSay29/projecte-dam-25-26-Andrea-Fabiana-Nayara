@@ -9,9 +9,9 @@ class Comentario(models.Model):
     fecha_creacion = fields.Datetime(string='Fecha de creación', default=fields.Datetime.now, readonly=True)
     
     comentador_id = fields.Many2one(
-        'res.users',
+        'res.partner',
         string='Usuario autor',
-        default=lambda self: self.env.user,
+        required=True,
         readonly=True
     )
     
@@ -30,5 +30,5 @@ class Comentario(models.Model):
         index=True
     )
     
-    moderador_id = fields.Many2one('res.users', string='Moderado por')
+    moderador_id = fields.Many2one('res.partner', string='Moderado por')
     fecha_moderacion = fields.Datetime(string='Fecha moderación')

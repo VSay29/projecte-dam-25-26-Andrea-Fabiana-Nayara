@@ -17,7 +17,6 @@
             <list>
                 <field name="name"/>
                 <field name="active"/>
-                <field name="color"/>
             </list>
         </field>
     </record>
@@ -31,11 +30,9 @@
                     <group>
                         <field name="name"/>
                         <field name="active"/>
-                        <field name="color"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-
 </odoo>

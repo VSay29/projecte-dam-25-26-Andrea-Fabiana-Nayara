@@ -3,6 +3,7 @@ from dataclasses import fields
 from odoo import http
 from odoo.http import request
 from pathlib import Path
+from .controladorToken import get_current_user_from_token
 import json
 
 # CONTROLADOR API REST
@@ -18,145 +19,119 @@ class controladorComentario(http.Controller):
     # --------------------------------------------------------------------------
     #  CREAR COMENTARIO (POST)
     # --------------------------------------------------------------------------
-    @http.route('/api/comentarios', auth='bearer', methods=['POST'], csrf=False, type='json')
-    def create_comentario(self, **kwargs):
-        dicDatos = request.jsonrequest or {}
+    @http.route('/api/v1/loop/comentarios', auth='none', methods=['POST'], csrf=False, type='json')
+    def create_comentario(self, **params):
+        
+        user = get_current_user_from_token()
 
-        # Validaciones mínimas
-        producto_id = dicDatos.get("producto_id")
-        contenido = dicDatos.get("contenido")
-
-        if not producto_id:
-            return {"estado": "Producto no indicado"}
-        if not contenido:
-            return {"estado": "Contenido no indicado"}
-
-        # Seguridad: el autor debe ser el usuario autenticado por token
-        vals = {
-            "producto_id": int(producto_id),
-            "contenido": contenido,
-        }
-
-        # opcional: permitir estado solo si lo decides (si no, quítalo)
-        if dicDatos.get("estado") in ("published", "hidden", "deleted"):
-            vals["estado"] = dicDatos["estado"]
-
-        record = request.env["loop_proyecto.comentario"].sudo().create(vals)
-
-        # Respuesta limpia (no uses record.read() a pelo si no controlas campos)
-        return {
-            "estado": "OK",
-            "id": record.id,
-            "comentario": {
-                "id": record.id,
-                "contenido": record.contenido,
-                "fecha_creacion": record.fecha_creacion,
-                "comentador_id": record.comentador_id.id,
-                "producto_id": record.producto_id.id,
-                "estado": record.estado,
-            }
-        }
-
+        if not user:
+            return {'error':'Unauthorized'}
+        
+        data = params.get('data')
+        
+        if not data:
+            return {'error': 'No se han enviado datos'}
+        
+        required = ['producto_id','contenido', 'estado']
+        
+        for field in required:
+            if field not in data:
+                return {'error': f'Falta el campo {field}'}
+            
+        try:
+            comentario = request.env['loop_proyecto.comentario'].sudo().create({
+                'producto_id': data['producto_id'],
+                'comentador_id': user.id,
+                'contenido': data['contenido'],
+                'estado': data['estado'],
+                'comentador_id': user.id
+            })
+            return {'success': True, 'comentario_id': comentario.id}
+        except Exception as e:
+            return {'error': str(e)}
+        
     # --------------------------------------------------------------------------
-    #  MODIFICAR COMENTARIO (PUT/PATCH)
+    #  MODIFICAR COMENTARIO (PATCH)
     # --------------------------------------------------------------------------
-    @http.route('/api/comentarios/<int:comentario_id>', auth='bearer', methods=['PUT', 'PATCH'], csrf=False, type='json')
-    def update_comentario(self, comentario_id, **kwargs):
-        dicDatos = request.jsonrequest or {}
+    @http.route('/api/v1/loop/comentarios/<int:comentario_id>', auth='none', methods=['PATCH'], csrf=False, type='json')
+    def update_comentario(self, comentario_id, **params):
+        
+        user = get_current_user_from_token()
 
+        if not user:
+            return {'error':'Unauthorized'}
+        
         comentario = request.env['loop_proyecto.comentario'].sudo().browse(comentario_id)
         if not comentario.exists():
-            return {"estado": "Comentario no encontrado"}
-
-        user = request.env.user
-
-        # Seguridad: solo autor o moderador
-        es_autor = comentario.comentador_id.id == user.id
-        es_moderador = user.has_group('base.group_system')  # ajusta si tienes grupo propio
-
-        if not (es_autor or es_moderador):
-            return {"estado": "No autorizado"}
-
-        vals = {}
-
-        # El autor solo puede cambiar el contenido
-        if "contenido" in dicDatos and es_autor:
-            contenido = dicDatos.get("contenido", "").strip()
-            if not contenido:
-                return {"estado": "Contenido inválido"}
-            vals["contenido"] = contenido
-
-        # El moderador puede cambiar estado
-        if "estado" in dicDatos and es_moderador:
-            if dicDatos["estado"] not in ("published", "hidden", "deleted"):
-                return {"estado": "Estado inválido"}
-            vals.update({
-                "estado": dicDatos["estado"],
-                "moderador_id": user.id,
-                "fecha_moderacion": fields.Datetime.now(),
+            return {'error': 'Comentario no encontrado'}
+        
+        data = params.get('data')
+        
+        if not data:
+            return {'error': 'No se han enviado datos'}
+        
+        required = ['contenido', 'estado']
+        
+        for field in required:
+            if field not in data:
+                return {'error': f'Falta el campo {field}'}
+            
+        try:
+            comentario.write({
+                'contenido': data['contenido'],
+                'estado': data['estado'],
             })
-
-        if not vals:
-            return {"estado": "Nada modificable"}
-
-        comentario.write(vals)
-
-        return {
-            "estado": "OK",
-            "id": comentario.id
-        }
-
+            return {'success': True, 'comentario_id': comentario.id}
+        except Exception as e:
+            return {'error': str(e)}
+        
     # --------------------------------------------------------------------------
     #  CONSULTAR COMENTARIO (GET)
     # --------------------------------------------------------------------------
-    @http.route('/api/comentarios/<int:comentario_id>', auth='bearer', methods=['GET'], csrf=False, type='http')
+    @http.route('/api/v1/loop/comentarios/<int:comentario_id>', auth='none', methods=['GET'], csrf=False, type='json')
     def get_comentario(self, comentario_id):
+        
+        user = get_current_user_from_token()
+
+        if not user:
+            return {'error':'Unauthorized'}
+        
         comentario = request.env['loop_proyecto.comentario'].sudo().browse(comentario_id)
         if not comentario.exists():
-            return {"estado": "Comentario no encontrado"}
-
-        user = request.env.user
-        es_autor = comentario.comentador_id.id == user.id
-        es_moderador = user.has_group('base.group_system')
-
-        # Si no es autor ni moderador, solo puede ver publicados
-        if not (es_autor or es_moderador) and comentario.estado != 'published':
-            return {"estado": "No autorizado"}
-
-        return {
-            "estado": "OK",
-            "comentario": {
-                "id": comentario.id,
-                "contenido": comentario.contenido,
-                "estado": comentario.estado,
-                "fecha_creacion": comentario.fecha_creacion,
-                "autor": {
-                    "id": comentario.comentador_id.id,
-                    "nombre": comentario.comentador_id.name,
-                },
-                "producto_id": comentario.producto_id.id,
+            return {'error': 'Comentario no encontrado'}
+            
+        try:
+            comentario_data = {
+                'id': comentario.id,
+                'producto_id': comentario.producto_id.id,
+                'comentador_id': comentario.comentador_id.id,
+                'contenido': comentario.contenido,
+                'estado': comentario.estado,
+                'fecha_creacion': comentario.fecha_creacion,
+                'moderador_id': comentario.moderador_id.id if comentario.moderador_id else None,
+                'fecha_moderacion': comentario.fecha_moderacion,
             }
-        }
+            return {'success': True, 'comentario': comentario_data}
+        except Exception as e:
+            return {'error': str(e)}
 
     # --------------------------------------------------------------------------
     #  ELIMINAR COMENTARIO (DELETE)
     # --------------------------------------------------------------------------
-    @http.route('/api/comentarios/<int:comentario_id>', auth='bearer', methods=['DELETE'], csrf=False, type='http')
+    @http.route('/api/v1/loop/comentarios/<int:comentario_id>', auth='none', methods=['DELETE'], csrf=False, type='json')
     def delete_comentario(self, comentario_id):
+        
+        user = get_current_user_from_token()
+
+        if not user:
+            return {'error':'Unauthorized'}
+        
         comentario = request.env['loop_proyecto.comentario'].sudo().browse(comentario_id)
         if not comentario.exists():
-            return {"estado": "Comentario no encontrado"}
-
-        user = request.env.user
-        es_autor = comentario.comentador_id.id == user.id
-        es_moderador = user.has_group('base.group_system')
-
-        if not (es_autor or es_moderador):
-            return {"estado": "No autorizado"}
-
-        vals = {"estado": "deleted"}
-        if es_moderador:
-            vals.update({"moderador_id": user.id, "fecha_moderacion": fields.Datetime.now()})
-
-        comentario.write(vals)
-        return {"estado": "OK", "id": comentario.id, "nuevo_estado": comentario.estado}
+            return {'error': 'Comentario no encontrado'}
+        
+        try:
+            comentario.unlink()
+            return {'success': True}
+        except Exception as e:
+            return {'error': str(e)}
