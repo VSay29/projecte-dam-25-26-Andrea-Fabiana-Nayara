@@ -13,7 +13,7 @@ class Producto(models.Model):
     # =========================
 
     propietario_id = fields.Many2one(
-        'res.users',
+        'res.partner',
         string='Propietario',
         required=True,
         default=lambda self: self.env.user

@@ -234,7 +234,7 @@
               default_group_by="producto_id"
               default_order="id desc">
             <field name="producto_id"/>
-            <field name="state"/>
+            <field name="estado_moderacion"/>
             <field name="create_date"/>
     </list>
     </field>

@@ -2,8 +2,8 @@
 
 import json
 import base64
-from odoo import http
-from odoo.http import request
+from odoo import http # type: ignore
+from odoo.http import request # type: ignore
 from .controladorToken import get_current_user_from_token
 from pathlib import Path
 
