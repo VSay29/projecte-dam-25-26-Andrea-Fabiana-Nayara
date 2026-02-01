@@ -77,7 +77,7 @@ class controladorComentario(http.Controller):
                 return {'error': f'Falta el campo {field}'}
             
         try:
-            comentario = comentario.write({
+            comentario.write({
                 'contenido': data['contenido'],
                 'estado': data['estado'],
             })
