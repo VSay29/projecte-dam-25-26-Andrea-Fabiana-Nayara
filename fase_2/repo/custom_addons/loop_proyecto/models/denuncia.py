@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+ 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
@@ -54,7 +54,7 @@ class DenunciaReporte(models.Model):
             ('cerrada', 'Cerrada'),
         ],
         string='Estado Moderación',
-        default='pendiente', 
+        default='pendiente',
         index=True
     )
 
