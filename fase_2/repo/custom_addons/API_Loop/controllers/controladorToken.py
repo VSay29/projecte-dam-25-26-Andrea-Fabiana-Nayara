@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import jwt
 import datetime
@@ -51,7 +52,7 @@ def get_current_user_from_token():
 class JWTAuthController(http.Controller):
 
     @http.route('/api/v1/loop/auth', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
-    def authenticate(self, **kw):
+    def authenticate(self, **kw): 
 
         params = kw.get("params",kw)
         

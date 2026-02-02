@@ -14,7 +14,7 @@
             {
                 'search_default_pendientes': 1,
                 'search_default_revisadas': 1,
-                'group_by': 'state'
+                'group_by': 'estado_moderacion'
             }
         </field>
     </record>
@@ -32,7 +32,7 @@
                 <sheet>
                     <group>
                         <field name="denunciante_id" readonly="1"/>
-                        <field name="state"/>
+                        <field name="estado_usuario" readonly="1"/>
                     </group>
 
                     <group>
@@ -41,12 +41,14 @@
                     </group>
 
                     <group>
-                        <field name="motivoDenuncia"/>
+                        <field name="motivo_denuncia"/> 
                     </group>
 
                     <group string="Revisión">
                         <field name="empleado_id"/>
                         <field name="fecha_revision"/>
+                        <field name="estado_moderacion"/>
+                        <field name="resultado_moderacion"/>
                     </group>
                 </sheet>
             </form>
@@ -62,7 +64,7 @@
         <field name="model">loop_proyecto.denuncia_reporte</field>
         <field name="arch" type="xml">
             <graph string="Denuncias por Estado" type="bar">
-                <field name="state" type="row"/>
+                <field name="estado_moderacion" type="row"/>
                 <field name="id" type="measure"/>
             </graph>
         </field>
@@ -81,7 +83,7 @@
             <field name="denunciante_id"/>
             <field name="producto_id"/>
             <field name="comentario_id"/>
-            <field name="state"/>
+            <field name="estado_moderacion"/>
             <field name="empleado_id"/>
         </list>
     </field>
@@ -96,23 +98,23 @@
     <field name="model">loop_proyecto.denuncia_reporte</field>
     <field name="arch" type="xml">
         <search>
-            <field name="state"/>
+            <field name="estado_moderacion"/>
             <field name="producto_id"/>
 
             <!-- Filtros -->
             <filter name="pendientes"
                     string="Pendientes"
-                    domain="[('state','=','pendiente')]"/>
+                    domain="[('estado_moderacion','=','pendiente')]"/>
 
             <filter name="revisadas"
                     string="Revisadas"
-                    domain="[('state','=','revisada')]"/>
+                    domain="[('estado_moderacion','=','revisada')]"/>
 
             <!-- Agrupar por -->
             <group expand="0" string="Agrupar por">
                 <filter name="group_estado"
                         string="Estado"
-                        context="{'group_by':'state'}"/>
+                        context="{'group_by':'estado_moderacion'}"/>
 
                 <filter name="group_producto"
                         string="Producto"
