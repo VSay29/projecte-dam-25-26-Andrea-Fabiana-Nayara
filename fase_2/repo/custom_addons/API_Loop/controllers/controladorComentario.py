@@ -79,6 +79,8 @@ class controladorComentario(http.Controller):
             comentario.write({
                 'contenido': data['contenido'],
                 'estado': data['estado'],
+                'moderador_id': data.get('moderador_id', None),
+                'fecha_moderacion': data.get('fecha_moderacion', None),
             })
             return {'success': True, 'comentario_id': comentario.id}
         except Exception as e:
