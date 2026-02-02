@@ -225,7 +225,7 @@
     <!--  LISTADO “PRODUCTOS MÁS DENUNCIADO -->
     <!-- ========================================================================================================= -->
 
-
+ 
 <record id="view_denuncia_tree_productos_mas_denunciados" model="ir.ui.view">
     <field name="name">loop_proyecto.denuncia.tree.productos</field>
     <field name="model">loop_proyecto.denuncia_reporte</field>

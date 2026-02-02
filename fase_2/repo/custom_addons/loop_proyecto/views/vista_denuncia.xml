@@ -41,7 +41,7 @@
                     </group>
 
                     <group>
-                        <field name="motivo_denuncia"/>
+                        <field name="motivo_denuncia"/> 
                     </group>
 
                     <group string="Revisión">

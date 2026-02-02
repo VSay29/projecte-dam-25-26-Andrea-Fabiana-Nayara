@@ -54,7 +54,7 @@ class DenunciaReporte(models.Model):
             ('cerrada', 'Cerrada'),
         ],
         string='Estado Moderación',
-        default='pendiente',
+        default='pendiente', 
         index=True
     )
 
