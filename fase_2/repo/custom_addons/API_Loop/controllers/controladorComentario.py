@@ -44,7 +44,6 @@ class controladorComentario(http.Controller):
                 'comentador_id': user.id,
                 'contenido': data['contenido'],
                 'estado': data['estado'],
-                'comentador_id': user.id
             })
             return {'success': True, 'comentario_id': comentario.id}
         except Exception as e:
