@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+import json # json
 from odoo import http # type: ignore
 from odoo.http import request # type: ignore
 from .controladorToken import get_current_user_from_token
