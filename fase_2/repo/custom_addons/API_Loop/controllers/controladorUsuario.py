@@ -63,7 +63,7 @@ class CRUD_User_Controller(http.Controller):
 
         try:
             user = request.env['res.partner'].sudo().create({
-                'name': data['name'],
+                'name': data['name'], 
                 'username': data['username'],
                 'password': data['password'],
                 'email': data.get('email')

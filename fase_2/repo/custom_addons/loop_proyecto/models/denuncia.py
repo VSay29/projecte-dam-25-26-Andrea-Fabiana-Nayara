@@ -29,6 +29,13 @@ class DenunciaReporte(models.Model):
         index=True
     )
 
+    comentario_texto = fields.Text(
+        string='Contenido del comentario',
+        related='comentario_id.contenido',
+        readonly=True,
+        store=True
+    )
+
     usuario_denunciado_id = fields.Many2one(
         'res.partner',
         string='Usuario denunciado',

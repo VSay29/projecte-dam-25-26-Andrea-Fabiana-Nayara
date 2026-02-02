@@ -39,7 +39,7 @@ class CRUD_Denuncias_Controller(http.Controller):
         usuario_denunciado_id = None
         if producto_id:
             producto = request.env['loop_proyecto.producto'].sudo().browse(producto_id)
-            if not producto.exists():
+            if not producto.exists(): 
                 return {'error': 'Producto no encontrado'}
             usuario_denunciado_id = producto.propietario_id.id
         elif comentario_id:

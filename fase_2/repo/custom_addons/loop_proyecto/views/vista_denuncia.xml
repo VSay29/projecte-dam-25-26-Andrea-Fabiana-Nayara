@@ -37,7 +37,7 @@
 
                     <group>
                         <field name="producto_id"/>
-                        <field name="comentario_id"/>
+                        <field name="comentario_texto"/>
                     </group>
 
                     <group>
@@ -74,16 +74,17 @@
    <!-- ===================== -->
     <!-- VISTA LISTA -->
     <!-- ===================== -->
-<record id="view_denuncia_reporte_tree" model="ir.ui.view">
-    <field name="name">loop_proyecto.denuncia_reporte.tree</field>
+<record id="view_denuncia_reporte_list" model="ir.ui.view">
+    <field name="name">loop_proyecto.denuncia_reporte.list</field>
     <field name="model">loop_proyecto.denuncia_reporte</field>
     <field name="arch" type="xml">
         <list>
             <field name="create_date"/>
             <field name="denunciante_id"/>
             <field name="producto_id"/>
-            <field name="comentario_id"/>
+            <field name="comentario_texto"/>
             <field name="estado_moderacion"/>
+            <field name="estado_usuario"/>
             <field name="empleado_id"/>
         </list>
     </field>
