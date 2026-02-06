@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
             Android_LoopTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Hola",
+                        name = "Holas",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
