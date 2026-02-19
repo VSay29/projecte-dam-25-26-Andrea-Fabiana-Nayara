@@ -1,6 +1,8 @@
 
 package com.example.android_loop
 
+import android.annotation.SuppressLint
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -63,6 +66,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import androidx.core.content.edit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,20 +93,21 @@ val cliente = HttpClient(CIO) {
 @Serializable
 data class RpcResponse(
     val result: LoginResult? = null,
-    val error: RpcError? = null
+    val error: RpcError? = null,
 )
 
 @Serializable
 data class LoginResult(
-    val token: String
+    val token: String,
 )
 
 @Serializable
 data class RpcError(
-    val message: String? = null
+    val message: String? = null,
 )
 
 
+@SuppressLint("UseKtx")
 @Composable
 fun Loggeo() {
 
@@ -112,6 +117,8 @@ fun Loggeo() {
     var passwd by rememberSaveable { mutableStateOf("") }
     var errorNombre by remember { mutableStateOf(false) }
     var errorPasswd by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Box(Modifier
         .fillMaxSize()
@@ -217,6 +224,8 @@ fun Loggeo() {
                                         coroutineScope.launch {
                                             try {
 
+                                                // Obtener token
+
                                                 val response: RpcResponse = cliente.post("http://10.0.2.2:8069/api/v1/loop/auth") {
                                                     contentType(ContentType.Application.Json)
                                                     setBody(
@@ -234,6 +243,27 @@ fun Loggeo() {
                                                 response.result?.let {
                                                     token = it.token
                                                 }
+
+                                                // Almacenar token
+
+                                                if (!token.isEmpty()) {
+
+                                                    val prefs = context.getSharedPreferences(
+                                                        "loop_prefs",
+                                                        MODE_PRIVATE
+                                                    )
+                                                    prefs.edit { putString("token", token) }
+
+                                                    // Obtener el token más tarde
+                                                    //val storedToken = prefs.getString("token", null)
+                                                    //Log.d("Token guardado", storedToken.toString())
+
+                                                }
+
+                                                /*
+                                                * Recuperar token más tarde:
+                                                * val storedToken = prefs.getString("token", null)
+                                                * */
 
                                             } catch (e: Exception) {
                                                 Log.e("LOGIN", "Error: ${e.message}")
