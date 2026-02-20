@@ -48,10 +48,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_loop.ui.theme.Android_LoopTheme
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -67,13 +65,28 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import androidx.core.content.edit
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Loggeo()
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = "login"
+            ) {
+
+                // Rutas de navegación
+
+               composable("login") { Loggeo(navController) } // login
+               composable("perfilUsuario") { PerfilUsuario(navController) } // perfil usuario
+            }
+            //Loggeo(navController)
         }
     }
 }
@@ -91,9 +104,10 @@ val cliente = HttpClient(CIO) {
 }
 
 @Serializable
-data class RpcResponse(
-    val result: LoginResult? = null,
-    val error: RpcError? = null,
+data class RpcResponse<T>(
+    val jsonrpc: String,
+    val id: Int? = null,
+    val result: T
 )
 
 @Serializable
@@ -101,15 +115,10 @@ data class LoginResult(
     val token: String,
 )
 
-@Serializable
-data class RpcError(
-    val message: String? = null,
-)
-
 
 @SuppressLint("UseKtx")
 @Composable
-fun Loggeo() {
+fun Loggeo(navController: NavHostController) {
 
     val coroutineScope = rememberCoroutineScope()
     var token by rememberSaveable { mutableStateOf("") }
@@ -226,7 +235,7 @@ fun Loggeo() {
 
                                                 // Obtener token
 
-                                                val response: RpcResponse = cliente.post("http://10.0.2.2:8069/api/v1/loop/auth") {
+                                                val response: RpcResponse<LoginResult> = cliente.post("http://10.0.2.2:8069/api/v1/loop/auth") {
                                                     contentType(ContentType.Application.Json)
                                                     setBody(
                                                         buildJsonObject {
@@ -240,9 +249,7 @@ fun Loggeo() {
                                                     )
                                                 }.body()
 
-                                                response.result?.let {
-                                                    token = it.token
-                                                }
+                                                val token = response.result.token
 
                                                 // Almacenar token
 
@@ -257,6 +264,8 @@ fun Loggeo() {
                                                     // Obtener el token más tarde
                                                     //val storedToken = prefs.getString("token", null)
                                                     //Log.d("Token guardado", storedToken.toString())
+
+                                                    navController.navigate("perfilUsuario")
 
                                                 }
 
@@ -298,10 +307,10 @@ fun Loggeo() {
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun LoggeoPreview() {
     Android_LoopTheme {
-        Loggeo()
+        Loggeo(navController)
     }
-}
+}*/

@@ -1,10 +1,12 @@
 
 package com.example.android_loop
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import android.content.Context.MODE_PRIVATE
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
+import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -25,31 +28,84 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_loop.ui.theme.Android_LoopTheme
+import androidx.navigation.NavHostController
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
-class PerfilUsuarioActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            PerfilUsuario()
-        }
-    }
-}
+@Serializable
+data class Usuario(
+    val id: Int,
+    val username: String,
+    val image_1920: String
+)
 
 @Composable
-fun PerfilUsuario() {
+fun PerfilUsuario(navController: NavHostController,) {
+
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+    val storedToken = prefs.getString("token", null)
+    var perfil by remember { mutableStateOf<Usuario?>(null) }
+    var username by remember { mutableStateOf("") }
+    var id by remember { mutableIntStateOf(0) }
+    var image_1920 by remember { mutableStateOf("") }
+    var avatarImage by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    LaunchedEffect(Unit) {
+
+        val response: RpcResponse<Usuario> = cliente.get("http://10.0.2.2:8069/api/v1/loop/me") {
+            header("Authorization", "Bearer $storedToken")
+            contentType(ContentType.Application.Json)
+            setBody(
+                buildJsonObject {
+                    put("jsonrpc", "2.0")
+                    put("method", "call")
+                    put("params", buildJsonObject {})
+                }
+            )
+        }.body()
+
+        perfil = response.result
+        username = response.result.username
+        id = response.result.id
+        image_1920 = response.result.image_1920 // Imagen en base64
+
+        // conversion base64 a Image
+
+        val decodedString = Base64.decode(image_1920, Base64.DEFAULT)
+        val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        avatarImage = bitmap.asImageBitmap()
+
+    }
+
     Box(
         Modifier
             .fillMaxSize()
@@ -79,14 +135,38 @@ fun PerfilUsuario() {
             verticalArrangement = Arrangement.Top
         ) {
 
-            Row (Modifier.padding(top = 32.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Texto a la izquierda
                 Text(
-                    "PERFIL USUARIO", textAlign = TextAlign.Center,
+                    "Información",
+                    textAlign = TextAlign.Left,
                     color = Color.White,
-                    fontSize = 40.sp,
+                    fontSize = 18.sp,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = 50.sp,
+                    modifier = Modifier.weight(1f).padding(8.dp)
                 )
+
+                // Imagen a la derecha
+                avatarImage?.let { img ->
+                    Image(
+                        bitmap = img,
+                        contentDescription = "Avatar",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    )
+                }
+            }
+
+
+            Row () {
+                // Información del usuario
             }
 
             Row(Modifier.height(500.dp)) {
@@ -128,10 +208,10 @@ fun PerfilUsuario() {
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun PerfilUsuarioPreview() {
     Android_LoopTheme {
-        PerfilUsuario()
+        PerfilUsuario(navController)
     }
-}
+}*/
