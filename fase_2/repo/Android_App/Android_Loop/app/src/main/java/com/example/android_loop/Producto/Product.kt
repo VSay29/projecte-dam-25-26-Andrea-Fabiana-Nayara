@@ -25,7 +25,8 @@ data class Propietario(
 
 data class Etiqueta(
     val id: Int,
-    val nombre: String
+    val nombre: String,
+    val active: Boolean
 )
 
 data class Imagen(

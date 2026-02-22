@@ -8,11 +8,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.android_loop.Producto.ProductViewModel
+
+
 
 @Composable
 fun ProductScreen(
-    viewModel: ProductViewModel = viewModel()
-) {
+    viewModel: ProductViewModel,
+    navController : NavController
+){
 
     val products = viewModel.products
     val isLoading = viewModel.isLoading
@@ -23,6 +28,16 @@ fun ProductScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+
+
+        Button(
+            onClick = {
+                navController.navigate("crear_producto")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Crear Producto")
+        }
 
         Button(
             onClick = { viewModel.loadProducts() },

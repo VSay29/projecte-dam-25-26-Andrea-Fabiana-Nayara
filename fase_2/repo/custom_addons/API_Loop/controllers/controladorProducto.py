@@ -116,27 +116,18 @@ class ProductoController(http.Controller):
             headers=[('Content-Type', 'application/json')],
             status=200
         )
+ 
+ #CREAR PRODUCTO----------------------------------------
 
-
-    # ======================================================
-    # CREAR PRODUCTO CON IMAGEN
-    # ======================================================
-    @http.route('/api/products', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
+    @http.route('/api/productos', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def create_product(self, **params):
+
         user = get_current_user_from_token()
         if not user:
-            return unauthorized()
+            return {'error': 'Unauthorized'}
 
-        try:
-            data = json.loads(request.httprequest.data or '{}')
-        except Exception:
-            return request.make_response(
-                json.dumps({'error': 'Invalid JSON'}),
-                headers=[('Content-Type', 'application/json')],
-                status=400
-            )
+        data = params   # ✅ usar params, no json.loads
 
-        # ---------------- VALIDACIONES ----------------
         required_fields = [
             'nombre', 'descripcion', 'precio', 'estado',
             'ubicacion', 'antiguedad', 'categoria_id', 'imagenes'
@@ -144,20 +135,11 @@ class ProductoController(http.Controller):
 
         for field in required_fields:
             if field not in data:
-                return request.make_response(
-                    json.dumps({'error': f'Missing field: {field}'}),
-                    headers=[('Content-Type', 'application/json')],
-                    status=400
-                )
+                return {'error': f'Missing field: {field}'}
 
-        if not data['imagenes'] or len(data['imagenes']) < 1:
-            return request.make_response(
-                json.dumps({'error': 'At least one image is required'}),
-                headers=[('Content-Type', 'application/json')],
-                status=400
-            )
+        if not data['imagenes']:
+            return {'error': 'At least one image is required'}
 
-        # ---------------- CREAR PRODUCTO ----------------
         product = request.env['loop_proyecto.producto'].sudo().create({
             'nombre': data['nombre'],
             'descripcion': data['descripcion'],
@@ -169,11 +151,7 @@ class ProductoController(http.Controller):
             'propietario_id': user.id,
         })
 
-        # ---------------- CREAR IMÁGENES ----------------
         for img in data['imagenes']:
-            if 'imagen' not in img:
-                continue
-
             request.env['loop_proyecto.producto_imagen'].sudo().create({
                 'producto_id': product.id,
                 'imagen': img['imagen'],
@@ -181,15 +159,12 @@ class ProductoController(http.Controller):
                 'sequence': img.get('sequence', 10),
             })
 
-        return request.make_response(
-            json.dumps({
-                'ok': True,
-                'product_id': product.id
-            }),
-            headers=[('Content-Type', 'application/json')],
-            status=201
-        )
+        _logger.warning("RETORNANDO OK PRODUCTO")
 
+        return {
+            'ok': True,
+            'product_id': product.id
+        }
     
      #-------------------ACTUALIZAR PRODUCTO --------------------
     @http.route('/api/products/<int:product_id>', type='http', auth='none', csrf=False, cors='*', methods=['PUT'])
