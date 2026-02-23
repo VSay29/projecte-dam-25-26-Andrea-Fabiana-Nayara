@@ -1,0 +1,22 @@
+Estructura del programa que pide el enunciado:
+
+
+-> dentro de com.example.android_loop:
+
+	-> data:
+
+		-> accesoApi: Aquí estarán todas las peticiones a la API, hacerlo como en los controladores de odoo a poder ser, separado.
+
+		-> model (data class): para recibir las respuestas usamos los data class.
+
+		-> repository: aquí está el acceso a lo que recibimos de la API, igual que en acceso a datos, desde aquí llamamos a las peticiones de la API.
+		
+		-> conexión: la conexión a la API, no se guarda TOKEN aquí, se guarda en shared preferences cuando el usuario loggea.
+
+	-> vistas
+
+	-> modelos:
+
+		-> Yo no estoy usando modelos de momento pero si necesitáis crearlos aquí
+
+	-> sharedPreferences: guarda el token y se accede a aquí para obtenerlo
