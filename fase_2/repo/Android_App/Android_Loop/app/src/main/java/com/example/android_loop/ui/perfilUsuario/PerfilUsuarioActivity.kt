@@ -3,6 +3,7 @@ package com.example.android_loop.ui.perfilUsuario
 import android.content.Context.MODE_PRIVATE
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -98,7 +101,7 @@ fun PerfilUsuario(navController: NavHostController) {
             image_1920 = user.image_1920
         }
 
-        if (!image_1920.isEmpty()) {
+        if (!image_1920.isNullOrBlank() && image_1920 != "false") {
             //conversion base64 a Image
             val decodedString = Base64.decode(image_1920, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
@@ -136,6 +139,23 @@ fun PerfilUsuario(navController: NavHostController) {
                             modifier = Modifier
                                 .size(110.dp)
                                 .clip(CircleShape)
+                        )
+                    }
+
+                    // Botón lápiz
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                            .padding(6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Cambiar imagen",
+                            tint = Color(0xFF003459),
+                            modifier = Modifier.size(16.dp)
                         )
                     }
 

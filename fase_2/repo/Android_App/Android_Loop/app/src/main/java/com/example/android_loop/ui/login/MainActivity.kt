@@ -60,6 +60,7 @@ import com.example.android_loop.Producto.CreateProductScreen
 import com.example.android_loop.Producto.ProductScreen
 import com.example.android_loop.Producto.ProductViewModel
 import com.example.android_loop.ui.registro.Registro
+import java.security.MessageDigest
 
 class MainActivity : ComponentActivity() {
 
@@ -216,7 +217,7 @@ fun Loggeo(navController: NavHostController) {
                                     errorNombre = username.isEmpty()
                                     errorPasswd = passwd.isEmpty()
 
-                                    if (!errorNombre && !errorPasswd) viewModelLogin.login(username, passwd)
+                                    if (!errorNombre && !errorPasswd) viewModelLogin.login(username, encriptarPasswd(passwd))
 
                                 }, Modifier.Companion.padding(bottom = 5.dp).fillMaxWidth(0.6f),
                                 colors = ButtonDefaults.buttonColors(
@@ -235,10 +236,6 @@ fun Loggeo(navController: NavHostController) {
 
                                         navController.navigate("perfilUsuario")
                                     }
-                                }
-
-                                loginState?.onFailure {
-                                    Text("Error en login")
                                 }
                             }
 
@@ -259,4 +256,10 @@ fun Loggeo(navController: NavHostController) {
             }
         }
     }
+}
+
+fun encriptarPasswd(passwd: String): String {
+    val digest = MessageDigest.getInstance("SHA-256")
+    val hashBytes = digest.digest(passwd.toByteArray(Charsets.UTF_8))
+    return hashBytes.fold("") { str, byte -> str + "%02x".format(byte) }
 }

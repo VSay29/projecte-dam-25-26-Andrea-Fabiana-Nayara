@@ -1,6 +1,5 @@
 package com.example.android_loop.ui.registro
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import java.security.MessageDigest
 
 
 @Composable
@@ -118,7 +118,7 @@ fun Registro(navController: NavHostController) {
 
                         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
-                            Row(Modifier.padding(bottom = 40.dp)) {
+                            Row(Modifier.padding(bottom = 20.dp)) {
                                 Text(
                                     "LOOP", textAlign = TextAlign.Center,
                                     color = Color(0xFF003459),
@@ -194,9 +194,9 @@ fun Registro(navController: NavHostController) {
                                     errorPasswd = passwd.isEmpty()
                                     errorEmail = email.isEmpty()
 
-                                    if (!errorUsername && !errorEmail && !errorPasswd) viewModelRegistro.registro(name, username, email, passwd)
+                                    if (!errorUsername && !errorEmail && !errorPasswd) viewModelRegistro.registro(name, username, email, encriptarPasswd(passwd))
 
-                                }, Modifier.padding(bottom = 30.dp).fillMaxWidth(0.6f),
+                                }, Modifier.padding(bottom = 10.dp).fillMaxWidth(0.6f),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF003459),
                                     contentColor = Color.White
@@ -214,15 +214,13 @@ fun Registro(navController: NavHostController) {
                                 }
                             }
 
-                            registroState?.onFailure {
-                                Text("Error en el registro")
-                            }
-
                             Row {
                                 Text(
-                                    text = "Volver al login",
-                                    Modifier.padding(bottom = 20.dp).clickable{navController.navigate("login")},
-                                    textDecoration = TextDecoration.Underline,
+                                    text = "Ya tengo una cuenta",
+                                    Modifier.Companion.padding(bottom = 20.dp).clickable {
+                                        navController.navigate("login")
+                                    },
+                                    textDecoration = TextDecoration.Companion.Underline,
                                     color = Color(0xFF003459)
                                 )
                             }
@@ -233,4 +231,10 @@ fun Registro(navController: NavHostController) {
             }
         }
     }
+}
+
+fun encriptarPasswd(passwd: String): String {
+    val digest = MessageDigest.getInstance("SHA-256")
+    val hashBytes = digest.digest(passwd.toByteArray(Charsets.UTF_8))
+    return hashBytes.fold("") { str, byte -> str + "%02x".format(byte) }
 }
