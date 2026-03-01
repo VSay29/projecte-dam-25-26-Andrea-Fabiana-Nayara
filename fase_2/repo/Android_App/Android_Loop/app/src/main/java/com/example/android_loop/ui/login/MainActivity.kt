@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,11 +44,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
@@ -59,12 +63,15 @@ import com.example.android_loop.ui.perfilUsuario.PerfilUsuario
 import com.example.android_loop.Producto.CreateProductScreen
 import com.example.android_loop.Producto.ProductScreen
 import com.example.android_loop.Producto.ProductViewModel
+import com.example.android_loop.R
 import com.example.android_loop.ui.registro.Registro
+import com.example.android_loop.ui.theme.Android_LoopTheme
 import java.security.MessageDigest
 
 class MainActivity : ComponentActivity() {
 
     private val viewModelProductos by viewModels<ProductViewModel>()
+    private val logo = R.drawable.loop_logo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,14 +115,14 @@ fun Loggeo(navController: NavHostController) {
     // TODO: Al abrir app, se validará si hay token válido, de manera que el usuario no inicie sesión cada vez que abre la app
 
     Box(
-        Modifier.Companion
+        Modifier
             .fillMaxSize()
-            .background(Color.Companion.Transparent)
+            .background(Color.Transparent)
     ) {
         Box(
-            Modifier.Companion
+            Modifier
                 .size(830.dp)
-                .align(Alignment.Companion.TopEnd)
+                .align(Alignment.TopEnd)
                 .offset(x = 10.dp, y = (-500).dp)
                 .drawBehind {
                     drawCircle(
@@ -130,29 +137,29 @@ fun Loggeo(navController: NavHostController) {
         )
 
         Column(
-            Modifier.Companion
+            Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.Companion.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
 
-            Row(Modifier.Companion.padding(top = 32.dp)) {
+            Row(Modifier.padding(top = 32.dp)) {
                 Text(
-                    "¡BIENVENIDO!", textAlign = TextAlign.Companion.Center,
-                    color = Color.Companion.White,
+                    "¡BIENVENIDO!", textAlign = TextAlign.Center,
+                    color = Color.White,
                     fontSize = 40.sp,
-                    fontFamily = FontFamily.Companion.SansSerif,
+                    fontFamily = FontFamily.SansSerif,
                     lineHeight = 50.sp,
                 )
             }
 
-            Row(Modifier.Companion.height(500.dp)) {
+            Row(Modifier.height(500.dp)) {
                 Card(
-                    modifier = Modifier.Companion.fillMaxWidth().fillMaxHeight()
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(horizontal = 16.dp).padding(top = 24.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.Companion.White
+                        containerColor = Color.White
                     ),
                     elevation = CardDefaults.cardElevation(4.dp),
                     shape = RoundedCornerShape(
@@ -161,56 +168,49 @@ fun Loggeo(navController: NavHostController) {
                     )
                 ) {
                     Box(
-                        Modifier.Companion.fillMaxSize(),
-                        contentAlignment = Alignment.Companion.BottomCenter
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.BottomCenter
                     ) {
 
                         Column(
-                            Modifier.Companion.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.Companion.CenterHorizontally
+                            Modifier.fillMaxSize().padding(top = 24.dp),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            Row(Modifier.Companion.padding(bottom = 40.dp)) {
-                                Text(
-                                    "LOOP", textAlign = TextAlign.Companion.Center,
-                                    color = Color(0xFF003459),
-                                    fontSize = 40.sp,
-                                    fontFamily = FontFamily.Companion.SansSerif,
-                                    lineHeight = 50.sp,
-                                )
-                            }
+                            Image(
+                                painter = painterResource(id = logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(200.dp)
+                            )
 
-                            Row()
-                            {
-                                OutlinedTextField(
-                                    value = username,
-                                    onValueChange = {
-                                        username = it
-                                        errorNombre = username.isEmpty()
-                                    },
-                                    label = { Text("Introduce el nombre de usuario") },
-                                    isError = errorNombre
-                                )
-                            }
+                            Spacer(Modifier.height(16.dp))
 
-                            Spacer(Modifier.Companion.height(8.dp))
+                            OutlinedTextField(
+                                value = username,
+                                onValueChange = {
+                                    username = it
+                                    errorNombre = username.isEmpty()
+                                },
+                                label = { Text("Introduce el nombre de usuario") },
+                                isError = errorNombre
+                            )
 
-                            Row {
-                                OutlinedTextField(
-                                    value = passwd,
-                                    onValueChange = {
-                                        passwd = it
-                                        errorPasswd = passwd.isEmpty()
-                                    },
-                                    label = { Text("Introduce la contraseña") },
-                                    isError = errorPasswd,
-                                    visualTransformation = PasswordVisualTransformation(),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Companion.Password),
-                                )
-                            }
+                            Spacer(Modifier.height(8.dp))
 
-                            Spacer(Modifier.Companion.height(32.dp))
+                            OutlinedTextField(
+                                value = passwd,
+                                onValueChange = {
+                                    passwd = it
+                                    errorPasswd = passwd.isEmpty()
+                                },
+                                label = { Text("Introduce la contraseña") },
+                                isError = errorPasswd,
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            )
+
+                            Spacer(Modifier.height(12.dp))
 
                             Button(
                                 onClick = {
@@ -219,10 +219,10 @@ fun Loggeo(navController: NavHostController) {
 
                                     if (!errorNombre && !errorPasswd) viewModelLogin.login(username, encriptarPasswd(passwd))
 
-                                }, Modifier.Companion.padding(bottom = 5.dp).fillMaxWidth(0.6f),
+                                }, Modifier.padding(bottom = 5.dp).fillMaxWidth(0.6f),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFF003459),
-                                    contentColor = Color.Companion.White
+                                    contentColor = Color.White
                                 ),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                             ) {
@@ -242,10 +242,10 @@ fun Loggeo(navController: NavHostController) {
                             Row {
                                 Text(
                                     text = "Crear nueva cuenta",
-                                    Modifier.Companion.padding(bottom = 20.dp).clickable {
+                                    Modifier.padding(bottom = 20.dp).clickable {
                                         navController.navigate("registro")
                                     },
-                                    textDecoration = TextDecoration.Companion.Underline,
+                                    textDecoration = TextDecoration.Underline,
                                     color = Color(0xFF003459)
                                 )
                             }
