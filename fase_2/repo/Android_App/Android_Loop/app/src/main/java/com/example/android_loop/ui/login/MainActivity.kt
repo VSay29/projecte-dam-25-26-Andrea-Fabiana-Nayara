@@ -63,6 +63,8 @@ import com.example.android_loop.ui.perfilUsuario.PerfilUsuario
 import com.example.android_loop.Producto.CreateProductScreen
 import com.example.android_loop.Producto.ProductScreen
 import com.example.android_loop.Producto.ProductViewModel
+import com.example.android_loop.ui.shoppingCart.CartViewModel
+import com.example.android_loop.ui.shoppingCart.CartScreen
 import com.example.android_loop.R
 import com.example.android_loop.ui.registro.Registro
 import com.example.android_loop.ui.theme.Android_LoopTheme
@@ -71,6 +73,7 @@ import java.security.MessageDigest
 class MainActivity : ComponentActivity() {
 
     private val viewModelProductos by viewModels<ProductViewModel>()
+    private val viewModelCart by viewModels<CartViewModel>()
     private val logo = R.drawable.loop_logo
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +96,11 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("pantalla_listado") { // pantalla listado productos
-                    ProductScreen(viewModelProductos, navController)
+                    ProductScreen(viewModelProductos, viewModelCart, navController)
+                }
+
+                composable("carrito") { // carrito de compra
+                    CartScreen(viewModelCart, navController)
                 }
             }
     }

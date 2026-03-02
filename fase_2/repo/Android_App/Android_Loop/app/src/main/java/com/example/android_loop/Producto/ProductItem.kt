@@ -5,16 +5,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProductItem(product: Product) {
-
+fun ProductItem(
+    product: Product,
+    onAddToCart: () -> Unit,
+    isInCart: Boolean = false
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,11 +38,30 @@ fun ProductItem(product: Product) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "Precio: ${product.precio}")
+            Text(text = "Precio: ${product.precio} €")
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(text = "Categoría: ${product.categoria.nombre}")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (isInCart) {
+                OutlinedButton(
+                    onClick = {},
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Ya está en el carrito")
+                }
+            } else {
+                Button(
+                    onClick = onAddToCart,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Añadir al carrito")
+                }
+            }
         }
     }
 }
