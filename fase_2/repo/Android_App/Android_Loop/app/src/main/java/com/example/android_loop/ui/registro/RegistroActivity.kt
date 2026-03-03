@@ -1,5 +1,7 @@
 package com.example.android_loop.ui.registro
 
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -53,6 +57,8 @@ fun Registro(navController: NavHostController) {
 
     val viewModelRegistro: RegistroViewModel = viewModel()
     val registroState = viewModelRegistro.registroState
+
+    val context = LocalContext.current
 
     var name by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -190,11 +196,12 @@ fun Registro(navController: NavHostController) {
 
                             Button(
                                 onClick = {
+                                    errorName = name.isEmpty()
                                     errorUsername = username.isEmpty()
                                     errorPasswd = passwd.isEmpty()
                                     errorEmail = email.isEmpty()
 
-                                    if (!errorUsername && !errorEmail && !errorPasswd) viewModelRegistro.registro(name, username, email, encriptarPasswd(passwd))
+                                    if (!errorName && !errorUsername && !errorEmail && !errorPasswd) viewModelRegistro.registro(name, username, email, encriptarPasswd(passwd))
 
                                 }, Modifier.padding(bottom = 10.dp).fillMaxWidth(0.6f),
                                 colors = ButtonDefaults.buttonColors(
@@ -207,11 +214,11 @@ fun Registro(navController: NavHostController) {
                             }
 
                             LaunchedEffect(registroState) {
-                                registroState?.onSuccess { token ->
-                                    // TODO: Lanzar mensaje de registro realizado y confirmación para volver al login
-
-                                    navController.navigate("login")
-                                }
+                                    if (registroState is RegistroUiState.Success) {
+                                        Toast.makeText(context, "Registro realizado correctamente, redirigiendo al login",Toast.LENGTH_SHORT).show()
+                                        navController.navigate("login")
+                                    }
+                                    if (registroState is RegistroUiState.Error) { Toast.makeText(context, "Error en el proceso de registro", Toast.LENGTH_SHORT).show() }
                             }
 
                             Row {
@@ -230,6 +237,20 @@ fun Registro(navController: NavHostController) {
                 }
             }
         }
+
+        if (registroState is RegistroUiState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                LinearProgressIndicator(
+                    color = Color.Blue
+                )
+            }
+        }
+
     }
 }
 
