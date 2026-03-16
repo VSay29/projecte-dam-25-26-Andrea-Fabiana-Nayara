@@ -21,11 +21,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.android_loop.data.model_dataClass.Producto
 
 @Composable
 fun ProductItem(
-    product: Producto,
+    product: Product,
     onClick: () -> Unit,
     onAddToCart: () -> Unit
 ) {

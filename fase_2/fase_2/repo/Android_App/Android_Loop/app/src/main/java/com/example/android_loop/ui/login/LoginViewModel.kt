@@ -10,11 +10,18 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: UserRepository = UserRepository()) : ViewModel() {
 
-    var loginState by mutableStateOf<Result<String>?>(null)
+    var loginState by mutableStateOf<LoginUiState>(LoginUiState.Idle)
 
     fun login(username : String, passwd : String) {
         viewModelScope.launch {
-            loginState = repository.login(username, passwd)
+            loginState = LoginUiState.Loading
+
+            val result = repository.login(username, passwd)
+
+            loginState = result.fold(
+                onSuccess = { LoginUiState.Success(it) },
+                onFailure = { LoginUiState.Error(it.message ?: "Error") }
+            )
         }
     }
 
