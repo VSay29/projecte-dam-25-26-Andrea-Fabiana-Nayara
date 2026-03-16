@@ -1,6 +1,10 @@
 package com.example.android_loop.data.Producto.accesoApi
 
 import com.example.android_loop.data.model_dataClass.RpcResponse
+import com.example.android_loop.ui.comentarios.Comentario
+import com.example.android_loop.ui.comentarios.ComentariosResponse
+import com.example.android_loop.ui.comentarios.CreateComentarioRequest
+import com.example.android_loop.ui.comentarios.CreateComentarioResponse
 import com.example.android_loop.data.Producto.CreateEtiquetaRequest
 import com.example.android_loop.data.Producto.CreateEtiquetaResponse
 import com.example.android_loop.data.Producto.CreateProductRequest
@@ -123,6 +127,50 @@ class ApiProductLoop(
                 }.body()
 
             Result.success(response.etiquetas)
+
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
+
+    suspend fun getComentarios(productId: Int): Result<List<Comentario>> {
+        return try {
+
+            val token = TokenManager.getToken()
+                ?: return Result.failure(Exception("Token no disponible"))
+
+            val response: ComentariosResponse =
+                cliente.get("${Servidor.BASE_URL}/api/v1/loop/productos/$productId/comentarios") {
+                    header("Authorization", "Bearer $token")
+                    accept(ContentType.Application.Json)
+                }.body()
+
+            Result.success(response.comentarios)
+
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
+
+    suspend fun crearComentario(
+        request: CreateComentarioRequest
+    ): Result<CreateComentarioResponse> {
+
+        return try {
+
+            val token = TokenManager.getToken()
+                ?: return Result.failure(Exception("Token no disponible"))
+
+            val response: RpcResponse<CreateComentarioResponse> =
+                cliente.post("${Servidor.BASE_URL}/api/v1/loop/comentarios") {
+                    header("Authorization", "Bearer $token")
+                    contentType(ContentType.Application.Json)
+                    setBody(JsonRpcRequest(params = request))
+                }.body()
+
+            Result.success(response.result)
 
         } catch (ex: Exception) {
             Result.failure(ex)
