@@ -51,3 +51,8 @@ data class ImagenConDatos(
     val is_principal: Boolean,
     val sequence: Int
 )
+
+@Serializable
+data class ProductosResponse(
+    val products: List<Product>
+)

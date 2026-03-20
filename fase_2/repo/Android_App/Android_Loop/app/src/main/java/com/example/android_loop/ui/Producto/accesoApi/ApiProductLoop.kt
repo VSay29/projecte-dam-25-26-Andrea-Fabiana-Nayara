@@ -5,6 +5,8 @@ import com.example.android_loop.ui.comentarios.Comentario
 import com.example.android_loop.ui.comentarios.ComentariosResponse
 import com.example.android_loop.ui.comentarios.CreateComentarioRequest
 import com.example.android_loop.ui.comentarios.CreateComentarioResponse
+import com.example.android_loop.data.Producto.ProductosResponse
+import com.example.android_loop.data.Producto.Product
 import com.example.android_loop.data.Producto.CreateEtiquetaRequest
 import com.example.android_loop.data.Producto.CreateEtiquetaResponse
 import com.example.android_loop.data.Producto.CreateProductRequest
@@ -14,7 +16,6 @@ import com.example.android_loop.data.Producto.EtiquetasResponse
 import com.example.android_loop.data.Producto.ImagenConDatos
 import com.example.android_loop.data.Producto.ImagenesProductoResponse
 import com.example.android_loop.data.Producto.JsonRpcRequest
-import com.example.android_loop.data.Producto.Producto_Respuesta
 import com.example.android_loop.data.accesoApi.HttpClientProvider
 import com.example.android_loop.data.accesoApi.Servidor
 import io.ktor.client.HttpClient
@@ -27,15 +28,16 @@ class ApiProductLoop(
     private val cliente: HttpClient = HttpClientProvider.cliente
 ) {
 
-    suspend fun getProducts(): Result<Producto_Respuesta> {
+    suspend fun getProducts(): Result<ProductosResponse> {
         return try {
 
             val token = TokenManager.getToken()
                 ?: return Result.failure(Exception("Token no disponible"))
 
-            val response: Producto_Respuesta =
+            val response: ProductosResponse =
                 cliente.get("${Servidor.BASE_URL}/api/products") {
                     header("Authorization", "Bearer $token")
+                    accept(ContentType.Application.Json)
                 }.body()
 
             Result.success(response)
