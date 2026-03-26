@@ -23,6 +23,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.android_loop.R
 import com.example.android_loop.ui.Producto.ViewModel_Producto
 import com.example.android_loop.ui.shoppingCart.CartViewModel
+import com.google.androidgamesdk.gametextinput.Settings
+import com.tuapp.ui.theme.Primary
+import android.content.Context.MODE_PRIVATE
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,29 +67,52 @@ fun ProductScreen(
                 title = {
                     Text(
                         "Tienda",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF003459),
+                    containerColor = Primary,
                     titleContentColor = Color.White,
                     actionIconContentColor = Color.White
                 ),
                 actions = {
+
+                    // 🔍 Buscar
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar"
+                        )
+                    }
+
+                    // 🛒 Carrito
                     BadgedBox(
                         badge = {
                             if (cartCount > 0) {
-                                Badge { Text("$cartCount") }
+                                Badge {
+                                    Text("$cartCount")
+                                }
                             }
                         }
                     ) {
-                        IconButton(onClick = { navController.navigate("carrito") }) {
+                        IconButton(onClick = {
+                            navController.navigate("carrito")
+                        }) {
                             Icon(
-                                Icons.Default.ShoppingCart,
-                                contentDescription = "Carrito",
-                                tint = Color.White
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Carrito"
                             )
                         }
+                    }
+
+                    // ⚙ Ajustes
+                    IconButton(onClick = {
+                        navController.navigate("ajustes")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Ajustes"
+                        )
                     }
                 }
             )

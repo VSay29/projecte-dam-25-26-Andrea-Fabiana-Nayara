@@ -81,6 +81,8 @@ import com.example.android_loop.ui.registro.Registro
 import com.example.android_loop.ui.shoppingCart.CartScreen
 import com.example.android_loop.ui.shoppingCart.CartViewModel
 import java.security.MessageDigest
+import com.tuapp.ui.theme.Primary
+import com.tuapp.ui.theme.Secondary
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -190,7 +192,7 @@ fun Loggeo(navController: NavHostController) {
                     Snackbar(
                         snackbarData = data,
                         shape = RoundedCornerShape(12.dp),
-                        containerColor = Color(0xFFE63946),
+                        containerColor = Color(0xFF003459),
                         contentColor = Color.White
                     )
                 }
@@ -212,7 +214,7 @@ fun Loggeo(navController: NavHostController) {
                     .offset(x = 10.dp, y = (-500).dp)
                     .drawBehind {
                         drawCircle(
-                            color = Color(0xFF003459),
+                            color = Primary,
                             radius = size.maxDimension * 0.5f,
                             center = Offset(x = size.width * 0.8f, y = size.height / 1.25f)
                         )
