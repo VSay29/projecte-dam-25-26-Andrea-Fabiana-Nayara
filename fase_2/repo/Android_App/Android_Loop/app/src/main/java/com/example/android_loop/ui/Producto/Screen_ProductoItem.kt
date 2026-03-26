@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,7 +29,9 @@ import com.example.android_loop.data.model_dataClass.Producto
 fun ProductItem(
     product: Producto,
     onClick: () -> Unit,
-    onAddToCart: () -> Unit
+    onAddToCart: () -> Unit,
+    isFavorite: Boolean,           // NUEVO: ¿está en favoritos?
+    onToggleFavorite: () -> Unit   // NUEVO: acción al pulsar el corazón
 ) {
     Card(
         modifier = Modifier
@@ -123,22 +127,48 @@ fun ProductItem(
                 }
             }
 
-            // Add to cart button
-            Box(
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color(0xFF003459))
-                    .clickable { onAddToCart() },
-                contentAlignment = Alignment.Center
+            // ── Columna derecha: corazón + carrito ───────────────────
+            // NUEVO: agrupamos los dos botones en una Column para que
+            // queden uno encima del otro de forma ordenada.
+            Row(
+                modifier = Modifier.padding(end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Añadir al carrito",
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
+                // Icono favorito
+                // - Filled = favorito activo (rojo)
+                // - Border  = favorito inactivo (gris)
+                IconButton(
+                    onClick = onToggleFavorite,
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite
+                        else Icons.Default.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Quitar de favoritos"
+                        else "Añadir a favoritos",
+                        tint = if (isFavorite) Color(0xFFE63946) else Color(0xFF8FA3B1),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+
+                // Botón añadir al carrito (sin cambios, solo movido aquí)
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color(0xFF003459))
+                        .clickable { onAddToCart() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Añadir al carrito",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
