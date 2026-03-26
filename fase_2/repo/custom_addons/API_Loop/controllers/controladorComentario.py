@@ -32,7 +32,7 @@ class controladorComentario(http.Controller):
         if not data:
             return {'error': 'No se han enviado datos'}
         
-        required = ['partner_id', 'contenido', 'estado']
+        required = ['partner_id', 'contenido']
 
         for field in required:
             if field not in data:
@@ -43,7 +43,7 @@ class controladorComentario(http.Controller):
                 'partner_id': data['partner_id'],
                 'comentador_id': user.id,
                 'contenido': data['contenido'],
-                'estado': data['estado'],
+                'estado': data.get('estado', 'published'),
             })
             return {'success': True, 'comentario_id': comentario.id}
         except Exception as e:
