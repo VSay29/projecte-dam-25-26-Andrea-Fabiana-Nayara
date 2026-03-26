@@ -34,6 +34,17 @@ class ViewModel_Producto : ViewModel() {
     var productImages by mutableStateOf<List<ImagenConDatos>>(emptyList())
         private set
 
+    //estado que guara los ids de productos favoritos
+    var favoritoIds by mutableStateOf(setOf<Int>())
+        private set
+
+    fun añadirOquitarfavorito(productId: Int) {
+        favoritoIds = if (favoritoIds.contains(productId)) {
+            favoritoIds - productId   // Ya era favorito → lo quitamos
+        } else {
+            favoritoIds + productId   // No era favorito → lo añadimos
+        }
+    }
     fun resetProductCreated() {
         productCreated = false
     }

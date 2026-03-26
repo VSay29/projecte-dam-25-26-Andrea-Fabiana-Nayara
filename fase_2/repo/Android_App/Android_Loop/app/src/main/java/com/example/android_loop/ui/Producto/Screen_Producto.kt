@@ -67,7 +67,9 @@ fun ProductScreen(
                             ProductItem(
                                 product = product,
                                 onClick = { navController.navigate("detalle_producto/${product.id}") },
-                                onAddToCart = { cartViewModel.addToCart(product) }
+                                onAddToCart = { cartViewModel.addToCart(product) },
+                                isFavorite = viewModel.favoritoIds.contains(product.id),      // ← nuevo
+                                onToggleFavorite = { viewModel.añadirOquitarfavorito(product.id) }   // ← nuevo
                             )
                         }
                     }
