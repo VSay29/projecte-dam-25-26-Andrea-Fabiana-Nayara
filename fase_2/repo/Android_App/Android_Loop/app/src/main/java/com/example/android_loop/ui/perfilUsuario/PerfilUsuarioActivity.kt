@@ -69,7 +69,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.ui.comentarios.ComentariosViewModel
+import com.example.android_loop.ui.comentarios.ComentarioBurbuja
+import com.example.android_loop.ui.comentarios.CreateComentarioData
+import com.example.android_loop.ui.comentarios.CreateComentarioRequest
 import com.example.android_loop.ui.theme.Android_LoopTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 
 @Composable
 fun PerfilUsuario(navController: NavHostController) {
@@ -81,7 +93,10 @@ fun PerfilUsuario(navController: NavHostController) {
     val viewModelGetUserData: PerfilUsuarioViewModel = viewModel()
     val perfilState = viewModelGetUserData.getUserDataState
 
+    val comentariosViewModel: ComentariosViewModel = viewModel()
+
     var username by remember { mutableStateOf("María") }
+    var userId by remember { mutableIntStateOf(0) }
     var image_1920 by remember { mutableStateOf("") }
     val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
     var avatarImage by remember { mutableStateOf<ImageBitmap?>(defaultAvatar) }
@@ -101,6 +116,9 @@ fun PerfilUsuario(navController: NavHostController) {
         perfilState?.onSuccess { user ->
             username = user.username
             image_1920 = user.image_1920
+            userId = user.id
+            storedToken?.let { comentariosViewModel.cargarUsuarioActual(it) }
+            comentariosViewModel.cargarComentarios(user.id)
         }
 
         if (!image_1920.isNullOrBlank() && image_1920 != "false") {
@@ -271,8 +289,38 @@ fun PerfilUsuario(navController: NavHostController) {
                             //TODO: 3. Mostrar los productos en LazyColumn
                         }
                         1 -> {
-                            Text("Reseñas")
-                            // LazyColumn de Reviews
+                            val comentarios = comentariosViewModel.comentarios
+                            val isLoading = comentariosViewModel.isLoading
+                            val currentUser = comentariosViewModel.currentUserName
+                            var textoResena by remember { mutableStateOf("") }
+                            val enviado = comentariosViewModel.comentarioEnviado
+
+                            LaunchedEffect(enviado) {
+                                if (enviado) {
+                                    textoResena = ""
+                                    comentariosViewModel.resetComentarioEnviado()
+                                }
+                            }
+
+                            if (isLoading && comentarios.isEmpty()) {
+                                Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                                    CircularProgressIndicator(color = Color(0xFF003459))
+                                }
+                            } else if (comentarios.isEmpty()) {
+                                Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                                    Text("Aún no hay reseñas", color = Color.Gray)
+                                }
+                            } else {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    comentarios.forEach { comentario ->
+                                        ComentarioBurbuja(
+                                            comentario = comentario,
+                                            esMio = comentario.comentador == currentUser
+                                        )
+                                    }
+                                }
+                            }
+
                         }
                     }
 

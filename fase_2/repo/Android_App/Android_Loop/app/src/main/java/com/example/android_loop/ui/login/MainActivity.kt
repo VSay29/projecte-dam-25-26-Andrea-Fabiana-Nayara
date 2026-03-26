@@ -74,6 +74,7 @@ import com.example.android_loop.ui.favoritos.Favoritos
 import com.example.android_loop.ui.home.Home
 import com.example.android_loop.ui.shoppingCart.CartScreen
 import com.example.android_loop.ui.shoppingCart.CartViewModel
+import com.example.android_loop.ui.perfilVendedor.PerfilVendedorScreen
 import java.security.MessageDigest
 import kotlin.getValue
 
@@ -136,6 +137,22 @@ class MainActivity : ComponentActivity() {
 
                 composable("ajustes") { // pantalla de ajustes
                     SettingsScreen(navController)
+                }
+
+                composable(
+                    route = "perfilVendedor/{vendedorId}/{vendedorNombre}",
+                    arguments = listOf(
+                        navArgument("vendedorId") { type = NavType.IntType },
+                        navArgument("vendedorNombre") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val vendedorId = backStackEntry.arguments?.getInt("vendedorId") ?: return@composable
+                    val vendedorNombre = backStackEntry.arguments?.getString("vendedorNombre") ?: ""
+                    PerfilVendedorScreen(
+                        vendedorId = vendedorId,
+                        vendedorNombre = vendedorNombre,
+                        navController = navController
+                    )
                 }
             }
         }
