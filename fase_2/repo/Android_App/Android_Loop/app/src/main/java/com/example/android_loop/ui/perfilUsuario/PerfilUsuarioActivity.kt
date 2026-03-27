@@ -1,12 +1,17 @@
 package com.example.android_loop.ui.perfilUsuario
 
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Base64
 import android.util.Base64.decode
-import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +30,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -44,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,12 +72,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.ui.ajustes.SettingsViewModel
 import com.example.android_loop.ui.theme.Android_LoopTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun PerfilUsuario(navController: NavHostController) {
@@ -80,8 +90,13 @@ fun PerfilUsuario(navController: NavHostController) {
 
     val viewModelGetUserData: PerfilUsuarioViewModel = viewModel()
     val perfilState = viewModelGetUserData.getUserDataState
+    val settingsViewModel: SettingsViewModel = viewModel()
+
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     var username by remember { mutableStateOf("María") }
+    var idioma by remember { mutableStateOf("Español") }
     var image_1920 by remember { mutableStateOf("") }
     val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
     var avatarImage by remember { mutableStateOf<ImageBitmap?>(defaultAvatar) }
@@ -101,14 +116,10 @@ fun PerfilUsuario(navController: NavHostController) {
         perfilState?.onSuccess { user ->
             username = user.username
             image_1920 = user.image_1920
+            idioma = user.idioma
         }
 
-        if (!image_1920.isNullOrBlank() && image_1920 != "false") {
-            //conversion base64 a Image
-            val decodedString = decode(image_1920, Base64.DEFAULT)
-            val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-            avatarImage = bitmap.asImageBitmap()
-        }
+        if (image_1920.isNotBlank() && image_1920 != "false") avatarImage = base64ToImage(image_1920)
     }
 
     Box(
@@ -132,14 +143,14 @@ fun PerfilUsuario(navController: NavHostController) {
                     .padding(top = 32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // Botón ajustes (esquina superior derecha)
+                // -- BOTÓN AJUSTES --
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopEnd),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    IconButton(onClick = { navController.navigate("ajustes") }) {
+                    IconButton(onClick = { navController.navigate("ajustes/$idioma") }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Ajustes",
@@ -148,6 +159,8 @@ fun PerfilUsuario(navController: NavHostController) {
                         )
                     }
                 }
+
+                // -- FOTO DE PERFIL EDITABLE --
 
                 Column(Modifier.verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,) {
@@ -161,7 +174,30 @@ fun PerfilUsuario(navController: NavHostController) {
                         )
                     }
 
-                    // Botón lápiz
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent()
+                    ) { uri ->
+                        uri?.let {
+                            val nuevaFoto = toBase64(context, it)
+
+                            isLoading = true
+
+                            scope.launch {
+                                settingsViewModel.cambiarFotoPerfil(storedToken!!, nuevaFoto)
+                                avatarImage = base64ToImage(nuevaFoto)
+
+                                delay(1000)
+                                isLoading = false
+
+                                Toast.makeText(context, "¡Foto de perfil actualizada!", Toast.LENGTH_SHORT).show()
+                            }
+
+                        }
+                    }
+
+                    if (isLoading) CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+
+                    // -- BOTÓN LÁPIZ CAMBIAR FOTO DE PERFIL --
                     Box(
                         modifier = Modifier
                             .size(32.dp)
@@ -174,7 +210,9 @@ fun PerfilUsuario(navController: NavHostController) {
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Cambiar imagen",
                             tint = Color(0xFF003459),
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(16.dp).clickable(onClick = {
+                                launcher.launch("image/*")
+                            })
                         )
                     }
 
@@ -266,12 +304,10 @@ fun PerfilUsuario(navController: NavHostController) {
                                 )
 
                             )
-                            //TODO: 1. Crear lista de productos del usuario
-                            //TODO: 2. Si hay filtros, filtrar la lista
-                            //TODO: 3. Mostrar los productos en LazyColumn
+                            //TODO: MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
                         }
                         1 -> {
-                            Text("Reseñas")
+                            Text("Valoraciones")
                             // LazyColumn de Reviews
                         }
                     }
@@ -346,6 +382,18 @@ fun TabMenu(navController: NavHostController) {
             )
         }
     }
+}
+
+fun toBase64(context: Context, uri: Uri): String {
+    val inputStream = context.contentResolver.openInputStream(uri)
+    val bytes = inputStream?.readBytes()
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
+}
+
+fun base64ToImage(base64: String): ImageBitmap {
+    val decodedString = decode(base64, Base64.DEFAULT)
+    val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+    return bitmap.asImageBitmap()
 }
 
 @Preview(showBackground = true)

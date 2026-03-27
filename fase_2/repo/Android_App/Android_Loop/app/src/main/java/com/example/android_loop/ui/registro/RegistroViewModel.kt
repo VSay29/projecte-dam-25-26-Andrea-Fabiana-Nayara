@@ -22,11 +22,9 @@ class RegistroViewModel(private val repository: UserRepository = UserRepository(
 
             registroState = result.fold(
                 onSuccess = {
-                    println(Log.ASSERT, "MI TAG", "CORRECTO: $result")
                     RegistroUiState.Success(true)
                 },
                 onFailure = {
-                    println(Log.ASSERT, "MI TAG", "INCORRECTO: $result")
                     RegistroUiState.Error(it.message ?: "Error desconocido")
                 }
             )

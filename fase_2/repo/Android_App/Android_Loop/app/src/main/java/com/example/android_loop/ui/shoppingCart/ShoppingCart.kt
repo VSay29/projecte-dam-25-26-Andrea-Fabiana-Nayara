@@ -7,10 +7,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.data.model_dataClass.Producto
+import com.example.android_loop.ui.theme.Android_LoopTheme
 
 @Composable
 fun CartScreen(
@@ -76,6 +84,12 @@ fun CartScreen(
                                     contentDescription = "Eliminar del carrito"
                                 )
                             }
+                            val checked = viewModel.selectedItems.contains(product)
+
+                            Checkbox(
+                                checked = checked,
+                                onCheckedChange = { viewModel.toggleSeleccion(product, it) }
+                            )
                         }
                     }
                 }
@@ -93,8 +107,9 @@ fun CartScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* TODO: navegación a pantalla de pago */ },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { navController.navigate("pago") },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.selectedItems.isEmpty()
             ) {
                 Text("Continuar al pago")
             }

@@ -77,5 +77,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 
+    implementation("com.auth0:java-jwt:4.5.1")
+
 
 }

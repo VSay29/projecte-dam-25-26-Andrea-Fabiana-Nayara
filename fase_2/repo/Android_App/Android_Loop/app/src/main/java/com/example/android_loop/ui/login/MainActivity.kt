@@ -63,68 +63,107 @@ import com.example.android_loop.ui.perfilUsuario.PerfilUsuario
 import com.example.android_loop.R
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.example.android_loop.data.Producto.CreateProductScreen
+import com.auth0.jwt.JWT
+import com.example.android_loop.ui.Producto.CreateProductScreen
 import com.example.android_loop.data.Producto.ProductScreen
-import com.example.android_loop.data.Producto._02_ProductViewModel
-import com.example.android_loop.ui.detalleProducto.DetalleProductoScreen
+import com.example.android_loop.ui.Producto.DetalleProductoScreen
+import com.example.android_loop.ui.Producto.ViewModel_Producto
 import com.example.android_loop.ui.registro.Registro
 import com.example.android_loop.ui.ajustes.SettingsScreen
+import com.example.android_loop.ui.compra.Compra
 import com.example.android_loop.ui.favoritos.Favoritos
 import com.example.android_loop.ui.home.Home
 import com.example.android_loop.ui.shoppingCart.CartScreen
 import com.example.android_loop.ui.shoppingCart.CartViewModel
+import com.example.android_loop.ui.theme.Android_LoopTheme
+import com.example.android_loop.ui.theme.isDarkTheme
 import java.security.MessageDigest
+import java.util.Date
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModelProductos by viewModels<_02_ProductViewModel>()
+    private val viewModelProductos by viewModels<ViewModel_Producto>()
     private val viewModelCart by viewModels<CartViewModel>()
+    private val logo = R.drawable.loop_logo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val prefs = getSharedPreferences("loop_prefs", MODE_PRIVATE)
+        isDarkTheme = prefs.getBoolean("dark_mode", false)
         setContent {
-            val navController = rememberNavController()
-            NavHost(
-                navController = navController,
-                startDestination = "login"
-            ) {
+            Android_LoopTheme {
+                val navController = rememberNavController()
 
-                // Rutas de navegación
+                val context = LocalContext.current
+                val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+                val token = prefs.getString("token", "") ?: ""
+                var rutaInicio = ""
 
-                composable("login") { Loggeo(navController) } // login
-                composable("perfilUsuario") { PerfilUsuario(navController) } // perfil usuario
-                composable("favoritos") { Favoritos(navController) } // favoritos
-                composable("home") { Home(navController) } // home
-                composable("registro") { Registro(navController) } // registro
-                composable("crear_producto") { // crear producto
-                    CreateProductScreen(viewModelProductos, navController)
-                }
+                if (tokenValido(token)) rutaInicio = "home"
+                else rutaInicio = "login"
 
-                composable("pantalla_listado") { // pantalla listado productos
-                    ProductScreen(viewModelProductos, navController, viewModelCart)
-                }
+                NavHost(
+                    navController = navController,
+                    startDestination = rutaInicio
+                ) {
 
-                composable(
-                    route = "detalle_producto/{productId}",
-                    arguments = listOf(navArgument("productId") { type = NavType.IntType })
-                ) { backStackEntry ->
-                    val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
-                    DetalleProductoScreen(
-                        productId = productId,
-                        viewModel = viewModelProductos,
-                        cartViewModel = viewModelCart,
-                        navController = navController
-                    )
-                }
+                    // Rutas de navegación
 
-                composable("carrito") { // carrito de compra
-                    CartScreen(viewModelCart, navController)
-                }
+                    composable("login") { Loggeo(navController) } // login
+                    composable("perfilUsuario") { PerfilUsuario(navController) } // perfil usuario
+                    composable("favoritos") { Favoritos(navController) } // favoritos
+                    composable("home") { Home(navController) } // home
+                    composable("registro") { Registro(navController) } // registro
+                    composable("pago") { Compra(navController, viewModelCart) }
+                    composable("crear_producto") { // crear producto
+                        val context = LocalContext.current
+                        val token = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+                            .getString("token", "") ?: ""
+                        CreateProductScreen(token, viewModelProductos, navController)
+                    }
 
-                composable("ajustes") { // pantalla de ajustes
-                    SettingsScreen(navController)
+                    composable("pantalla_listado") {
+                        val context = LocalContext.current
+                        val token = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+                            .getString("token", "") ?: ""
+
+                        ProductScreen(
+                            token,
+                            viewModel = viewModelProductos,
+                            navController = navController,
+                            cartViewModel = viewModelCart
+                        )
+                    }
+
+                    composable(
+                        route = "detalle_producto/{productId}",
+                        arguments = listOf(navArgument("productId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val context = LocalContext.current
+                        val token = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+                            .getString("token", "") ?: ""
+                        val productId =
+                            backStackEntry.arguments?.getInt("productId") ?: return@composable
+                        DetalleProductoScreen(
+                            token,
+                            productId = productId,
+                            viewModel = viewModelProductos,
+                            cartViewModel = viewModelCart,
+                            navController = navController
+                        )
+                    }
+
+                    composable("ajustes/{idioma}", arguments = listOf(navArgument("idioma") { type = NavType.StringType })
+                    ) { backStackEntry -> // pantalla de ajustes
+                        val idioma = backStackEntry.arguments!!.getString("idioma") ?: "Español"
+                        SettingsScreen(navController, idioma = idioma)
+                    }
+                    composable("carrito") { // carrito de compra
+                        CartScreen(viewModelCart, navController)
+                    }
+
                 }
             }
         }
@@ -145,8 +184,6 @@ fun Loggeo(navController: NavHostController) {
     val logo = R.drawable.loop_logo
 
     val context = LocalContext.current
-
-    // TODO: Al abrir app, se validará si hay token válido, de manera que el usuario no inicie sesión cada vez que abre la app
 
     Box(
         Modifier
@@ -309,4 +346,17 @@ fun encriptarPasswd(passwd: String): String {
     val digest = MessageDigest.getInstance("SHA-256")
     val hashBytes = digest.digest(passwd.toByteArray(Charsets.UTF_8))
     return hashBytes.fold("") { str, byte -> str + "%02x".format(byte) }
+}
+
+fun tokenValido(token: String): Boolean {
+
+    if (token.isEmpty() || token == "") return false
+
+    return try {
+        val tokenDecodificado = JWT.decode(token)
+        val exp = tokenDecodificado.expiresAt ?: return false
+        exp.after(Date())
+    } catch (e: Exception) {
+        return false
+    }
 }
