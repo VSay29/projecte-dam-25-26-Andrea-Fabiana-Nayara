@@ -7,11 +7,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import com.tuapp.ui.theme.Background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -56,18 +58,21 @@ fun TabMenu(navController: NavHostController) {
     )
 
     Box(
-        modifier =  Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Background), // Mismo fondo que la app → desaparece el recuadro gris
         contentAlignment = Alignment.BottomCenter
     ) {
 
-        // 🔷 NAV BAR FLOTANTE
+        // NAV BAR FLOTANTE
         NavigationBar(
             containerColor = Primary,
             tonalElevation = 0.dp,
+            windowInsets = WindowInsets(0), // Elimina el padding del sistema que causaba la línea extra
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 14.dp)
-                .clip(RoundedCornerShape(28.dp))
-                .shadow(12.dp, RoundedCornerShape(28.dp))
+                .shadow(12.dp, RoundedCornerShape(28.dp)) // Shadow antes del clip para que se vea bien
+                .clip(RoundedCornerShape(28.dp))           // Clip recorta el contenido a la forma
                 .height(72.dp)
                 .fillMaxWidth()
         ) {

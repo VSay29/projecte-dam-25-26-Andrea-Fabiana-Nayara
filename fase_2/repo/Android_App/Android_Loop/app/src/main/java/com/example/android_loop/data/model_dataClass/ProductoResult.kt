@@ -4,6 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Categoria(val id: Int, val nombre: String)
+
+// Respuesta de la API al listar categorías desde Odoo
+@Serializable
+data class CategoriasResponse(
+    val success: Boolean,
+    val categorias: List<Categoria>
+)
 @Serializable
 data class Propietario(val id: Int, val nombre: String)
 @Serializable

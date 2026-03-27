@@ -35,19 +35,22 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.android_loop.ui.Producto.ViewModel_Producto
 import com.tuapp.ui.theme.Primary    // Color azul oscuro de nuestra paleta (#003459)
 import com.tuapp.ui.theme.Secondary  // Color azul océano de nuestra paleta (#007EA7)
-// OnPrimary ya no se necesita aquí, se usa dentro de PantallaHeader
 import com.example.android_loop.ui.componentes.PantallaHeader  // Nuestro header reutilizable
 import com.example.android_loop.ui.componentes.LoopBoton       // Nuestro botón reutilizable
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi  // Necesario para usar FlowRow
+import androidx.compose.foundation.layout.FlowRow                 // Distribuye elementos en filas automáticamente
+import androidx.compose.ui.focus.onFocusChanged                   // Detecta cuando un campo recibe o pierde el foco
+import com.tuapp.ui.theme.OnPrimary
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CreateProductScreen(
     viewModel: ViewModel_Producto,
     navController: NavController
 ) {
-
 
     val context = LocalContext.current
 
@@ -62,16 +65,14 @@ fun CreateProductScreen(
     var precio by rememberSaveable { mutableStateOf("") }
     var ubicacion by rememberSaveable { mutableStateOf("") }
     val selectedEtiquetas = rememberSaveable { mutableStateListOf<Int>() }
+    var busquedaEtiqueta by remember { mutableStateOf("") }       // Texto que escribe el usuario para filtrar
+    var mostrarSugerencias by remember { mutableStateOf(false) }  // Controla si el desplegable está visible
 
     var estado by rememberSaveable { mutableStateOf("nuevo") }
     val estados = listOf("nuevo", "segunda_mano", "reacondicionado")
 
-    var categoriaId by rememberSaveable { mutableStateOf(1) }
-    val categorias = listOf(
-        1 to "Electrónica",
-        2 to "Ropa",
-        3 to "Hogar"
-    )
+    // null = ninguna categoría seleccionada todavía (antes era 1 hardcodeado)
+    var categoriaId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val imageUris = remember { mutableStateListOf<Uri>() }
 
@@ -105,6 +106,7 @@ fun CreateProductScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadEtiquetas(token)
+        viewModel.loadCategorias(token)
     }
 
     if (showDatePicker) {
@@ -127,20 +129,21 @@ fun CreateProductScreen(
         }
     }
 
-    // Column exterior SIN padding para que el header llegue a los bordes
+    // Column exterior: ocupa toda la pantalla pero NO tiene scroll
+    // El scroll solo está en el contenido, no en el botón
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        // El header va aquí fuera del padding, a tope con los bordes de la pantalla
+        // Header a tope con los bordes, fuera del scroll
         PantallaHeader(titulo = "Crear Producto")
 
-        // Column interior CON padding para el resto del contenido
+        // Column interior: weight(1f) = ocupa todo el espacio disponible excepto el botón de abajo
+        // El scroll está aquí para que solo el contenido se desplace, no el botón
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(scrollState)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -292,61 +295,160 @@ fun CreateProductScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Etiquetas", style = MaterialTheme.typography.titleMedium)
+            // ── ETIQUETAS ──────────────────────────────────────────────────
+            Spacer(modifier = Modifier.height(4.dp))
 
-        viewModel.etiquetas.forEach { etiqueta ->
+            Text(
+                text = "Etiquetas (máx. 5)",
+                style = MaterialTheme.typography.titleMedium,
+                color = Primary
+            )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = selectedEtiquetas.contains(etiqueta.id),
-                    onCheckedChange = { checked ->
-                        if (checked) {
-                            selectedEtiquetas.add(etiqueta.id)
-                        } else {
-                            selectedEtiquetas.remove(etiqueta.id)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // PARTE 1: chips de las etiquetas ya seleccionadas
+            // FlowRow las distribuye en filas automáticamente si no caben en una sola
+            if (selectedEtiquetas.isNotEmpty()) {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    selectedEtiquetas.forEach { id ->
+                        val etiqueta = viewModel.etiquetas.find { it.id == id }
+                        etiqueta?.let {
+                            InputChip(
+                                selected = true,
+                                onClick = { selectedEtiquetas.remove(id) }, // click la elimina
+                                label = { Text("#${it.name}") },
+                                trailingIcon = {
+                                    // Icono X para quitar la etiqueta
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Quitar",
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                },
+                                colors = InputChipDefaults.inputChipColors(
+                                    selectedContainerColor = Secondary, // Fondo azul océano
+                                    selectedLabelColor = OnPrimary,     // Texto blanco
+                                    selectedTrailingIconColor = OnPrimary
+                                )
+                            )
                         }
                     }
-                )
-                Text(etiqueta.name)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            // PARTE 2: campo de búsqueda (solo visible si no llegó al máximo de 5)
+            if (selectedEtiquetas.size < 5) {
+                OutlinedTextField(
+                    value = busquedaEtiqueta,
+                    onValueChange = {
+                        busquedaEtiqueta = it
+                        mostrarSugerencias = true // al escribir abre el desplegable
+                    },
+                    label = { Text("Buscar etiqueta...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focusState ->
+                            // Al hacer click en el campo también abre el desplegable
+                            if (focusState.isFocused) mostrarSugerencias = true
+                        },
+                    colors = campoColores,
+                    singleLine = true // evita que el campo crezca en altura
+                )
+            }
 
-        // CATEGORIA DROPDOWN
-        var expandedCategoria by remember { mutableStateOf(false) }
+            // PARTE 3: lista desplegable filtrada según lo que escribe el usuario
+            val sugerencias = viewModel.etiquetas.filter { etiqueta ->
+                etiqueta.name.contains(busquedaEtiqueta, ignoreCase = true) &&
+                !selectedEtiquetas.contains(etiqueta.id)
+            }
 
-        ExposedDropdownMenuBox(
-            expanded = expandedCategoria,
-            onExpandedChange = { expandedCategoria = !expandedCategoria }
-        ) {
-            OutlinedTextField(
-                value = categorias.first { it.first == categoriaId }.second,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Categoría") },
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
-                colors = campoColores  // Aplicamos los mismos colores de la paleta
-            )
-            ExposedDropdownMenu(
-                expanded = expandedCategoria,
-                onDismissRequest = { expandedCategoria = false }
-            ) {
-                categorias.forEach {
-                    DropdownMenuItem(
-                        text = { Text(it.second) },
-                        onClick = {
-                            categoriaId = it.first
-                            expandedCategoria = false
-                        }
-                    )
+            // Calculamos si el texto escrito no existe en la lista completa de etiquetas
+            val textoNuevo = busquedaEtiqueta.trim()
+            val noExiste = textoNuevo.isNotEmpty() &&
+                viewModel.etiquetas.none { it.name.equals(textoNuevo, ignoreCase = true) }
+
+            // El Card se muestra si hay sugerencias O si hay un texto nuevo para crear
+            // Antes solo se mostraba con sugerencias, por eso desaparecía al escribir más letras
+            if (mostrarSugerencias && (sugerencias.isNotEmpty() || noExiste)) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                ) {
+                    sugerencias.forEach { etiqueta ->
+                        Text(
+                            text = "#${etiqueta.name}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedEtiquetas.add(etiqueta.id)
+                                    busquedaEtiqueta = ""
+                                    mostrarSugerencias = false
+                                }
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = Primary
+                        )
+                        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                    }
+
+                    if (noExiste) {
+                        Text(
+                            text = "+ Crear \"#$textoNuevo\"",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.createEtiqueta(token, textoNuevo) { nuevoId ->
+                                        selectedEtiquetas.add(nuevoId)
+                                    }
+                                    busquedaEtiqueta = ""
+                                    mostrarSugerencias = false
+                                }
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = Secondary
+                        )
+                    }
                 }
             }
-        }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // CATEGORIA DROPDOWN — cargado desde Odoo, no hardcodeado
+            var expandedCategoria by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = expandedCategoria,
+                onExpandedChange = { expandedCategoria = !expandedCategoria }
+            ) {
+                OutlinedTextField(
+                    // Busca el nombre de la categoría seleccionada, o muestra el placeholder
+                    value = viewModel.categorias.find { it.id == categoriaId }?.nombre ?: "Selecciona categoría",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Categoría") },
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = campoColores
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedCategoria,
+                    onDismissRequest = { expandedCategoria = false }
+                ) {
+                    // Recorre las categorías del ViewModel (venidas de Odoo)
+                    viewModel.categorias.forEach { categoria ->
+                        DropdownMenuItem(
+                            text = { Text(categoria.nombre) },
+                            onClick = {
+                                categoriaId = categoria.id  // Guarda el ID real de Odoo
+                                expandedCategoria = false
+                            }
+                        )
+                    }
+                }
+            }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -370,10 +472,24 @@ fun CreateProductScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Reemplazamos el Button genérico por nuestro componente LoopBoton
-        // La lógica de validación y guardado va dentro del onClick igual que antes
+        Spacer(modifier = Modifier.height(16.dp))
+
+        } // Cierre del Column interior (el que tiene el scroll y el padding)
+
+        // Mensaje de error — fuera del scroll, encima del botón fijo
+        viewModel.errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
+        // Botón fijo en la parte inferior — FUERA del scroll
+        // Al estar fuera del Column con weight(1f), siempre queda visible sin desplazarse
         LoopBoton(
             texto = "Guardar Producto",
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onClick = {
 
                 if (selectedDate.isEmpty()) {
@@ -395,22 +511,11 @@ fun CreateProductScreen(
                     estado = estado,
                     ubicacion = ubicacion,
                     antiguedad = selectedDate,
-                    categoriaId = categoriaId,
+                    categoriaId = categoriaId ?: 0, // Si no seleccionó ninguna, envía 0
                     imageUris = imageUris
                 )
             }
         )
 
-        viewModel.errorMessage?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        } // Cierre del Column interior (el que tiene padding)
-    } // Cierre del Column exterior (el que tiene el scroll)
+    } // Cierre del Column exterior
 }

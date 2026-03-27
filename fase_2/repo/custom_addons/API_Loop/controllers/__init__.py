@@ -7,3 +7,4 @@ from . import controladorComentario
 from . import controladorDenuncias
 from . import controladorProducto
 from . import controladorImagenProducto
+from . import controladorCategoria

@@ -15,6 +15,7 @@ import com.example.android_loop.data.Producto.EtiquetaData
 import com.example.android_loop.data.Producto.ImageRequest
 import com.example.android_loop.data.Producto.ImagenConDatos
 import com.example.android_loop.data.accesoApi.ApiProductoLoop
+import com.example.android_loop.data.model_dataClass.Categoria
 import com.example.android_loop.data.model_dataClass.Producto
 import kotlinx.coroutines.launch
 
@@ -30,6 +31,8 @@ class ViewModel_Producto : ViewModel() {
     var productCreated by mutableStateOf(false)
         private set
     var etiquetas by mutableStateOf<List<Etiqueta>>(emptyList())
+        private set
+    var categorias by mutableStateOf<List<Categoria>>(emptyList()) // Lista de categorías cargadas desde Odoo
         private set
     var productImages by mutableStateOf<List<ImagenConDatos>>(emptyList())
         private set
@@ -155,7 +158,8 @@ class ViewModel_Producto : ViewModel() {
     // 🔹 CREAR ETIQUETA
     // ===============================
 
-    fun createEtiqueta(token: String, name: String) {
+    // onCreated recibe el ID de la etiqueta nueva para que la pantalla pueda seleccionarla
+    fun createEtiqueta(token: String, name: String, onCreated: (Int) -> Unit) {
 
         viewModelScope.launch {
 
@@ -165,7 +169,16 @@ class ViewModel_Producto : ViewModel() {
 
             api.createEtiqueta(token = token, request = request)
                 .onSuccess {
-                    if (it.success != true) {
+                    if (it.success == true) {
+                        // Recargamos la lista para que aparezca la nueva etiqueta
+                        api.getEtiquetas(token)
+                            .onSuccess { listaActualizada ->
+                                etiquetas = listaActualizada
+                                // Buscamos la etiqueta recién creada por nombre y devolvemos su ID
+                                listaActualizada.find { etiqueta -> etiqueta.name == name }
+                                    ?.let { etiqueta -> onCreated(etiqueta.id) }
+                            }
+                    } else {
                         errorMessage = it.error ?: "Error desconocido"
                     }
                 }
@@ -190,6 +203,18 @@ class ViewModel_Producto : ViewModel() {
                 .onFailure {
                     errorMessage = it.message
                 }
+        }
+    }
+
+    // ===============================
+    // 🔹 CARGAR CATEGORÍAS
+    // ===============================
+
+    fun loadCategorias(token: String) {
+        viewModelScope.launch {
+            api.getCategorias(token)
+                .onSuccess { categorias = it }        // Guarda la lista en el estado
+                .onFailure { errorMessage = it.message }
         }
     }
 

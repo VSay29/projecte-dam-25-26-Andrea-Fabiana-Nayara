@@ -9,6 +9,8 @@ import com.example.android_loop.data.Producto.EtiquetasResponse
 import com.example.android_loop.data.Producto.ImagenConDatos
 import com.example.android_loop.data.Producto.ImagenesProductoResponse
 import com.example.android_loop.data.Producto.JsonRpcRequest
+import com.example.android_loop.data.model_dataClass.Categoria
+import com.example.android_loop.data.model_dataClass.CategoriasResponse
 import com.example.android_loop.data.model_dataClass.ProductosResult
 import com.example.android_loop.data.model_dataClass.RpcResponse
 import io.ktor.client.HttpClient
@@ -117,4 +119,18 @@ class ApiProductoLoop(
             Result.failure(ex)
         }
     }
+
+    suspend fun getCategorias(token: String): Result<List<Categoria>> {
+        return try {
+            val response: CategoriasResponse =
+                cliente.get("${Servidor.BASE_URL}/api/v1/loop/categorias") {
+                    header("Authorization", "Bearer $token")
+                    accept(ContentType.Application.Json)
+                }.body()
+            Result.success(response.categorias)
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ data class EtiquetaData(
 
 @Serializable
 data class CreateEtiquetaResponse(
-    val success: Boolean?,
-    val etiqueta_id: Int?,
-    val error: String?
+    val success: Boolean? = null,   // = null → si la API no manda este campo, usa null por defecto
+    val etiqueta_id: Int? = null,   // sin default value, Kotlin Serialization lo exige aunque sea nullable
+    val error: String? = null
 )
