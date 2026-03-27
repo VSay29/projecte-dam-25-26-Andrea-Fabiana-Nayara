@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import android.net.Uri
+import android.net.Uri // necesario para las reseñas
 import androidx.navigation.NavController
 import com.example.android_loop.data.Producto.ImagenConDatos
 import com.example.android_loop.ui.shoppingCart.CartViewModel
@@ -132,6 +132,7 @@ fun DetalleProductoScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // ── INICIO reseñas ──
                 OutlinedButton(
                     onClick = {
                         val nombreEncoded = Uri.encode(product.propietario.nombre)
@@ -141,6 +142,7 @@ fun DetalleProductoScreen(
                 ) {
                     Text("Ver perfil del vendedor")
                 }
+                // ── FIN reseñas ──
 
                 Spacer(modifier = Modifier.height(8.dp))
 

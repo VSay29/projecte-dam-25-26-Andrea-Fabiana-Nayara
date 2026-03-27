@@ -1,56 +1,100 @@
 package com.example.android_loop.ui.comentarios
 
-import androidx.compose.foundation.layout.*
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
+import com.example.android_loop.R
 
 @Composable
 fun ComentarioBurbuja(comentario: Comentario, esMio: Boolean) {
-    val bubbleColor = if (esMio) Color(0xFF003459) else Color(0xFFEEEEEE)
+    val cardColor = if (esMio) Color(0xFF003459) else Color(0xFFEEEEEE)
     val textColor = if (esMio) Color.White else Color.Black
-    val alignment = if (esMio) Alignment.End else Alignment.Start
-    val bubbleShape = if (esMio)
-        RoundedCornerShape(topStart = 16.dp, topEnd = 4.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
-    else
-        RoundedCornerShape(topStart = 4.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
+    val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
 
-    Column(
+    val avatarBitmap = remember(comentario.imagen_comentador) {
+        comentario.imagen_comentador
+            ?.takeIf { it.isNotBlank() && it != "false" }
+            ?.let {
+                try {
+                    val bytes = Base64.decode(it, Base64.DEFAULT)
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                } catch (e: Exception) { null }
+            }
+    } ?: defaultAvatar
+
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = alignment
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (!esMio) {
-            Text(
-                text = comentario.comentador,
-                style = MaterialTheme.typography.labelSmall,
-                color = Color(0xFF003459),
-                modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
+            Image(
+                bitmap = avatarBitmap,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(40.dp).clip(CircleShape)
             )
         }
 
         Card(
-            shape = bubbleShape,
-            colors = CardDefaults.cardColors(containerColor = bubbleColor),
-            modifier = Modifier.widthIn(max = 280.dp)
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = cardColor),
+            modifier = Modifier.weight(1f)
         ) {
-            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = comentario.comentador,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = textColor.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = comentario.fecha_creacion.take(10),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = textColor.copy(alpha = 0.5f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = comentario.contenido,
                     color = textColor,
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = comentario.fecha_creacion.take(10),
-                    color = textColor.copy(alpha = 0.6f),
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.align(Alignment.End)
-                )
             }
+        }
+
+        if (esMio) {
+            Image(
+                bitmap = avatarBitmap,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(40.dp).clip(CircleShape)
+            )
         }
     }
 }

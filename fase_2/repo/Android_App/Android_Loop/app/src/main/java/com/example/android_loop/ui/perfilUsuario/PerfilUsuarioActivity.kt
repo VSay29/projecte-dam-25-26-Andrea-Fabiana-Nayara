@@ -69,8 +69,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+// ── INICIO reseñas ──
 import com.example.android_loop.ui.comentarios.ComentariosViewModel
 import com.example.android_loop.ui.comentarios.ComentarioBurbuja
+// ── FIN reseñas ──
 import com.example.android_loop.ui.theme.Android_LoopTheme
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -91,10 +93,14 @@ fun PerfilUsuario(navController: NavHostController) {
     val viewModelGetUserData: PerfilUsuarioViewModel = viewModel()
     val perfilState = viewModelGetUserData.getUserDataState
 
+    // ── INICIO reseñas ──
     val comentariosViewModel: ComentariosViewModel = viewModel()
+    // ── FIN reseñas ──
 
     var username by remember { mutableStateOf("María") }
+    // ── INICIO reseñas ──
     var userId by remember { mutableIntStateOf(0) }
+    // ── FIN reseñas ──
     var image_1920 by remember { mutableStateOf("") }
     val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
     var avatarImage by remember { mutableStateOf<ImageBitmap?>(defaultAvatar) }
@@ -115,8 +121,10 @@ fun PerfilUsuario(navController: NavHostController) {
             username = user.username
             image_1920 = user.image_1920
             userId = user.id
+            // ── INICIO reseñas ──
             storedToken?.let { comentariosViewModel.cargarUsuarioActual(it) }
             comentariosViewModel.cargarComentarios(user.id)
+            // ── FIN reseñas ──
         }
 
         if (!image_1920.isNullOrBlank() && image_1920 != "false") {
@@ -286,6 +294,7 @@ fun PerfilUsuario(navController: NavHostController) {
                             //TODO: 2. Si hay filtros, filtrar la lista
                             //TODO: 3. Mostrar los productos en LazyColumn
                         }
+                        // ── INICIO reseñas ──
                         1 -> {
                             val comentarios = comentariosViewModel.comentarios
                             val isLoading = comentariosViewModel.isLoading
@@ -320,6 +329,7 @@ fun PerfilUsuario(navController: NavHostController) {
                             }
 
                         }
+                        // ── FIN reseñas ──
                     }
 
                 }

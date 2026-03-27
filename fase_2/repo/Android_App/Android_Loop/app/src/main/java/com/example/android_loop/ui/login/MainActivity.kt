@@ -76,7 +76,7 @@ import com.example.android_loop.ui.TabMenu
 import com.example.android_loop.ui.ajustes.SettingsScreen
 import com.example.android_loop.ui.favoritos.Favoritos
 import com.example.android_loop.ui.perfilUsuario.PerfilUsuario
-import com.example.android_loop.ui.perfilVendedor.PerfilVendedorScreen
+import com.example.android_loop.ui.perfilVendedor.PerfilVendedorScreen // necesario para las reseñas
 import com.example.android_loop.ui.registro.Registro
 import com.example.android_loop.ui.shoppingCart.CartScreen
 import com.example.android_loop.ui.shoppingCart.CartViewModel
@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity() {
                     composable("carrito") { CartScreen(viewModelCart, navController) }
                     composable("ajustes") { SettingsScreen(navController) }
 
-                    // Ruta añadida por tu compañera
+                    // ── INICIO reseñas ──
                     composable(
                         route = "perfilVendedor/{vendedorId}/{vendedorNombre}",
                         arguments = listOf(
@@ -163,6 +163,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
+                    // ── FIN reseñas ──
                 }
             }
         }

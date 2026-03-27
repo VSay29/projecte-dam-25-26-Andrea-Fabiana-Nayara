@@ -1,10 +1,12 @@
 package com.example.android_loop.data.Producto.accesoApi
 
 import com.example.android_loop.data.model_dataClass.RpcResponse
+// ── INICIO reseñas ──
 import com.example.android_loop.ui.comentarios.Comentario
 import com.example.android_loop.ui.comentarios.ComentariosResponse
 import com.example.android_loop.ui.comentarios.CreateComentarioRequest
 import com.example.android_loop.ui.comentarios.CreateComentarioResponse
+// ── FIN reseñas ──
 import com.example.android_loop.data.Producto.ProductosResponse
 import com.example.android_loop.data.Producto.Product
 import com.example.android_loop.data.Producto.CreateEtiquetaRequest
@@ -23,8 +25,10 @@ import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+// ── INICIO reseñas ──
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+// ── FIN reseñas ──
 
 class ApiProductLoop(
     private val cliente: HttpClient = HttpClientProvider.cliente
@@ -138,6 +142,7 @@ class ApiProductLoop(
     }
 
 
+    // ── INICIO reseñas ──
     suspend fun getComentarios(productId: Int): Result<List<Comentario>> {
         return try {
 
@@ -187,4 +192,5 @@ class ApiProductLoop(
             Result.failure(ex)
         }
     }
+    // ── FIN reseñas ──
 }
