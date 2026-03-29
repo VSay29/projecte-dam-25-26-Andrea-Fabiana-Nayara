@@ -8,6 +8,7 @@ data class Comentario(
     val contenido: String,
     val fecha_creacion: String,
     val comentador: String,
+    val comentador_partner_id: Int? = null,
     val imagen_comentador: String? = null,
     val estado: String,
     val moderador: String? = null,

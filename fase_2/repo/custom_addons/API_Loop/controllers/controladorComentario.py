@@ -108,6 +108,7 @@ class controladorComentario(http.Controller):
                 'contenido': c.contenido,
                 'fecha_creacion': str(c.fecha_creacion),
                 'comentador': c.comentador_id.name,
+                'comentador_partner_id': c.comentador_id.id,
                 'imagen_comentador': c.comentador_id.image_1920.decode('utf-8') if c.comentador_id.image_1920 else None,
                 'estado': c.estado,
                 'moderador': c.moderador_id.name if c.moderador_id else None,

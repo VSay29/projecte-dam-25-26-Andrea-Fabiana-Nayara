@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.net.Uri
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.ui.comentarios.ComentarioBurbuja
@@ -109,199 +110,189 @@ fun PerfilVendedorScreen(
             .fillMaxSize()
             .background(Color.Transparent)
     ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
+        Column(Modifier.fillMaxSize()) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(top = 32.dp),
-                contentAlignment = Alignment.Center
+            // Contenido desplazable
+            Column(
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Botón volver (esquina superior izquierda)
-                Row(
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.TopStart),
-                    horizontalArrangement = Arrangement.Start
+                        .height(200.dp)
+                        .padding(top = 32.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color(0xFF003459),
-                            modifier = Modifier.size(24.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopStart),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = Color(0xFF003459),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            bitmap = defaultAvatar,
+                            contentDescription = null,
+                            modifier = Modifier.size(110.dp).clip(CircleShape)
                         )
+                        Spacer(Modifier.height(8.dp))
+                        Text(vendedorNombre)
                     }
                 }
 
-                Column(
-                    Modifier.verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Spacer(Modifier.height(30.dp))
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Image(
-                        bitmap = defaultAvatar,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(110.dp)
-                            .clip(CircleShape)
-                    )
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        TabRow(
+                            selectedTabIndex = selectedTab,
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                            indicator = { tabPositions ->
+                                Box(
+                                    Modifier
+                                        .tabIndicatorOffset(tabPositions[selectedTab])
+                                        .height(4.dp)
+                                        .background(Color(0xFF003459))
+                                )
+                            }
+                        ) {
+                            tabs.forEachIndexed { index, title ->
+                                Tab(
+                                    selected = selectedTab == index,
+                                    onClick = { selectedTab = index },
+                                    text = {
+                                        Text(
+                                            title,
+                                            color = Color(0xFF003459),
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily.SansSerif,
+                                            textAlign = TextAlign.Center,
+                                            style = TextStyle(textDecoration = TextDecoration.None),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Visible,
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .background(Color.White)
+                                        .padding(vertical = 8.dp, horizontal = 20.dp)
+                                        .clip(RoundedCornerShape(30.dp))
+                                        .let {
+                                            if (selectedTab == index) it.clip(RoundedCornerShape(30.dp))
+                                            else it
+                                        }
+                                )
+                            }
+                        }
 
-                    Spacer(Modifier.height(8.dp))
+                        when (selectedTab) {
+                            0 -> {
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(30.dp)),
+                                    value = filtro,
+                                    onValueChange = { filtro = it },
+                                    placeholder = { Text("Buscar producto") },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.lupa),
+                                            contentDescription = "Buscar",
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    },
+                                    singleLine = true,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.LightGray,
+                                        unfocusedContainerColor = Color.LightGray,
+                                        disabledContainerColor = Color.LightGray,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    )
+                                )
+                                //TODO: Mostrar productos del vendedor
+                            }
+                            1 -> {
+                                if (isLoading && comentarios.isEmpty()) {
+                                    Box(
+                                        Modifier.fillMaxWidth().padding(32.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(color = Color(0xFF003459))
+                                    }
+                                } else if (comentarios.isEmpty()) {
+                                    Box(
+                                        Modifier.fillMaxWidth().padding(32.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text("Aún no hay reseñas", color = Color.Gray)
+                                    }
+                                } else {
+                                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                        comentarios.forEach { comentario ->
+                                            ComentarioBurbuja(
+                                                comentario = comentario,
+                                                esMio = comentario.comentador == currentUser,
+                                                onPerfilClick = { id, nombre ->
+                                                    navController.navigate("perfilVendedor/$id/${Uri.encode(nombre)}")
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
 
-                    Text(vendedorNombre)
+                                comentariosViewModel.errorMessage?.let { error ->
+                                    Spacer(Modifier.height(8.dp))
+                                    Text(error, color = Color.Red, fontSize = 13.sp)
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            Spacer(Modifier.height(30.dp))
-
-            Card(
-                modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp)
+            // Input fijo en la parte inferior (solo tab Reseñas y si no es mi perfil)
+            if (selectedTab == 1 && !esMiPerfil) {
+                HorizontalDivider()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TabRow(
-                        selectedTabIndex = selectedTab,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        indicator = { tabPositions ->
-                            Box(
-                                Modifier
-                                    .tabIndicatorOffset(tabPositions[selectedTab])
-                                    .height(4.dp)
-                                    .background(Color(0xFF003459))
-                            )
-                        }
+                    OutlinedTextField(
+                        value = textoResena,
+                        onValueChange = { textoResena = it },
+                        placeholder = { Text("Escribe una reseña...") },
+                        modifier = Modifier.weight(1f),
+                        maxLines = 3,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    IconButton(
+                        onClick = { comentariosViewModel.enviarComentario(vendedorId, textoResena) },
+                        enabled = textoResena.isNotBlank() && !isLoading
                     ) {
-                        tabs.forEachIndexed { index, title ->
-                            Tab(
-                                selected = selectedTab == index,
-                                onClick = { selectedTab = index },
-                                text = {
-                                    Text(
-                                        title,
-                                        color = Color(0xFF003459),
-                                        fontSize = 14.sp,
-                                        fontFamily = FontFamily.SansSerif,
-                                        textAlign = TextAlign.Center,
-                                        style = TextStyle(textDecoration = TextDecoration.None),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Visible,
-                                    )
-                                },
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .padding(vertical = 8.dp, horizontal = 20.dp)
-                                    .clip(RoundedCornerShape(30.dp))
-                                    .let {
-                                        if (selectedTab == index) it.clip(RoundedCornerShape(30.dp))
-                                        else it
-                                    }
-                            )
-                        }
-                    }
-
-                    when (selectedTab) {
-                        0 -> {
-                            TextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(30.dp)),
-                                value = filtro,
-                                onValueChange = { filtro = it },
-                                placeholder = { Text("Buscar producto") },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.lupa),
-                                        contentDescription = "Buscar",
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                },
-                                singleLine = true,
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color.LightGray,
-                                    unfocusedContainerColor = Color.LightGray,
-                                    disabledContainerColor = Color.LightGray,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
-                                )
-                            )
-                            //TODO: Mostrar productos del vendedor
-                        }
-                        1 -> {
-                            if (isLoading && comentarios.isEmpty()) {
-                                Box(
-                                    Modifier.fillMaxWidth().padding(32.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(color = Color(0xFF003459))
-                                }
-                            } else if (comentarios.isEmpty()) {
-                                Box(
-                                    Modifier.fillMaxWidth().padding(32.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("Aún no hay reseñas", color = Color.Gray)
-                                }
-                            } else {
-                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    comentarios.forEach { comentario ->
-                                        ComentarioBurbuja(
-                                            comentario = comentario,
-                                            esMio = comentario.comentador == currentUser
-                                        )
-                                    }
-                                }
-                            }
-
-                            comentariosViewModel.errorMessage?.let { error ->
-                                Spacer(Modifier.height(8.dp))
-                                Text(error, color = Color.Red, fontSize = 13.sp)
-                            }
-
-                            if (!esMiPerfil) {
-                                Spacer(Modifier.height(12.dp))
-                                HorizontalDivider()
-                                Spacer(Modifier.height(8.dp))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    OutlinedTextField(
-                                        value = textoResena,
-                                        onValueChange = { textoResena = it },
-                                        placeholder = { Text("Escribe una reseña...") },
-                                        modifier = Modifier.weight(1f),
-                                        maxLines = 3,
-                                        shape = RoundedCornerShape(20.dp)
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            comentariosViewModel.enviarComentario(vendedorId, textoResena)
-                                        },
-                                        enabled = textoResena.isNotBlank() && !isLoading
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Send,
-                                            contentDescription = "Enviar",
-                                            tint = if (textoResena.isNotBlank()) Color(0xFF003459) else Color.Gray
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        Icon(
+                            Icons.Default.Send,
+                            contentDescription = "Enviar",
+                            tint = if (textoResena.isNotBlank()) Color(0xFF003459) else Color.Gray
+                        )
                     }
                 }
             }

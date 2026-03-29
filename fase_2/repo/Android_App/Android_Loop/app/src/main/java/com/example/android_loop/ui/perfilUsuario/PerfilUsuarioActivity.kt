@@ -68,6 +68,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import android.net.Uri // necesario para las reseñas
 import com.example.android_loop.R
 // ── INICIO reseñas ──
 import com.example.android_loop.ui.comentarios.ComentariosViewModel
@@ -318,11 +319,14 @@ fun PerfilUsuario(navController: NavHostController) {
                                     Text("Aún no hay reseñas", color = Color.Gray)
                                 }
                             } else {
-                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                     comentarios.forEach { comentario ->
                                         ComentarioBurbuja(
                                             comentario = comentario,
-                                            esMio = comentario.comentador == currentUser
+                                            esMio = comentario.comentador == currentUser,
+                                            onPerfilClick = { id, nombre ->
+                                                navController.navigate("perfilVendedor/$id/${Uri.encode(nombre)}")
+                                            }
                                         )
                                     }
                                 }
