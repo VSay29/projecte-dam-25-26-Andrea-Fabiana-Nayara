@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import android.net.Uri // necesario para las reseñas
 import androidx.navigation.NavController
 import com.example.android_loop.data.Producto.ImagenConDatos
+import com.example.android_loop.ui.componentes.PantallaHeader
 import com.example.android_loop.ui.shoppingCart.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +36,7 @@ fun DetalleProductoScreen(
     viewModel: ViewModel_Producto,
     cartViewModel: CartViewModel,
     navController: NavController
+
 ) {
     val product = viewModel.products.find { it.id == productId }
 
@@ -54,22 +56,28 @@ fun DetalleProductoScreen(
 
     val imagenes = viewModel.productImages
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(product.nombre) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-                    }
-                }
-            )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box {
+            PantallaHeader(titulo = product.nombre)
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = Color.White // Blanco para que contraste con el gradiente
+                )
+            }
         }
-    ) { paddingValues ->
+
+        // ── Contenido scrollable ───────────────────────────────────────────
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
 
