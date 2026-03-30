@@ -192,7 +192,6 @@ fun Favoritos(navController: NavHostController) {
 
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun FavoritosPreview() {

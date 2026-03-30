@@ -96,7 +96,7 @@ fun CreateProductScreen(
                 Toast.LENGTH_SHORT
             ).show()
 
-            navController.navigate("pantalla_listado") {
+            navController.navigate("home") {
                 popUpTo("crear_producto") { inclusive = true }
             }
 

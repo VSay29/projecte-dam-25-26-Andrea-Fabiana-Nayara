@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import com.tuapp.ui.theme.Background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,9 +35,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.ui.theme.Android_LoopTheme
+import com.tuapp.ui.theme.Background
 import com.tuapp.ui.theme.Primary
 
 @Composable
@@ -60,7 +63,7 @@ fun TabMenu(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Background), // Mismo fondo que la app → desaparece el recuadro gris
+            .background(Background),
         contentAlignment = Alignment.BottomCenter
     ) {
 
@@ -68,19 +71,19 @@ fun TabMenu(navController: NavHostController) {
         NavigationBar(
             containerColor = Primary,
             tonalElevation = 0.dp,
-            windowInsets = WindowInsets(0), // Elimina el padding del sistema que causaba la línea extra
+            windowInsets = WindowInsets(0),
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 14.dp)
-                .shadow(12.dp, RoundedCornerShape(28.dp)) // Shadow antes del clip para que se vea bien
-                .clip(RoundedCornerShape(28.dp))           // Clip recorta el contenido a la forma
+                .shadow(12.dp, RoundedCornerShape(28.dp))
+                .clip(RoundedCornerShape(28.dp))
                 .height(72.dp)
                 .fillMaxWidth()
         ) {
 
             NavItem(
-                selected = currentRoute == "pantalla_listado",
+                selected = currentRoute == "home",
                 icon = Icons.Default.Home
-            ) { navController.navigate("pantalla_listado"){
+            ) { navController.navigate("home"){
                 {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -100,9 +103,9 @@ fun TabMenu(navController: NavHostController) {
             Spacer(modifier = Modifier.weight(1f))
 
             NavItem(
-                selected = currentRoute == "pantalla_listado",
+                selected = currentRoute == "home",
                 icon = Icons.Default.Email
-            ) { navController.navigate("pantalla_listado"){
+            ) { navController.navigate("home"){
                 {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -120,7 +123,7 @@ fun TabMenu(navController: NavHostController) {
             } }
         }
 
-        // 🔥 FAB CENTRAL PRO
+        // FAB CENTRAL
         Box(
             modifier = Modifier
                 .offset(y = (-38).dp)
@@ -182,4 +185,12 @@ fun RowScope.NavItem(
             indicatorColor = Color.Transparent
         )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewHome() {
+    Android_LoopTheme {
+        TabMenu(navController = rememberNavController())
+    }
 }

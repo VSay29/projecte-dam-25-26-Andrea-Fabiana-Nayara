@@ -11,5 +11,5 @@ data class GetUserDataResult (
     val phone: String?,
     val mobile: String?,
     val idioma: String,
-    val image_1920: String = "" // valor por defecto necesario para las reseñas — no eliminar
+    val image_1920: String = "" // valor por defecto necesario: el endpoint /me no siempre devuelve este campo
 )

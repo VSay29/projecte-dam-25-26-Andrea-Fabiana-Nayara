@@ -11,6 +11,7 @@ data class CategoriasResponse(
     val success: Boolean,
     val categorias: List<Categoria>
 )
+
 @Serializable
 data class Propietario(val id: Int, val nombre: String)
 @Serializable

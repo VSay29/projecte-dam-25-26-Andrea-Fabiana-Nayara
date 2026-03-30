@@ -86,7 +86,7 @@ fun ProductScreen(
                 windowInsets = WindowInsets(0),
                 title = {
                     Text(
-                        "Tienda",
+                        "Home",
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
@@ -111,14 +111,6 @@ fun ProductScreen(
                                 contentDescription = "Carrito"
                             )
                         }
-                    }
-
-                    // Icono de ajustes
-                    IconButton(onClick = { navController.navigate("ajustes") }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Ajustes"
-                        )
                     }
                 }
             )

@@ -7,9 +7,10 @@ import com.example.android_loop.data.model_dataClass.Producto
 class CartViewModel : ViewModel() {
 
     val cartItems = mutableStateListOf<Producto>()
+    val selectedItems = mutableStateListOf<Producto>()
 
     val total: Double
-        get() = cartItems.sumOf { it.precio }
+        get() = selectedItems.sumOf { it.precio }
 
     fun addToCart(product: Producto) {
         if (cartItems.none { it.id == product.id }) {
@@ -21,7 +22,9 @@ class CartViewModel : ViewModel() {
         cartItems.removeAll { it.id == product.id }
     }
 
-    fun clearCart() {
-        cartItems.clear()
+    fun toggleSeleccion(product: Producto, selected: Boolean) {
+        if(selected) {
+            if(selectedItems.none { it.id == product.id }) selectedItems.add(product)
+        } else selectedItems.removeAll{ it.id == product.id }
     }
 }

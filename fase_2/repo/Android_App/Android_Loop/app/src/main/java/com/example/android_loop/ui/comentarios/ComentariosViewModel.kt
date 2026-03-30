@@ -5,14 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_loop.data.Producto.accesoApi.ApiProductLoop
-import com.example.android_loop.data.Producto.accesoApi.TokenManager
+import com.example.android_loop.data.accesoApi.ApiProductoLoop
 import com.example.android_loop.data.repository.UserRepository
+import com.example.android_loop.ui.comentarios.UpdateComentarioData
+import com.example.android_loop.ui.comentarios.UpdateComentarioRequest
 import kotlinx.coroutines.launch
 
 class ComentariosViewModel : ViewModel() {
 
-    private val api = ApiProductLoop()
+    private val api = ApiProductoLoop()
     private val userRepository = UserRepository()
 
     var comentarios by mutableStateOf<List<Comentario>>(emptyList())
@@ -29,7 +30,6 @@ class ComentariosViewModel : ViewModel() {
         private set
 
     fun cargarUsuarioActual(token: String) {
-        TokenManager.saveToken(token)
         viewModelScope.launch {
             userRepository.getUserData(token)
                 .onSuccess {
@@ -39,27 +39,27 @@ class ComentariosViewModel : ViewModel() {
         }
     }
 
-    fun cargarComentarios(productId: Int) {
+    fun cargarComentarios(token: String, productId: Int) {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            api.getComentarios(productId)
+            api.getComentarios(token, productId)
                 .onSuccess { comentarios = it }
                 .onFailure { errorMessage = it.message }
             isLoading = false
         }
     }
 
-    fun enviarComentario(usuarioId: Int, contenido: String) {
+    fun enviarComentario(token: String, usuarioId: Int, contenido: String, valoracion: Float? = null) {
         if (contenido.isBlank()) return
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            api.crearComentario(CreateComentarioRequest(data = CreateComentarioData(usuarioId, contenido, "published")))
+            api.crearComentario(token, CreateComentarioRequest(data = CreateComentarioData(usuarioId, contenido, "published", valoracion)))
                 .onSuccess { response ->
                     if (response.success == true) {
                         comentarioEnviado = true
-                        cargarComentarios(usuarioId)
+                        cargarComentarios(token, usuarioId)
                     } else {
                         errorMessage = response.error ?: "Error al enviar el comentario"
                     }
@@ -71,5 +71,44 @@ class ComentariosViewModel : ViewModel() {
 
     fun resetComentarioEnviado() {
         comentarioEnviado = false
+    }
+
+    fun editarComentario(token: String, comentarioId: Int, contenido: String, valoracion: Float?, usuarioId: Int) {
+        if (contenido.isBlank()) return
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            api.editarComentario(
+                token,
+                comentarioId,
+                UpdateComentarioRequest(UpdateComentarioData(contenido, "published", valoracion))
+            )
+                .onSuccess { response ->
+                    if (response.success == true) {
+                        cargarComentarios(token, usuarioId)
+                    } else {
+                        errorMessage = response.error ?: "Error al editar el comentario"
+                    }
+                }
+                .onFailure { errorMessage = it.message }
+            isLoading = false
+        }
+    }
+
+    fun eliminarComentario(token: String, comentarioId: Int, usuarioId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            api.eliminarComentario(token, comentarioId)
+                .onSuccess { response ->
+                    if (response.success == true) {
+                        cargarComentarios(token, usuarioId)
+                    } else {
+                        errorMessage = response.error ?: "Error al eliminar el comentario"
+                    }
+                }
+                .onFailure { errorMessage = it.message }
+            isLoading = false
+        }
     }
 }
