@@ -2,7 +2,7 @@
 
 fase_4_Documentacion/Loop App - Manual de empleado: Contiene el manual para el empleado de odoo
 fase_4_Documentacion/MANUAL_USUARIO: Contiene el manual para el usuario de la app
-fase_4_Documentacion/documentación: Documentos generados con sphinx sobre cómo están programados los módulos de odoo con el fin de facilitar el mantenimiento
+fase_4_Documentacion/documentación/docs: Documentos generados con sphinx sobre cómo están programados los módulos de odoo con el fin de facilitar el mantenimiento
 
 == RUTAS DE LAS APPS ==
 
