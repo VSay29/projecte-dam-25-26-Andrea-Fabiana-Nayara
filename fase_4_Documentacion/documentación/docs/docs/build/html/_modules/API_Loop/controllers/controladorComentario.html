@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API_Loop.controllers.controladorComentario &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">API_Loop.controllers.controladorComentario</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para API_Loop.controllers.controladorComentario</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Controlador API REST para comentarios en Loop Proyecto.</span>
+
+<span class="sd">Proporciona operaciones CRUD sobre el modelo `loop_proyecto.comentario`,</span>
+<span class="sd">permitiendo crear, modificar, consultar y eliminar comentarios, así como</span>
+<span class="sd">obtener comentarios de un usuario específico.</span>
+
+<span class="sd">Autor: Andrea, Fabiana y Nayara</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">http</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.controladorToken</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_current_user_from_token</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+
+<div class="viewcode-block" id="controladorComentario">
+<a class="viewcode-back" href="../../../API_Loop.controllers.html#API_Loop.controllers.controladorComentario.controladorComentario">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">controladorComentario</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Controller</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controlador HTTP para la gestión de comentarios de usuarios.&quot;&quot;&quot;</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1">#  CREAR COMENTARIO (POST)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/comentarios&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_comentario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crea un nuevo comentario asociado a un usuario.</span>
+
+<span class="sd">        Requiere token válido. Opcionalmente puede crear o actualizar</span>
+<span class="sd">        la valoración asociada al usuario valorado.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Diccionario con los datos enviados por POST. Debe incluir:</span>
+<span class="sd">                data: {</span>
+<span class="sd">                    &#39;partner_id&#39;: ID del usuario valorado,</span>
+<span class="sd">                    &#39;contenido&#39;: Texto del comentario,</span>
+<span class="sd">                    &#39;estado&#39;: (opcional) Estado del comentario,</span>
+<span class="sd">                    &#39;valoracion&#39;: (opcional) Valoración de 0 a 5</span>
+<span class="sd">                }</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Resultado con `success` y `comentario_id` si se creó correctamente,</span>
+<span class="sd">                  o `error` si ocurrió un problema.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No se han enviado datos&#39;</span><span class="p">}</span>
+
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;partner_id&#39;</span><span class="p">,</span> <span class="s1">&#39;contenido&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Falta el campo </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">comentario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+                <span class="s1">&#39;partner_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;partner_id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;comentador_id&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;contenido&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;contenido&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;estado&#39;</span><span class="p">,</span> <span class="s1">&#39;published&#39;</span><span class="p">),</span>
+            <span class="p">})</span>
+
+            <span class="n">valoracion_value</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;valoracion&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">valoracion_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">valoracion_value</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">existing</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([</span>
+                    <span class="p">(</span><span class="s1">&#39;usuario_comentador&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;usuario_valorado&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;partner_id&#39;</span><span class="p">])</span>
+                <span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">existing</span><span class="p">:</span>
+                    <span class="n">existing</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s1">&#39;valoracion&#39;</span><span class="p">:</span> <span class="n">valoracion_value</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+                        <span class="s1">&#39;usuario_comentador&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                        <span class="s1">&#39;usuario_valorado&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;partner_id&#39;</span><span class="p">],</span>
+                        <span class="s1">&#39;valoracion&#39;</span><span class="p">:</span> <span class="n">valoracion_value</span><span class="p">,</span>
+                    <span class="p">})</span>
+
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;comentario_id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1">#  MODIFICAR COMENTARIO (PATCH)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/comentarios/&lt;int:comentario_id&gt;&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PATCH&#39;</span><span class="p">],</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_comentario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comentario_id</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modifica un comentario existente.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            comentario_id: ID del comentario a modificar.</span>
+<span class="sd">            params: Diccionario con los datos a actualizar. Debe incluir `contenido`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Resultado con `success` y `comentario_id`, o `error`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">            ValueError: Si no se envían datos o falta `contenido`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">comentario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">comentario_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">comentario</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Comentario no encontrado&#39;</span><span class="p">}</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No se han enviado datos&#39;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="s1">&#39;contenido&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Falta el campo contenido&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">comentario</span><span class="o">.</span><span class="n">write</span><span class="p">({</span>
+                <span class="s1">&#39;contenido&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;contenido&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;estado&#39;</span><span class="p">,</span> <span class="n">comentario</span><span class="o">.</span><span class="n">estado</span><span class="p">),</span>
+                <span class="s1">&#39;moderador_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;moderador_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="s1">&#39;fecha_moderacion&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fecha_moderacion&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="p">})</span>
+
+            <span class="n">valoracion_value</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;valoracion&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">valoracion_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">valoracion_value</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">existing</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([</span>
+                    <span class="p">(</span><span class="s1">&#39;usuario_comentador&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">comentario</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;usuario_valorado&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">comentario</span><span class="o">.</span><span class="n">partner_id</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">existing</span><span class="p">:</span>
+                    <span class="n">existing</span><span class="o">.</span><span class="n">write</span><span class="p">({</span><span class="s1">&#39;valoracion&#39;</span><span class="p">:</span> <span class="n">valoracion_value</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+                        <span class="s1">&#39;usuario_comentador&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                        <span class="s1">&#39;usuario_valorado&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">partner_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                        <span class="s1">&#39;valoracion&#39;</span><span class="p">:</span> <span class="n">valoracion_value</span><span class="p">,</span>
+                    <span class="p">})</span>
+
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;comentario_id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1">#  OBTENER COMENTARIOS DE UN USUARIO (GET)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/usuarios/&lt;int:partner_id&gt;/comentarios&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_comentarios_usuario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partner_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtiene todos los comentarios publicados de un usuario.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            partner_id: ID del usuario del que se desean obtener los comentarios.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Lista de comentarios con información del comentador,</span>
+<span class="sd">                  valoración, estado y fecha de moderación.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">comentarios</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([</span>
+            <span class="p">(</span><span class="s1">&#39;partner_id&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">partner_id</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;estado&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;published&#39;</span><span class="p">)</span>
+        <span class="p">])</span>
+
+        <span class="n">resultado</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comentarios</span><span class="p">:</span>
+            <span class="n">valoracion_record</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([</span>
+                <span class="p">(</span><span class="s1">&#39;usuario_comentador&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;usuario_valorado&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">partner_id</span><span class="p">)</span>
+            <span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">valoracion_val</span> <span class="o">=</span> <span class="n">valoracion_record</span><span class="o">.</span><span class="n">valoracion</span> <span class="k">if</span> <span class="n">valoracion_record</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">resultado</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;contenido&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">contenido</span><span class="p">,</span>
+                <span class="s1">&#39;fecha_creacion&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">fecha_creacion</span><span class="p">),</span>
+                <span class="s1">&#39;comentador&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;comentador_partner_id&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;imagen_comentador&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">image_1920</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">image_1920</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;valoracion&#39;</span><span class="p">:</span> <span class="n">valoracion_val</span><span class="p">,</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">estado</span><span class="p">,</span>
+                <span class="s1">&#39;moderador&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">moderador_id</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">moderador_id</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;fecha_moderacion&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">fecha_moderacion</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">fecha_moderacion</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;comentarios&#39;</span><span class="p">:</span> <span class="n">resultado</span><span class="p">}</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1">#  CONSULTAR COMENTARIO (GET)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/comentarios/&lt;int:comentario_id&gt;&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">],</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_comentario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comentario_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtiene un comentario específico por ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            comentario_id: ID del comentario a consultar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Información detallada del comentario o error si no existe.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">comentario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">comentario_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">comentario</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Comentario no encontrado&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">comentario_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;producto_id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">producto_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;comentador_id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">comentador_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;contenido&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">contenido</span><span class="p">,</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">estado</span><span class="p">,</span>
+                <span class="s1">&#39;fecha_creacion&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">fecha_creacion</span><span class="p">,</span>
+                <span class="s1">&#39;moderador_id&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">moderador_id</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">comentario</span><span class="o">.</span><span class="n">moderador_id</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;fecha_moderacion&#39;</span><span class="p">:</span> <span class="n">comentario</span><span class="o">.</span><span class="n">fecha_moderacion</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;comentario&#39;</span><span class="p">:</span> <span class="n">comentario_data</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="c1">#  ELIMINAR COMENTARIO (DELETE)</span>
+    <span class="c1"># --------------------------------------------------------------------------</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/comentarios/&lt;int:comentario_id&gt;&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">],</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_comentario</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comentario_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Elimina un comentario específico por ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            comentario_id: ID del comentario a eliminar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: `success` si se eliminó correctamente o `error` en caso de fallo.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">comentario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">comentario_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">comentario</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Comentario no encontrado&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">comentario</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
