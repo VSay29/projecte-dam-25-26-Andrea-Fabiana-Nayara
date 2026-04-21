@@ -1,0 +1,53 @@
+com.example.android_loop.app-tracing-1.2.0-0 C:\Users\fvha2\.gradle\caches\8.13\transforms\0db7ff4ff833bd9ded567b259fbb2ebb\transformed\tracing-1.2.0\res
+com.example.android_loop.app-core-1.17.0-1 C:\Users\fvha2\.gradle\caches\8.13\transforms\0e466525d2f037cde889b72cc106e81f\transformed\core-1.17.0\res
+com.example.android_loop.app-annotation-experimental-1.4.1-2 C:\Users\fvha2\.gradle\caches\8.13\transforms\16d8a38a6f91d0c82e51a4dfc860b123\transformed\annotation-experimental-1.4.1\res
+com.example.android_loop.app-coil-base-2.6.0-3 C:\Users\fvha2\.gradle\caches\8.13\transforms\193f6fcd0fafef65cbb1ba7306bf1b11\transformed\coil-base-2.6.0\res
+com.example.android_loop.app-core-runtime-2.2.0-4 C:\Users\fvha2\.gradle\caches\8.13\transforms\1a51590064e0a154984efa1c15aa7d79\transformed\core-runtime-2.2.0\res
+com.example.android_loop.app-graphics-path-1.0.1-5 C:\Users\fvha2\.gradle\caches\8.13\transforms\1e71a24ea69e42107c15c6367037193b\transformed\graphics-path-1.0.1\res
+com.example.android_loop.app-lifecycle-livedata-core-ktx-2.10.0-6 C:\Users\fvha2\.gradle\caches\8.13\transforms\1ea73bec8bb69d7f37096cdba42a01d4\transformed\lifecycle-livedata-core-ktx-2.10.0\res
+com.example.android_loop.app-graphics-shapes-release-7 C:\Users\fvha2\.gradle\caches\8.13\transforms\212b12bae2293ad89fda2196e90338e8\transformed\graphics-shapes-release\res
+com.example.android_loop.app-material-ripple-release-8 C:\Users\fvha2\.gradle\caches\8.13\transforms\2b0a1ba2c4737958035bcd8cd9f4d50a\transformed\material-ripple-release\res
+com.example.android_loop.app-core-ktx-1.17.0-9 C:\Users\fvha2\.gradle\caches\8.13\transforms\2b5ceff840a0f2e494b51870bb3c0ee0\transformed\core-ktx-1.17.0\res
+com.example.android_loop.app-savedstate-10 C:\Users\fvha2\.gradle\caches\8.13\transforms\2b61ce35b3d72c43b9cb88052ab7d604\transformed\savedstate\res
+com.example.android_loop.app-navigation-runtime-release-11 C:\Users\fvha2\.gradle\caches\8.13\transforms\2bb2f3bbdf096c8a499fd5962ef74ad9\transformed\navigation-runtime-release\res
+com.example.android_loop.app-foundation-release-12 C:\Users\fvha2\.gradle\caches\8.13\transforms\2d4048636d22ef8fb98ddaf5ba4043c7\transformed\foundation-release\res
+com.example.android_loop.app-activity-ktx-1.12.3-13 C:\Users\fvha2\.gradle\caches\8.13\transforms\2eab771221eefc2db8505c088504f77f\transformed\activity-ktx-1.12.3\res
+com.example.android_loop.app-ui-test-manifest-1.9.2-14 C:\Users\fvha2\.gradle\caches\8.13\transforms\4bc64d3ed82fcdf136f5dfd875e24b2c\transformed\ui-test-manifest-1.9.2\res
+com.example.android_loop.app-ui-release-15 C:\Users\fvha2\.gradle\caches\8.13\transforms\53372d7a70ed3a3d078668ed386b59ca\transformed\ui-release\res
+com.example.android_loop.app-core-viewtree-1.0.0-16 C:\Users\fvha2\.gradle\caches\8.13\transforms\543771193a7905fb35518af269fe6ebb\transformed\core-viewtree-1.0.0\res
+com.example.android_loop.app-navigation-runtime-ktx-2.9.7-17 C:\Users\fvha2\.gradle\caches\8.13\transforms\572229312985014d90ca9d6c97af654c\transformed\navigation-runtime-ktx-2.9.7\res
+com.example.android_loop.app-savedstate-ktx-1.4.0-18 C:\Users\fvha2\.gradle\caches\8.13\transforms\57bab934dc4386257a378b60998fffb3\transformed\savedstate-ktx-1.4.0\res
+com.example.android_loop.app-material-icons-core-release-19 C:\Users\fvha2\.gradle\caches\8.13\transforms\5b6d721dbc44e92191eae9586258bfea\transformed\material-icons-core-release\res
+com.example.android_loop.app-material-release-20 C:\Users\fvha2\.gradle\caches\8.13\transforms\5d76d44702383840ac7656563add5718\transformed\material-release\res
+com.example.android_loop.app-appcompat-resources-1.6.1-21 C:\Users\fvha2\.gradle\caches\8.13\transforms\66d910ce32ee24498a57399a00bfd7d4\transformed\appcompat-resources-1.6.1\res
+com.example.android_loop.app-startup-runtime-1.1.1-22 C:\Users\fvha2\.gradle\caches\8.13\transforms\6a04b8617d513025510700dbec804033\transformed\startup-runtime-1.1.1\res
+com.example.android_loop.app-lifecycle-livedata-core-2.10.0-23 C:\Users\fvha2\.gradle\caches\8.13\transforms\7120276142c86300b03da9bd7caafcb0\transformed\lifecycle-livedata-core-2.10.0\res
+com.example.android_loop.app-ui-graphics-release-24 C:\Users\fvha2\.gradle\caches\8.13\transforms\71c8236499a0fd7f686ddfe863213120\transformed\ui-graphics-release\res
+com.example.android_loop.app-compose-foundation-1.5.5-25 C:\Users\fvha2\.gradle\caches\8.13\transforms\7d979e0a7dec509132794b3d872239a0\transformed\compose-foundation-1.5.5\res
+com.example.android_loop.app-lifecycle-runtime-26 C:\Users\fvha2\.gradle\caches\8.13\transforms\8d1f79641eff982a70d1f45bdd3a8742\transformed\lifecycle-runtime\res
+com.example.android_loop.app-lifecycle-viewmodel-ktx-2.10.0-27 C:\Users\fvha2\.gradle\caches\8.13\transforms\8f2f69aa2d1ab78cb6ffc96a32da9170\transformed\lifecycle-viewmodel-ktx-2.10.0\res
+com.example.android_loop.app-material-icons-extended-release-28 C:\Users\fvha2\.gradle\caches\8.13\transforms\905e007925bbf6060ad9dac28efd1329\transformed\material-icons-extended-release\res
+com.example.android_loop.app-navigation-common-release-29 C:\Users\fvha2\.gradle\caches\8.13\transforms\9395b14639e368efe56a55a01fef6801\transformed\navigation-common-release\res
+com.example.android_loop.app-navigationevent-30 C:\Users\fvha2\.gradle\caches\8.13\transforms\97e5a90d918b797b90bce67be6b7357e\transformed\navigationevent\res
+com.example.android_loop.app-navigation-compose-release-31 C:\Users\fvha2\.gradle\caches\8.13\transforms\9a536863f9b40356a957a6d56d948bf7\transformed\navigation-compose-release\res
+com.example.android_loop.app-emoji2-1.4.0-32 C:\Users\fvha2\.gradle\caches\8.13\transforms\9b1806e30995412df3c2ca9dab49b1ea\transformed\emoji2-1.4.0\res
+com.example.android_loop.app-lifecycle-livedata-2.10.0-33 C:\Users\fvha2\.gradle\caches\8.13\transforms\9fd2102bbfa2690d1ef006e055ab186a\transformed\lifecycle-livedata-2.10.0\res
+com.example.android_loop.app-play-services-base-18.5.0-34 C:\Users\fvha2\.gradle\caches\8.13\transforms\a495c60895769aea19fa05ff532f42c1\transformed\play-services-base-18.5.0\res
+com.example.android_loop.app-activity-1.12.3-35 C:\Users\fvha2\.gradle\caches\8.13\transforms\b01d315d2dd4c3bf3bd67d3a0a1ccacc\transformed\activity-1.12.3\res
+com.example.android_loop.app-profileinstaller-1.4.0-36 C:\Users\fvha2\.gradle\caches\8.13\transforms\b245ecdfc3708c7cf98a0f71588281f9\transformed\profileinstaller-1.4.0\res
+com.example.android_loop.app-lifecycle-viewmodel-37 C:\Users\fvha2\.gradle\caches\8.13\transforms\b42351e52ec950ac3bb6a7179dcc66f7\transformed\lifecycle-viewmodel\res
+com.example.android_loop.app-customview-poolingcontainer-1.0.0-38 C:\Users\fvha2\.gradle\caches\8.13\transforms\b9e6e201668a3877fb8568039d0d5a9c\transformed\customview-poolingcontainer-1.0.0\res
+com.example.android_loop.app-play-services-basement-18.4.0-39 C:\Users\fvha2\.gradle\caches\8.13\transforms\bb14821cff88a7dc190689c86601ed74\transformed\play-services-basement-18.4.0\res
+com.example.android_loop.app-lifecycle-process-2.10.0-40 C:\Users\fvha2\.gradle\caches\8.13\transforms\bbddbb7a6724e9fa35aa62c0829cd918\transformed\lifecycle-process-2.10.0\res
+com.example.android_loop.app-compose-material3-1.5.5-41 C:\Users\fvha2\.gradle\caches\8.13\transforms\e5cbd3476c8ef7851d914b0f86138244\transformed\compose-material3-1.5.5\res
+com.example.android_loop.app-compose-material-core-1.5.5-42 C:\Users\fvha2\.gradle\caches\8.13\transforms\e7ba9641851f38a3e7f3b2e80a3fb3c7\transformed\compose-material-core-1.5.5\res
+com.example.android_loop.app-activity-compose-1.12.3-43 C:\Users\fvha2\.gradle\caches\8.13\transforms\e8b1766eb7403df2a187880b2e4eee07\transformed\activity-compose-1.12.3\res
+com.example.android_loop.app-material3-44 C:\Users\fvha2\.gradle\caches\8.13\transforms\fc482d6b6f9bdd80ad62f400840f4def\transformed\material3\res
+com.example.android_loop.app-pngs-45 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\generated\res\pngs\debug
+com.example.android_loop.app-resValues-46 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\generated\res\resValues\debug
+com.example.android_loop.app-updated_navigation_xml-47 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\generated\updated_navigation_xml\debug
+com.example.android_loop.app-packageDebugResources-48 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.android_loop.app-packageDebugResources-49 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.android_loop.app-debug-50 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.android_loop.app-debug-51 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\src\debug\res
+com.example.android_loop.app-main-52 C:\Users\fvha2\Desktop\Proyecto PI\projecte-dam-25-26-Andrea-Fabiana-Nayara\fase_2\repo\Android_App\Android_Loop_Nuevo\app\src\main\res

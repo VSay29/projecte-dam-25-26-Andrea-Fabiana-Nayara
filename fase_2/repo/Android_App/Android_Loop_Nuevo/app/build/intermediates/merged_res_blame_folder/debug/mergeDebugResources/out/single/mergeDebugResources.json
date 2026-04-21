@@ -1,0 +1,126 @@
+[
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-anydpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_user.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/user.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_mastercard.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/mastercard.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_trash.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/trash.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_visa.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/visa.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_no_avatar.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/no_avatar.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_home.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/home.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_empty_heart.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/empty_heart.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_shop.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/shop.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_paypal.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/paypal.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_fondologin.jpg.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/fondologin.jpg"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/xml_backup_rules.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_add.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/add.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_full_heart.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/full_heart.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_loop_logo.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/loop_logo.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_lupa.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/lupa.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/drawable_bizum.png.flat",
+        "source": "com.example.android_loop.app-main-51:/drawable/bizum.png"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.android_loop.app-main-51:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.android_loop.app-debug-49:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.android_loop.app-main-51:/mipmap-hdpi/ic_launcher.webp"
+    }
+]
