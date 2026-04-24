@@ -10,6 +10,7 @@ color white
 drawable add
 drawable bizum
 drawable empty_heart
+drawable fondologin
 drawable full_heart
 drawable home
 drawable ic_launcher_background

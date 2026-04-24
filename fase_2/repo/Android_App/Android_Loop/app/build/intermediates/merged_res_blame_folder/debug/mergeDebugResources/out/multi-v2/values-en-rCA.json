@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.android_loop.app-mergeDebugResources-43:/values-en-rCA/values-en-rCA.xml",
+            "outputFile": "com.example.android_loop.app-mergeDebugResources-47:/values-en-rCA/values-en-rCA.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\9f9e3597180b7f6ebf2b96928e9d7ff3\\transformed\\compose-material3-1.5.5\\res\\values-en-rCA\\values-en-rCA.xml",
+                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\e5cbd3476c8ef7851d914b0f86138244\\transformed\\compose-material3-1.5.5\\res\\values-en-rCA\\values-en-rCA.xml",
                     "from": {
                         "startLines": "2,6,10,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\86bf04c4333106a20baacb0eed20c6d0\\transformed\\material3\\res\\values-en-rCA\\values-en-rCA.xml",
+                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\fc482d6b6f9bdd80ad62f400840f4def\\transformed\\material3\\res\\values-en-rCA\\values-en-rCA.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -40,7 +40,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\838ec03ec4c336272873a2b98dbda2aa\\transformed\\foundation-release\\res\\values-en-rCA\\values-en-rCA.xml",
+                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\2d4048636d22ef8fb98ddaf5ba4043c7\\transformed\\foundation-release\\res\\values-en-rCA\\values-en-rCA.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",
@@ -57,7 +57,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\b0254852366eb809727fa45768dac2ef\\transformed\\core-1.17.0\\res\\values-en-rCA\\values-en-rCA.xml",
+                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\0e466525d2f037cde889b72cc106e81f\\transformed\\core-1.17.0\\res\\values-en-rCA\\values-en-rCA.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -74,7 +74,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\4aca57ef0c4174d9fdaf6922d364ce16\\transformed\\ui-release\\res\\values-en-rCA\\values-en-rCA.xml",
+                    "source": "C:\\Users\\fvha2\\.gradle\\caches\\8.13\\transforms\\53372d7a70ed3a3d078668ed386b59ca\\transformed\\ui-release\\res\\values-en-rCA\\values-en-rCA.xml",
                     "from": {
                         "startLines": "3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

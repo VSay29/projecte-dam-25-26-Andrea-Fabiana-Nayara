@@ -1,8 +1,9 @@
 package com.example.android_loop.data.repository
 
-import com.example.android_loop.data.accesoApi.ApiLoop
+import com.example.android_loop.data.net.HttpClientProvider
+import io.ktor.client.HttpClient
 
-class CompraRepository(private val api: ApiLoop = ApiLoop()) {
+class CompraRepository(private val cliente: HttpClient = HttpClientProvider.cliente) {
 
     
 
