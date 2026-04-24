@@ -51,13 +51,13 @@ import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.utils.encriptarPasswd
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.view.theme.isDarkTheme
 import com.example.android_loop.viewModel.AjustesViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -233,7 +233,7 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     value = passwd,
                     onValueChange = { passwd = it },
                     onConfirm = {
-                        viewModelSettings.cambiarPasswd(token!!, encriptarPasswd(passwd))
+                        viewModelSettings.cambiarPasswd(token, encriptarPasswd(passwd))
                         dialogTipo = null
                     },
                     onDismiss = { dialogTipo = null },
@@ -377,12 +377,6 @@ fun MostrarDialog(title: String, header: String, value: String?, onValueChange: 
             Button(onClick = { onDismiss() }) { Text("Cancelar") }
         }
     )
-}
-
-fun encriptarPasswd(passwd: String): String {
-    val digest = MessageDigest.getInstance("SHA-256")
-    val hashBytes = digest.digest(passwd.toByteArray(Charsets.UTF_8))
-    return hashBytes.fold("") { str, byte -> str + "%02x".format(byte) }
 }
 
 fun generarTextoConfirmacion() : String {
