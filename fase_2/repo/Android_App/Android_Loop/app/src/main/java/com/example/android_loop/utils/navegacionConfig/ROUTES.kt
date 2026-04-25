@@ -18,6 +18,10 @@ object ROUTES {
 
     const val VER_PRODUCTO = "ver_producto"
     const val VER_PRODUCTO_ROUTE = "$VER_PRODUCTO/{productId}"
-    const val AJUSTES = "ajustes/{idioma}"
-    const val PERFIL_VENDEDOR = "perfil_Vendedor/{vendedorId}/{vendedorNombre}"
+    const val AJUSTES = "ajustes"
+
+    const val AJUSTES_ROUTE = "ajustes/{idioma}"
+    const val PERFIL_VENDEDOR = "perfil_Vendedor"
+
+    const val PERFIL_VENDEDOR_ROUTE = "perfil_Vendedor/{vendedorId}/{vendedorNombre}"
 }

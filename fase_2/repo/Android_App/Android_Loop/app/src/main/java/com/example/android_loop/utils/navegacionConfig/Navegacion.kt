@@ -82,12 +82,12 @@ fun AppNavGraph(navController: NavHostController) {
             // TODO: SERÍA QUE SE GUARDARA EN SHAREDPREFERENCES, PARA QUE
             // TODO: EN EL FUTURO SE PUEDA INTEGRAR CAMBIO DE IDIOMA REAL
 
-            composable(ROUTES.AJUSTES, listOf(navArgument("idioma") { type = NavType.StringType })) {
+            composable(ROUTES.AJUSTES_ROUTE, listOf(navArgument("idioma") { type = NavType.StringType })) {
                 backStackEntry -> val idioma = backStackEntry.arguments!!.getString("idioma") ?: "Español"
                 Ajustes(navController, idioma)
             }
 
-            /*composable(ROUTES.PERFIL_VENDEDOR,
+            /*composable(ROUTES.PERFIL_VENDEDOR_ROUTE,
                 listOf(
                     navArgument("vendedorId") { type = NavType.IntType },
                     navArgument("vendedorNombre") { type = NavType.StringType }
