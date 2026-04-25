@@ -19,6 +19,15 @@ class ComentariosViewModel(private val productoRepo: ProductoRepository = Produc
 
     var comentarioEnviado by mutableStateOf(false)
 
+    val comentarios: List<com.example.android_loop.data.model_dataClass.comentarioResult.Comentario>
+        get() = (comentarioUiState as? ComentarioUiState.SuccessCargarComentarios)?.resp ?: emptyList()
+
+    val isLoading: Boolean
+        get() = comentarioUiState is ComentarioUiState.Loading
+
+    val errorMessage: String?
+        get() = (comentarioUiState as? ComentarioUiState.Error)?.message
+
     var currentUserName by mutableStateOf("")
     var currentUserId by mutableStateOf(0)
 
@@ -48,17 +57,17 @@ class ComentariosViewModel(private val productoRepo: ProductoRepository = Produc
 
     // DOC: Esta función y las de editar y eliminar, sólo se llamarán con los perfiles de otros usuarios, no el propietario
 
-    fun enviarComentario(token: String, usuarioId: Int, contenido: String, valoracion: Float) {
+    fun enviarComentario(token: String, usuarioId: Int, contenido: String, valoracion: Float?) {
         if (contenido.isBlank()) return
         viewModelScope.launch {
-
             comentarioUiState = ComentarioUiState.Loading
-
-            val result = comentarioRepo.crearComentario(token, CreateComentarioRequest(usuarioId, contenido, "published", valoracion))
-
-            comentarioUiState = result.fold(
-                onSuccess = { ComentarioUiState.SuccessEnviarComentario(true) },
-                onFailure = { ComentarioUiState.Error(it.message ?: "No se ha podido crear la reseña") }
+            val result = comentarioRepo.crearComentario(token, CreateComentarioRequest(usuarioId, contenido, "published", valoracion ?: 0f))
+            result.fold(
+                onSuccess = {
+                    comentarioEnviado = true
+                    cargarComentarios(token, usuarioId)
+                },
+                onFailure = { comentarioUiState = ComentarioUiState.Error(it.message ?: "No se ha podido crear la reseña") }
             )
         }
     }
@@ -67,33 +76,26 @@ class ComentariosViewModel(private val productoRepo: ProductoRepository = Produc
         comentarioEnviado = false
     }
 
-    fun editarComentario(token: String, comentarioId: Int, contenido: String, valoracion: Float, usuarioId: Int) {
+    fun editarComentario(token: String, comentarioId: Int, contenido: String, valoracion: Float?, usuarioId: Int) {
         if (contenido.isBlank()) return
         viewModelScope.launch {
-
             comentarioUiState = ComentarioUiState.Loading
-
-            val result = comentarioRepo.editarComentario(token, comentarioId, UpdateComentarioRequest(contenido, "published", valoracion))
-
-            comentarioUiState = result.fold(
-                onSuccess = { ComentarioUiState.SuccessEditarComentario(true) },
-                onFailure = { ComentarioUiState.Error(it.message ?: "No se ha podido editar la reseña") }
+            val result = comentarioRepo.editarComentario(token, comentarioId, UpdateComentarioRequest(contenido, "published", valoracion ?: 0f))
+            result.fold(
+                onSuccess = { cargarComentarios(token, usuarioId) },
+                onFailure = { comentarioUiState = ComentarioUiState.Error(it.message ?: "No se ha podido editar la reseña") }
             )
         }
     }
 
     fun eliminarComentario(token: String, comentarioId: Int, usuarioId: Int) {
         viewModelScope.launch {
-
             comentarioUiState = ComentarioUiState.Loading
-
             val result = comentarioRepo.eliminarComentario(token, comentarioId)
-
-            comentarioUiState = result.fold(
-                onSuccess = { ComentarioUiState.SuccessEliminarComentario(true) },
-                onFailure = { ComentarioUiState.Error(it.message ?: "No se ha podido eliminar la reseña") }
+            result.fold(
+                onSuccess = { cargarComentarios(token, usuarioId) },
+                onFailure = { comentarioUiState = ComentarioUiState.Error(it.message ?: "No se ha podido eliminar la reseña") }
             )
-
         }
     }
 }
