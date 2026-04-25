@@ -11,5 +11,5 @@ data class UpdateComentarioRequest(
 
 @Serializable
 data class UpdateComentarioResponse(
-    val success: Boolean
+    val success: Boolean = true
 )

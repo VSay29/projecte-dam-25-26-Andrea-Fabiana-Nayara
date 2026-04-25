@@ -15,6 +15,17 @@ class PerfilViewModel(private val usuarioRepo: UsuarioRepository = UsuarioReposi
 
     var perfilUiState by mutableStateOf<PerfilUiState>(PerfilUiState.Idle)
 
+    var products by mutableStateOf<List<Producto>>(emptyList())
+
+    fun loadProductosUsuario(token: String, idUsuario: Int) {
+        viewModelScope.launch {
+            productoRepo.getProductos(token)
+                .onSuccess { resp ->
+                    products = resp.products.filter { it.propietario?.id == idUsuario }
+                }
+        }
+    }
+
     fun getUserData(token: String) {
         viewModelScope.launch {
             perfilUiState = PerfilUiState.Loading

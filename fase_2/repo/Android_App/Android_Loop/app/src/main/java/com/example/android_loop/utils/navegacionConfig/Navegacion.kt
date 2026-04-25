@@ -26,7 +26,7 @@ import com.example.android_loop.view.vistas.Home
 import com.example.android_loop.view.vistas.Loggeo
 import com.example.android_loop.view.vistas.PerfilUsuario
 //import com.example.android_loop.view.ui.perfilUsuario.PerfilUsuario
-//import com.example.android_loop.view.ui.perfilVendedor.PerfilVendedor
+import com.example.android_loop.view.vistas.PerfilVendedor
 import com.example.android_loop.view.vistas.Registro
 import com.example.android_loop.view.vistas.VerProducto
 
@@ -87,7 +87,7 @@ fun AppNavGraph(navController: NavHostController) {
                 Ajustes(navController, idioma)
             }
 
-            /*composable(ROUTES.PERFIL_VENDEDOR,
+            composable(ROUTES.PERFIL_VENDEDOR,
                 listOf(
                     navArgument("vendedorId") { type = NavType.IntType },
                     navArgument("vendedorNombre") { type = NavType.StringType }
@@ -97,7 +97,7 @@ fun AppNavGraph(navController: NavHostController) {
                 val vendedorId = backStackEntry.arguments!!.getInt("vendedorId")
                 val vendedorNombre = backStackEntry.arguments!!.getString("vendedorNombre")
                 PerfilVendedor(vendedorId, vendedorNombre!!, navController)
-            }*/
+            }
 
         }
 

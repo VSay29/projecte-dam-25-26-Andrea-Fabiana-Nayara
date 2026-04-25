@@ -1,5 +1,5 @@
 package com.example.android_loop.view.vistas
-/*
+
 import android.content.Context.MODE_PRIVATE
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -62,11 +62,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
 import androidx.navigation.NavController
 import com.example.android_loop.R
-import com.example.android_loop.view.Producto.ViewModel_Producto
-import com.example.android_loop.view.comentarios.Comentario
-import com.example.android_loop.view.comentarios.ComentarioBurbuja
-import com.example.android_loop.view.comentarios.ComentariosViewModel
-import com.example.android_loop.view.favoritos.sinAcentos
+import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
+import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
+import com.example.android_loop.viewModel.ComentariosViewModel
+import com.example.android_loop.viewModel.PerfilViewModel
 
 @Composable
 fun PerfilVendedor(
@@ -79,7 +79,7 @@ fun PerfilVendedor(
     val storedToken = prefs.getString("token", null)
 
     val comentariosViewModel: ComentariosViewModel = viewModel()
-    val viewmodelProducto: ViewModel_Producto = viewModel()
+    val viewmodelProducto: PerfilViewModel = viewModel()
 
     val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
 
@@ -415,4 +415,4 @@ fun PerfilVendedor(
             }
         }
     }
-}*/
+}

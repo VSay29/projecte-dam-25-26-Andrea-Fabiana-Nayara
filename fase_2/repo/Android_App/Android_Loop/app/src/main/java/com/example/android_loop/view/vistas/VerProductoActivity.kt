@@ -201,8 +201,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 // SECCION: Reseñas
                 OutlinedButton(
                     onClick = {
-                        val nombreEncoded = Uri.encode(propietario?.nombre)
-                        navController.navigate(ROUTES.PERFIL_VENDEDOR)
+                        navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
