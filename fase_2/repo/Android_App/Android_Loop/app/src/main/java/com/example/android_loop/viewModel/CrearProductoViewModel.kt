@@ -28,7 +28,18 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
     var cargarCategoriasUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
 
 
-    fun crearProducto(token: String, context: Context, nombre: String, descripcion: String, precio: Double, estado: String, ubicacion: String, antiguedad: String, categoriaId: Int, imageUris: List<Uri>) {
+    fun crearProducto(
+        token: String,
+        context: Context,
+        nombre: String,
+        descripcion: String,
+        precio: Double,
+        estado: String,
+        ubicacion: String,
+        antiguedad: String,
+        categoriaId: Int,
+        etiquetaIds: List<Int>,
+        imageUris: List<Uri>) {
 
         viewModelScope.launch {
 
@@ -36,7 +47,7 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
             Log.d("DEBUG_CREARPRODUCTO", "CREANDO PRODUCTO")
             val listaImagenes = convertirListImgToListB64(imageUris, context)
 
-            val result = productoRepo.createProduct(token, CreateProductRequest(nombre, descripcion, precio, estado, ubicacion, antiguedad, categoriaId, listaImagenes))
+            val result = productoRepo.createProduct(token, CreateProductRequest(nombre, descripcion, precio, estado, ubicacion, antiguedad, categoriaId, etiquetaIds, listaImagenes))
 
             crearProductoUiState = result.fold(
                 onSuccess = {
@@ -63,6 +74,7 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
             crearEtiquetaUiState = result.fold(
                 onSuccess = {
                     onCreated(it.etiqueta_id)
+                    cargarEtiquetas(token)
                     CrearProductoUiState.Idle
                 },
                 onFailure = { CrearProductoUiState.Error(it.message ?: "No se ha podido crear la etiqueta") }

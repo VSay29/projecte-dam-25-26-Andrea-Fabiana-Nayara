@@ -12,5 +12,5 @@ data class CreateEtiquetaRequest(
 data class CreateEtiquetaResponse(
     val success: Boolean,
     val etiqueta_id: Int,
-    val error: String
+    val error: String? = null
 )

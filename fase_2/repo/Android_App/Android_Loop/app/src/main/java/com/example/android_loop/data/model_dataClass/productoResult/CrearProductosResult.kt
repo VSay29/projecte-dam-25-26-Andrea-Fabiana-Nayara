@@ -1,6 +1,7 @@
 package com.example.android_loop.data.model_dataClass.productoResult
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 
 /**
@@ -11,6 +12,14 @@ import kotlinx.serialization.Serializable
 data class CreateProductResponse(
     val ok: Boolean,
     val product_id: Int
+)
+
+@Serializable
+data class CreateProductRpcResponse(
+    val jsonrpc: String,
+    val id: Int? = null,
+    val result: CreateProductResponse? = null,
+    val error: JsonElement? = null
 )
 
 /**
@@ -27,6 +36,7 @@ data class CreateProductRequest(
     val ubicacion: String,
     val antiguedad: String,
     val categoria_id: Int,
+    val etiqueta_ids: List<Int>,
     val imagenes: List<ImageRequest>
 )
 
