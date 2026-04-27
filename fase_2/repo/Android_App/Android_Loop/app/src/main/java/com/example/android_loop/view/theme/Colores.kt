@@ -1,4 +1,4 @@
-package com.tuapp.ui.theme
+package com.example.android_loop.view.theme
 
 import androidx.compose.ui.graphics.Color
 val Primary = Color(0xFF003459)        // Azul oscuro

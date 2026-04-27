@@ -22,16 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.android_loop.R
-import com.example.android_loop.data.Producto.ProductCardSquare
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.view.componentes.ProductCardSquare
+import com.example.android_loop.view.theme.Primary
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.HomeUiState
 import com.example.android_loop.viewModel.HomeViewModel
 import com.example.android_loop.viewModel.ProductoHomeUiState
-import com.tuapp.ui.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

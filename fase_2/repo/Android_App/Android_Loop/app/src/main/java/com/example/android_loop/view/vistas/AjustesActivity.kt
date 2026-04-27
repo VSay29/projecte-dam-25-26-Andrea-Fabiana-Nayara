@@ -379,6 +379,11 @@ fun MostrarDialog(title: String, header: String, value: String?, onValueChange: 
     )
 }
 
+/**
+ * Función para generar texto aleatorio y confirmar el borrado de cuenta
+ * Devuelve un string con ese texto
+ */
+
 fun generarTextoConfirmacion() : String {
     val caracteres = (
         ('a' .. 'z') +

@@ -42,8 +42,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.view.theme.Android_LoopTheme
-import com.tuapp.ui.theme.Background
-import com.tuapp.ui.theme.Primary
+import com.example.android_loop.view.theme.Background
+import com.example.android_loop.view.theme.Primary
 
 @Composable
 fun TabMenu(navController: NavHostController) {

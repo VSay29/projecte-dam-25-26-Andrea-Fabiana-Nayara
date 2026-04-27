@@ -30,8 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.tuapp.ui.theme.Primary
-import com.tuapp.ui.theme.Secondary
 import com.example.android_loop.view.componentes.PantallaHeader
 import com.example.android_loop.view.componentes.BotonCrearProducto
 import java.text.SimpleDateFormat
@@ -44,9 +42,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.view.theme.OnPrimary
+import com.example.android_loop.view.theme.Primary
+import com.example.android_loop.view.theme.Secondary
 import com.example.android_loop.viewModel.CrearProductoUiState
 import com.example.android_loop.viewModel.CrearProductoViewModel
-import com.tuapp.ui.theme.OnPrimary
 import kotlin.collections.emptyList
 
 

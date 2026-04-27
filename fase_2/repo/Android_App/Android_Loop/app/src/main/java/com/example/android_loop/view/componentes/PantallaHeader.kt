@@ -11,9 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import com.tuapp.ui.theme.OnPrimary
-import com.tuapp.ui.theme.Primary
-import com.tuapp.ui.theme.Secondary
+import com.example.android_loop.view.theme.OnPrimary
+import com.example.android_loop.view.theme.Primary
+import com.example.android_loop.view.theme.Secondary
 
 // Componente reutilizable para el encabezado de cualquier pantalla.
 // Recibe "titulo" como parámetro, así cada pantalla puede tener su propio texto.

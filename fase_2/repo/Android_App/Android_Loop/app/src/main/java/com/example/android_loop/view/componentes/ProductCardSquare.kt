@@ -1,4 +1,4 @@
-package com.example.android_loop.data.Producto
+package com.example.android_loop.view.componentes
 
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
-import com.tuapp.ui.theme.Primary
+import com.example.android_loop.view.theme.Primary
 
 @Composable
 fun ProductItem(
