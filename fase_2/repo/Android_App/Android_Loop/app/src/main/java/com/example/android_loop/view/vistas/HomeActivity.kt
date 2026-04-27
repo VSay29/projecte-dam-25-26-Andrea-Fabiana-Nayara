@@ -27,6 +27,8 @@ import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.HomeUiState
 import com.example.android_loop.viewModel.HomeViewModel
@@ -51,7 +53,7 @@ fun Home(navController: NavHostController) {
     // DOC: Este view model es de la vista carrito pero también lo usaremos aquí exclusivamente
     // DOC: para el contador de productos en el carrito ya que la información es compartida
 
-    val carritoViewModel: CarritoViewModel = viewModel()
+    val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
 
     // SECCION: VARIABLES
 

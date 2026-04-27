@@ -1,5 +1,5 @@
 package com.example.android_loop.view.vistas
-/*
+
 import android.content.Context.MODE_PRIVATE
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -23,23 +23,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.example.android_loop.R
-import com.example.android_loop.view.shoppingCart.CartViewModel
-import com.example.android_loop.view.theme.Android_LoopTheme
+import com.example.android_loop.viewModel.CarritoViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Compra(navHostController: NavHostController, viewModel: CartViewModel = viewModel()) {
+fun Compra(navController: NavController) {
 
+    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val storedToken = prefs.getString("token", null)
 
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -122,18 +121,7 @@ fun Compra(navHostController: NavHostController, viewModel: CartViewModel = view
                         Text("Pagar con el método seleccionado")
                     }
                 }
-
             }
-
         }
     }
-
 }
-
-@Preview(showBackground = true)
-@Composable
-fun CompraPreview() {
-    Android_LoopTheme {
-        Compra(navHostController = rememberNavController())
-    }
-}*/
