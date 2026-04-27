@@ -35,8 +35,10 @@ class EtiquetaRepository(private val cliente: HttpClient = HttpClientProvider.cl
                             put("jsonrpc", "2.0")
                             put("method", "call")
                             put("params", buildJsonObject {
-                                put("name", request.name)
-                                put("active", request.active)
+                                put("data", buildJsonObject {
+                                    put("name", request.name)
+                                    put("active", request.active)
+                                })
                             })
                         }
                     )

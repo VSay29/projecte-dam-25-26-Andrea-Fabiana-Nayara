@@ -44,6 +44,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.viewModel.CrearProductoUiState
 import com.example.android_loop.viewModel.CrearProductoViewModel
 import com.tuapp.ui.theme.OnPrimary
@@ -69,7 +70,9 @@ fun CrearProducto(navController: NavController) {
     // SECCION: VARIABLES PARA LA REQUEST DE CREAR PRODUCTO
 
     var nombre by rememberSaveable { mutableStateOf("") }
+    var nombreTocado by rememberSaveable { mutableStateOf(false) }
     var descripcion by rememberSaveable { mutableStateOf("") }
+    var descripcionTocada by rememberSaveable { mutableStateOf(false) }
     var precio by rememberSaveable { mutableStateOf("0") }
     var ubicacion by rememberSaveable { mutableStateOf("39.324, -125.525") }
     val selectedEtiquetas = rememberSaveable { mutableStateListOf<Int>() }
@@ -82,7 +85,7 @@ fun CrearProducto(navController: NavController) {
 
 
     // Formato para la fecha de antiguedad
-    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // Lista de etiquetas ya creadas y cargadas
     val etiquetasCargadas = when (etiquetasState) {
@@ -115,10 +118,17 @@ fun CrearProducto(navController: NavController) {
     // TODO: AL CREAR UN PRODUCTO CON ÉXITO LIMPIAREMOS LOS CAMPOS Y MOSTRAREMOS UN DIALOGO
 
     LaunchedEffect(crearProductoState) {
-        if (crearProductoState is CrearProductoUiState.SuccessCrearProducto) {
-            // TODO: Mostrar dialogo aquí
-            Toast.makeText(context, "Producto creado", Toast.LENGTH_SHORT).show()
-            clearAllInputs()
+        when (crearProductoState) {
+            is CrearProductoUiState.SuccessCrearProducto -> {
+                Toast.makeText(context, "Producto creado", Toast.LENGTH_SHORT).show()
+                navController.navigate(ROUTES.HOME) {
+                    popUpTo(ROUTES.CREAR_PRODUCTO) { inclusive = true }
+                }
+            }
+            is CrearProductoUiState.Error -> {
+                Toast.makeText(context, "Error: ${crearProductoState.message}", Toast.LENGTH_LONG).show()
+            }
+            else -> {}
         }
     }
 
@@ -233,20 +243,20 @@ fun CrearProducto(navController: NavController) {
 
         OutlinedTextField(
             value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Nombre") },
+            onValueChange = { nombre = it; nombreTocado = true },
+            label = { Text("Nombre *") },
             modifier = Modifier.fillMaxWidth(),
             colors = campoColores,
-            isError = (nombre.isEmpty())
+            isError = nombreTocado && nombre.isEmpty()
         )
 
         OutlinedTextField(
             value = descripcion,
-            onValueChange = { descripcion = it },
-            label = { Text("Descripción") },
+            onValueChange = { descripcion = it; descripcionTocada = true },
+            label = { Text("Descripción *") },
             modifier = Modifier.fillMaxWidth(),
             colors = campoColores,
-            isError = descripcion.isEmpty()
+            isError = descripcionTocada && descripcion.isEmpty()
         )
 
         OutlinedTextField(
@@ -474,6 +484,7 @@ fun CrearProducto(navController: NavController) {
                     ubicacion = ubicacion,
                     antiguedad = formatter.format(Date()),
                     categoriaId = categoriaId,
+                    etiquetaIds = selectedEtiquetas,
                     imageUris = imageUris
                 )
             },
@@ -495,7 +506,7 @@ private fun clearAllInputs() {
 
 private fun todoCorrecto(nombre: String, desc: String, precio: Double, estado: String, ubicacion: String, categoria: Int, imageUris: List<Uri>): Boolean {
 
-    val noVacio = (nombre.isNotEmpty() && desc.isNotEmpty() && precio.toString().isNotEmpty() && estado.isNotEmpty() && ubicacion.isNotBlank() && categoria.toString().isNotEmpty() && imageUris.isNotEmpty())
+    val noVacio = (nombre.isNotEmpty() && desc.isNotEmpty() && estado.isNotEmpty() && ubicacion.isNotBlank() && categoria > 0 && imageUris.isNotEmpty())
     val datosCorrectos = (precio >= 0) && (imageUris.size in 1..10)
 
     return (noVacio && datosCorrectos)
