@@ -44,6 +44,8 @@ import com.example.android_loop.data.model_dataClass.productoResult.Propietario
 import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
@@ -62,7 +64,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
     val verProductoVM: VerProductoViewModel = viewModel()
     val verProductoState = verProductoVM.verProductoUiState
-    val carritoViewModel: CarritoViewModel = viewModel()
+    val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
 
     // SECCION: VARIABLES
 

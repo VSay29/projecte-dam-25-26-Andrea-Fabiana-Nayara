@@ -1,7 +1,8 @@
 package com.example.android_loop.view.vistas
-/*
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -9,12 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.viewModel.CarritoViewModel
 
 @Composable
 fun Carrito(
     navController: NavController
 ) {
+    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val items = viewModel.cartItems
     val total = viewModel.total
 
@@ -64,7 +71,7 @@ fun Carrito(
                                 )
                                 Text(text = "%.2f €".format(product.precio))
                                 Text(
-                                    text = product.categoria.nombre,
+                                    text = product.categoria?.nombre ?: "",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -75,7 +82,6 @@ fun Carrito(
                                 )
                             }
                             val checked = viewModel.selectedItems.contains(product)
-
                             Checkbox(
                                 checked = checked,
                                 onCheckedChange = { viewModel.toggleSeleccion(product, it) }
@@ -97,9 +103,9 @@ fun Carrito(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { navController.navigate("pago") },
+                onClick = { navController.navigate(ROUTES.COMPRA) },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !viewModel.selectedItems.isEmpty()
+                enabled = viewModel.selectedItems.isNotEmpty()
             ) {
                 Text("Continuar al pago")
             }
@@ -115,4 +121,3 @@ fun Carrito(
         }
     }
 }
-*/
