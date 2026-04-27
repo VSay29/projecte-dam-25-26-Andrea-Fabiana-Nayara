@@ -11,6 +11,6 @@ data class GetEtiquetaResponse(
 @Serializable
 data class Etiqueta(
     val id: Int,
-    val name: String,
-    val active: Boolean
+    val name: String = "",
+    val active: Boolean = true
 )
