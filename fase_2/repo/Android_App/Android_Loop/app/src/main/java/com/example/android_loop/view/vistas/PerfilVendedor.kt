@@ -297,7 +297,7 @@ fun PerfilVendedor(
                                                 comentario = comentario,
                                                 esMio = esMioEsteComentario,
                                                 onPerfilClick = { id, nombre ->
-                                                    navController.navigate("perfilVendedor/$id/${Uri.encode(nombre)}")
+                                                    navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
                                                 },
                                                 onDelete = if (esMioEsteComentario) {{
                                                     comentariosViewModel.eliminarComentario(storedToken!!, comentario.id, vendedorId)

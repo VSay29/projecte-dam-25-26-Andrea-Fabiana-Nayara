@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.wear.compose.material3.IconButton
+import androidx.compose.material3.IconButton
 import com.example.android_loop.data.model_dataClass.categoriaResult.Categoria
 import com.example.android_loop.data.model_dataClass.etiquetaResult.Etiqueta
 import com.example.android_loop.data.model_dataClass.productoResult.Imagen
@@ -142,8 +142,11 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 ) {
                     OutlinedButton(
                         onClick = {
-                            navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
+                            val id = propietario?.id ?: return@OutlinedButton
+                            val nombre = propietario?.nombre ?: return@OutlinedButton
+                            navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
                         },
+                        enabled = propietario != null,
                         modifier = Modifier
                             .weight(1f)
                             .height(52.dp),
