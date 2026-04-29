@@ -203,9 +203,12 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 // SECCION: Reseñas
                 OutlinedButton(
                     onClick = {
-                        navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
+                        val id = propietario?.id ?: return@OutlinedButton
+                        val nombre = propietario?.nombre ?: return@OutlinedButton
+                        navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = propietario != null
                 ) {
                     Text("Ver perfil del vendedor")
                 }
