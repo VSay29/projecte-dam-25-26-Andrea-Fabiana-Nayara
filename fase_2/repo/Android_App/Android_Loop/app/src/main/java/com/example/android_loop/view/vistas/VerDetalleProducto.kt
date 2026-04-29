@@ -42,7 +42,9 @@ import androidx.navigation.NavController
 import androidx.wear.compose.material3.IconButton
 import com.example.android_loop.data.model_dataClass.categoriaResult.Categoria
 import com.example.android_loop.data.model_dataClass.etiquetaResult.Etiqueta
+import com.example.android_loop.data.model_dataClass.productoResult.Imagen
 import com.example.android_loop.data.model_dataClass.productoResult.ImagenDetalle
+import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.data.model_dataClass.productoResult.Propietario
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
@@ -156,7 +158,15 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                     BotonCrearProducto(
                         texto = "Añadir al carrito",
-                        onClick = { navController.navigate(ROUTES.CARRITO) },
+                        onClick = {
+                            val imagenesParaProducto = listaImagenes.map {
+                                Imagen(id = it.id, principal = it.principal, orden = it.sequence)
+                            }
+                            carritoViewModel.addToCart(
+                                Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail)
+                            )
+                            navController.navigate(ROUTES.CARRITO)
+                        },
                         modifier = Modifier.weight(1f),
                         enabled = true
                     )
@@ -269,13 +279,10 @@ fun VerProducto(productoId: Int, navController: NavController) {
                         Spacer(modifier = Modifier.height(12.dp))
 
                         InfoRow("Estado", estado)
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = Color(0xFFE8E8E8))
                         InfoRow("Ubicación", ubicacion)
                         antiguedad?.let {
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = Color(0xFFE8E8E8))
                             InfoRow("Antigüedad", it)
                         }
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp), color = Color(0xFFE8E8E8))
                         InfoRow("Vendedor", propietario?.nombre)
 
                         Spacer(modifier = Modifier.height(16.dp))
