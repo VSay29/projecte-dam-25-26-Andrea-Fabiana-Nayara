@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val prefs = getSharedPreferences("loop_prefs", MODE_PRIVATE)
         isDarkTheme = prefs.getBoolean("dark_mode", false)
-        setContent {
+        setContent {                                         
             Android_LoopTheme {
                 val navController = rememberNavController()
                 AppNavGraph(navController)
