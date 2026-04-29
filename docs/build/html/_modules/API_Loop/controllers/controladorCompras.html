@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API_Loop.controllers.controladorCompras &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">API_Loop.controllers.controladorCompras</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para API_Loop.controllers.controladorCompras</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Controlador API REST para operaciones de compras y ventas en Loop Proyecto.</span>
+
+<span class="sd">Permite a los usuarios realizar compras, consultar su carrito y ventas en proceso,</span>
+<span class="sd">y actualizar el estado de una compra.</span>
+
+<span class="sd">Autor: Andrea, Fabiana y Nayara</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">http</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.controladorToken</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_current_user_from_token</span>
+
+
+<div class="viewcode-block" id="CRUD_Compra_Controller">
+<a class="viewcode-back" href="../../../API_Loop.controllers.html#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CRUD_Compra_Controller</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Controller</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Controlador HTTP para la gestión de compras y ventas.&quot;&quot;&quot;</span>
+
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/compra/comprar&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">api_realizar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crea una nueva compra de un producto.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Diccionario que debe contener:</span>
+<span class="sd">                data: {</span>
+<span class="sd">                    &#39;producto_id&#39;: ID del producto,</span>
+<span class="sd">                    &#39;vendedor_id&#39;: ID del vendedor,</span>
+<span class="sd">                    &#39;comprador_id&#39;: ID del comprador,</span>
+<span class="sd">                    &#39;state&#39;: Estado inicial de la compra</span>
+<span class="sd">                }</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: {&#39;success&#39;: True, &#39;compra_id&#39;: &lt;ID&gt;} si se creó correctamente,</span>
+<span class="sd">                  {&#39;error&#39;: &lt;mensaje&gt;} en caso de fallo.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Si faltan datos obligatorios o hay error al crear la compra.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No se han enviado datos&#39;</span><span class="p">}</span>
+
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;producto_id&#39;</span><span class="p">,</span> <span class="s1">&#39;vendedor_id&#39;</span><span class="p">,</span> <span class="s1">&#39;comprador_id&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Falta indicar el campo </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">compra</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.compra&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+                <span class="s1">&#39;producto_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;producto_id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;vendedor_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;vendedor_id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;comprador_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;comprador_id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span>
+            <span class="p">})</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;compra_id&#39;</span><span class="p">:</span> <span class="n">compra</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)}</span>
+
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/compras/obtener&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">api_get_compras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtiene todas las compras de un usuario (carrito).</span>
+
+<span class="sd">        Requiere token válido.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Diccionario de parámetros (no se requieren campos específicos).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: Lista de compras con campos:</span>
+<span class="sd">                - id: ID de la compra</span>
+<span class="sd">                - producto_id: ID del producto</span>
+<span class="sd">                - state: Estado de la compra</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">compras</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.compra&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([(</span><span class="s1">&#39;comprador_id&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)])</span>
+        <span class="n">resultado</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;producto_id&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">producto_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">state</span><span class="p">}</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">compras</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">resultado</span>
+
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/ventas/obtener&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">api_get_ventas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtiene todas las ventas en proceso de un usuario.</span>
+
+<span class="sd">        Requiere token válido.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Diccionario de parámetros (no se requieren campos específicos).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: Lista de ventas con campos:</span>
+<span class="sd">                - id: ID de la venta</span>
+<span class="sd">                - producto_id: ID del producto</span>
+<span class="sd">                - state: Estado de la venta</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">ventas</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.compra&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([(</span><span class="s1">&#39;vendedor_id&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)])</span>
+        <span class="n">resultado</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;producto_id&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">producto_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">state</span><span class="p">}</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ventas</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">resultado</span>
+
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span>
+        <span class="s1">&#39;/api/v1/loop/cambiarEstado&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+        <span class="n">cors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PATCH&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">api_updateState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modifica el estado de una compra (por ejemplo, marcar como vendida).</span>
+
+<span class="sd">        Requiere token válido.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params: Diccionario que debe contener:</span>
+<span class="sd">                - compra_id: ID de la compra a modificar</span>
+<span class="sd">                - state: Nuevo estado de la compra</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: {&#39;ok&#39;: True} si se actualizó correctamente, {&#39;error&#39;: &lt;mensaje&gt;} en caso de fallo.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            401 Unauthorized: Si el token no es válido.</span>
+<span class="sd">            ValueError: Si faltan parámetros o la compra no existe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">compra_id</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;compra_id&#39;</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">compra_id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Faltan parámetros&#39;</span><span class="p">}</span>
+
+        <span class="n">compra</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.compra&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">compra_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">compra</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Compra no encontrada&#39;</span><span class="p">}</span>
+
+        <span class="n">compra</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>loop_proyecto.models.denuncia &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">loop_proyecto.models.denuncia</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para loop_proyecto.models.denuncia</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Módulo de denuncias y reportes.</span>
+
+<span class="sd">Contiene el modelo `DenunciaReporte` para gestionar denuncias de comentarios</span>
+<span class="sd">o productos.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">api</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+
+
+<div class="viewcode-block" id="DenunciaReporte">
+<a class="viewcode-back" href="../../../loop_proyecto.models.html#loop_proyecto.models.denuncia.DenunciaReporte">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DenunciaReporte</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Modelo de denuncia de comentarios o productos.</span>
+
+<span class="sd">    Atributos:</span>
+<span class="sd">        denunciante_id (res.partner): Usuario denunciante.</span>
+<span class="sd">        producto_id (loop_proyecto.producto): Producto denunciado.</span>
+<span class="sd">        comentario_id (loop_proyecto.comentario): Comentario denunciado.</span>
+<span class="sd">        comentario_texto (str): Contenido del comentario denunciado.</span>
+<span class="sd">        usuario_denunciado_id (res.partner): Usuario denunciado.</span>
+<span class="sd">        fecha_emision (datetime): Fecha de emisión de la denuncia.</span>
+<span class="sd">        motivo_denuncia (str): Motivo de la denuncia.</span>
+<span class="sd">        estado_moderacion (str): Estado de moderación (&#39;pendiente&#39;, &#39;revisada&#39;, &#39;cerrada&#39;).</span>
+<span class="sd">        estado_usuario (str): Estado del usuario denunciado (&#39;activa&#39;, &#39;retirada&#39;).</span>
+<span class="sd">        resultado_moderacion (str): Resultado de la moderación (&#39;valida&#39;, &#39;no_valida&#39;, &#39;duplicada&#39;).</span>
+<span class="sd">        empleado_id (res.users): Empleado que revisa la denuncia.</span>
+<span class="sd">        fecha_revision (datetime): Fecha de revisión de la denuncia.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;loop_proyecto.denuncia_reporte&#39;</span>
+    <span class="n">_description</span> <span class="o">=</span> <span class="s1">&#39;Denuncia de comentarios o productos&#39;</span>
+    <span class="n">_order</span> <span class="o">=</span> <span class="s1">&#39;create_date desc&#39;</span>
+
+    <span class="n">denunciante_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2one</span><span class="p">(</span>
+        <span class="s1">&#39;res.partner&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Usuario denunciante&#39;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">partner_id</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">producto_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2one</span><span class="p">(</span>
+        <span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Producto denunciado&#39;</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">comentario_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2one</span><span class="p">(</span>
+        <span class="s1">&#39;loop_proyecto.comentario&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Comentario denunciado&#39;</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">comentario_texto</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Contenido del comentario&#39;</span><span class="p">,</span>
+        <span class="n">related</span><span class="o">=</span><span class="s1">&#39;comentario_id.contenido&#39;</span><span class="p">,</span>
+        <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">store</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">usuario_denunciado_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2one</span><span class="p">(</span>
+        <span class="s1">&#39;res.partner&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Usuario denunciado&#39;</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">fecha_emision</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Datetime</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Fecha de emisión&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">fields</span><span class="o">.</span><span class="n">Datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span>
+        <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">motivo_denuncia</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Motivo de la denuncia&#39;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">estado_moderacion</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Selection</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;pendiente&#39;</span><span class="p">,</span> <span class="s1">&#39;Pendiente&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;revisada&#39;</span><span class="p">,</span> <span class="s1">&#39;Revisada&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;cerrada&#39;</span><span class="p">,</span> <span class="s1">&#39;Cerrada&#39;</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Estado Moderación&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;pendiente&#39;</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">estado_usuario</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Selection</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;activa&#39;</span><span class="p">,</span> <span class="s1">&#39;Activa&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;retirada&#39;</span><span class="p">,</span> <span class="s1">&#39;Retirada&#39;</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Estado Usuario&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;activa&#39;</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">resultado_moderacion</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Selection</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;valida&#39;</span><span class="p">,</span> <span class="s1">&#39;Denuncia válida&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;no_valida&#39;</span><span class="p">,</span> <span class="s1">&#39;Denuncia no válida&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;duplicada&#39;</span><span class="p">,</span> <span class="s1">&#39;Duplicada&#39;</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Resultado moderación&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">empleado_id</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2one</span><span class="p">(</span>
+        <span class="s1">&#39;res.users&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Empleado revisor&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">fecha_revision</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Datetime</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Fecha de revisión&#39;</span>
+    <span class="p">)</span>
+
+    <span class="nd">@api</span><span class="o">.</span><span class="n">constrains</span><span class="p">(</span><span class="s1">&#39;estado_usuario&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_estado_usuario</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evita que una denuncia retirada sea reactivada.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValidationError: Si se intenta reactivar un estado &#39;retirada&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">record</span><span class="o">.</span><span class="n">estado_usuario</span> <span class="o">==</span> <span class="s1">&#39;activa&#39;</span>
+                <span class="ow">and</span> <span class="n">record</span><span class="o">.</span><span class="n">_origin</span><span class="o">.</span><span class="n">estado_usuario</span> <span class="o">==</span> <span class="s1">&#39;retirada&#39;</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="s2">&quot;No se puede reactivar una denuncia retirada.&quot;</span>
+                <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
