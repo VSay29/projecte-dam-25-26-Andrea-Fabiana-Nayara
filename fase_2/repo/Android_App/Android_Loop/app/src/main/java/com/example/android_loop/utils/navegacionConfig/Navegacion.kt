@@ -44,7 +44,10 @@ fun AppNavGraph(navController: NavHostController) {
         ROUTES.LOGIN,
         ROUTES.REGISTRO,
         ROUTES.CREAR_PRODUCTO,
-        ROUTES.PERFIL_VENDEDOR
+        ROUTES.PERFIL_VENDEDOR,
+        ROUTES.DETALLE_PRODUCTO_ID,
+        ROUTES.AJUSTES,
+        ROUTES.CARRITO
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -73,7 +76,7 @@ fun AppNavGraph(navController: NavHostController) {
 
             // Rutas parametrizadas
 
-            composable(ROUTES.VER_PRODUCTO_ROUTE, listOf(navArgument("productId") { type = NavType.IntType })) {
+            composable(ROUTES.DETALLE_PRODUCTO_ID, listOf(navArgument("productId") { type = NavType.IntType })) {
                 backStackEntry -> val productId = backStackEntry.arguments!!.getInt("productId")
                 VerProducto(productId, navController)
             }

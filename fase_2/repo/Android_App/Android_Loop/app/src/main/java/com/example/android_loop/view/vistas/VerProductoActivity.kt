@@ -21,6 +21,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
+import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.tuapp.ui.theme.Primary
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -41,11 +44,11 @@ import com.example.android_loop.data.model_dataClass.productoResult.Imagen
 import com.example.android_loop.data.model_dataClass.productoResult.ImagenDetalle
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.data.model_dataClass.productoResult.Propietario
-import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
@@ -77,7 +80,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var antiguedad: String? by rememberSaveable { mutableStateOf("") }
     var categoria by remember { mutableStateOf<Categoria?>(null) }
     var propietario by remember { mutableStateOf<Propietario?>(null) }
-    var etiquetas by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
+    var etiqueta_ids by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
     var thumbnail: String? by rememberSaveable { mutableStateOf("") }
 
     var showImageViewer by remember { mutableStateOf(false) }
@@ -108,7 +111,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 antiguedad = producto.resp.antiguedad
                 categoria = producto.resp.categoria
                 propietario = producto.resp.propietario
-                etiquetas = producto.resp.etiquetas
+                etiqueta_ids = producto.resp.etiquetas
                 thumbnail = producto.resp.thumbnail
             }
 
@@ -132,6 +135,43 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                 }
             )
+        },
+        bottomBar = {
+            Surface(
+                shadowElevation = 8.dp,
+                color = Color.White
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        border = BorderStroke(1.5.dp, Primary),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Primary,
+                            containerColor = Color.White
+                        )
+                    ) {
+                        Text("Ver perfil", style = MaterialTheme.typography.labelLarge)
+                    }
+                    BotonCrearProducto(
+                        texto = "Añadir al carrito",
+                        onClick = { navController.navigate(ROUTES.CARRITO) },
+                        modifier = Modifier.weight(1f),
+                        enabled = true
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Column(
@@ -177,7 +217,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 InfoRow("Vendedor", propietario?.nombre)
                 antiguedad?.let { InfoRow("Antigüedad", it) }
 
-                if (etiquetas.isNotEmpty()) {
+                if (etiqueta_ids.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Etiquetas",
@@ -189,7 +229,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        etiquetas.forEach { etiqueta ->
+                        etiqueta_ids.forEach { etiqueta ->
                             SuggestionChip(
                                 onClick = {},
                                 label = { Text(etiqueta.name) }
@@ -198,32 +238,6 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // SECCION: Reseñas
-                OutlinedButton(
-                    onClick = {
-                        navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ver perfil del vendedor")
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = {
-                        val imagenesParaProducto = listaImagenes.map { Imagen(id = it.id, principal = it.principal, orden = it.sequence) }
-                        carritoViewModel.addToCart(Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail))
-                        navController.navigate(ROUTES.CARRITO)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(Icons.Default.ShoppingCart, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Añadir al carrito")
-                }
 
             }
 

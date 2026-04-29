@@ -16,8 +16,8 @@ object ROUTES {
 
     // Rutas parametrizadas
 
-    const val VER_PRODUCTO = "ver_producto"
-    const val VER_PRODUCTO_ROUTE = "$VER_PRODUCTO/{productId}"
+    const val DETALLE_PRODUCTO = "ver_producto"
+    const val DETALLE_PRODUCTO_ID = "$DETALLE_PRODUCTO/{productId}"
     const val AJUSTES = "ajustes/{idioma}"
     const val PERFIL_VENDEDOR = "perfil_Vendedor/{vendedorId}/{vendedorNombre}"
 }
