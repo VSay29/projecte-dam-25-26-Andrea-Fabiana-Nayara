@@ -45,9 +45,10 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
 
             crearProductoUiState = CrearProductoUiState.Loading
             Log.d("DEBUG_CREARPRODUCTO", "CREANDO PRODUCTO")
+            Log.d("DEBUG_CREARPRODUCTO", "etiqueta_ids enviados: $etiquetaIds")
             val listaImagenes = convertirListImgToListB64(imageUris, context)
 
-            val result = productoRepo.createProduct(token, CreateProductRequest(nombre, descripcion, precio, estado, ubicacion, antiguedad, categoriaId, etiquetaIds, listaImagenes))
+            val result = productoRepo.createProduct(token, CreateProductRequest(nombre, descripcion, precio, estado, ubicacion, antiguedad, categoriaId, etiquetaIds.toList(), listaImagenes))
 
             crearProductoUiState = result.fold(
                 onSuccess = {

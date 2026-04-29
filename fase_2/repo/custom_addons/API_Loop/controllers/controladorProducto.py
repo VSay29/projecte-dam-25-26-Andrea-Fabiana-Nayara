@@ -130,7 +130,7 @@ class ProductoController(http.Controller):
         if not user:
             return {'error': 'Unauthorized'}
 
-        data = params   # ✅ usar params, no json.loads
+        data = params  
 
         required_fields = [
             'nombre', 'descripcion', 'precio', 'estado',
@@ -153,7 +153,10 @@ class ProductoController(http.Controller):
             'antiguedad': data['antiguedad'],
             'categoria_id': data['categoria_id'],
             'propietario_id': user.id,
+            'etiqueta_ids': [(6, 0, data.get('etiquetas', []))]
         })
+
+        
 
         for img in data['imagenes']:
             request.env['loop_proyecto.producto_imagen'].sudo().create({
@@ -194,6 +197,9 @@ class ProductoController(http.Controller):
 
         allowed_fields = ['nombre', 'descripcion', 'precio', 'estado', 'ubicacion', 'categoria_id', 'antiguedad']
         vals = {k: v for k, v in data.items() if k in allowed_fields}
+
+        if 'etiquetas' in data:
+            vals['etiqueta_ids'] = [(6, 0, data['etiquetas'])]
 
         if vals:
             product.write(vals)

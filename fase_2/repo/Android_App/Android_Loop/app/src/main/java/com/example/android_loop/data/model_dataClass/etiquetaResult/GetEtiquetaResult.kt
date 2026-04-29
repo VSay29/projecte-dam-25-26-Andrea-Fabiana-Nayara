@@ -12,5 +12,8 @@ data class GetEtiquetaResponse(
 data class Etiqueta(
     val id: Int,
     val name: String = "",
+    val nombre: String = "",
     val active: Boolean = true
-)
+) {
+    val displayName: String get() = nombre.ifEmpty { name }
+}

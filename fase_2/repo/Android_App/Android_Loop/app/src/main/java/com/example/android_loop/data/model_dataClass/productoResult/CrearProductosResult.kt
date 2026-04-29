@@ -36,7 +36,7 @@ data class CreateProductRequest(
     val ubicacion: String,
     val antiguedad: String,
     val categoria_id: Int,
-    val etiqueta_ids: List<Int>,
+    val etiquetas: List<Int>,
     val imagenes: List<ImageRequest>
 )
 
