@@ -6,7 +6,7 @@ object Servidor {
     // http://192.168.X.X:8069  ← dispositivo físico (cambia X.X por tu IP local)
      //val BASE_URL = "http://192.168.51.1:8069"
 
-     //val BASE_URL = "http://localhost:8069"  // Solo para pruebas en el emulador
-     val BASE_URL = "http://10.121.223.229:8069"
-
+     val BASE_URL = "http://localhost:8069"  // Solo para pruebas en el emulador
+     //val BASE_URL = "http://10.121.223.229:8069"
+          
 }
