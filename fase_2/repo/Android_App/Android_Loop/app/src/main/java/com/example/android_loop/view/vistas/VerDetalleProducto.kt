@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,8 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material.icons.filled.Share
 import com.example.android_loop.view.componentes.BotonCrearProducto
 import com.tuapp.ui.theme.Primary
 import android.util.Log
@@ -29,6 +30,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -80,7 +82,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var antiguedad: String? by rememberSaveable { mutableStateOf("") }
     var categoria by remember { mutableStateOf<Categoria?>(null) }
     var propietario by remember { mutableStateOf<Propietario?>(null) }
-    var etiqueta_ids by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
+    var etiquetas by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
     var thumbnail: String? by rememberSaveable { mutableStateOf("") }
 
     var showImageViewer by remember { mutableStateOf(false) }
@@ -111,7 +113,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 antiguedad = producto.resp.antiguedad
                 categoria = producto.resp.categoria
                 propietario = producto.resp.propietario
-                etiqueta_ids = producto.resp.etiquetas
+                etiquetas = producto.resp.etiquetas
                 thumbnail = producto.resp.thumbnail
             }
 
@@ -126,16 +128,6 @@ fun VerProducto(productoId: Int, navController: NavController) {
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(nombre) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Volver")
-                    }
-                }
-            )
-        },
         bottomBar = {
             Surface(
                 shadowElevation = 8.dp,
@@ -166,7 +158,15 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                     BotonCrearProducto(
                         texto = "Añadir al carrito",
-                        onClick = { navController.navigate(ROUTES.CARRITO) },
+                        onClick = {
+                            val imagenesParaProducto = listaImagenes.map {
+                                Imagen(id = it.id, principal = it.principal, orden = it.sequence)
+                            }
+                            carritoViewModel.addToCart(
+                                Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail)
+                            )
+                            navController.navigate(ROUTES.CARRITO)
+                        },
                         modifier = Modifier.weight(1f),
                         enabled = true
                     )
@@ -177,17 +177,62 @@ fun VerProducto(productoId: Int, navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(bottom = paddingValues.calculateBottomPadding())
                 .verticalScroll(rememberScrollState())
         ) {
 
-            ImageCarousel(imagenes = listaImagenes, onImageClick = { showImageViewer = true })
+            Box(modifier = Modifier.fillMaxWidth()) {
+                ImageCarousel(imagenes = listaImagenes, onImageClick = { showImageViewer = true })
 
-            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopStart)
+                        .statusBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Icon(
+                        Icons.Default.ArrowBackIosNew,
+                        contentDescription = "Volver",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable { navController.popBackStack() }
+                    )
+
+                    Icon(
+                        Icons.Default.Share,
+                        contentDescription = "Compartir",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                val shareText = "$nombre\n${"%.2f €".format(precio)}\n\n$descripcion"
+                                val intent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, shareText)
+                                }
+                                context.startActivity(Intent.createChooser(intent, "Compartir producto"))
+                            }
+                    )
+                }
+            }
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-20).dp),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 0.dp
+            ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
 
                 Text(
-                    text = nombre,
-                    style = MaterialTheme.typography.headlineSmall
+                    text = nombre.replaceFirstChar { it.uppercase() },
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -198,48 +243,98 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = descripcion,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
-                HorizontalDivider()
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
 
-                Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Descripción",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Primary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = descripcion,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
 
-                InfoRow("Estado", estado)
-                InfoRow("Ubicación", ubicacion)
-                InfoRow("Categoría", categoria?.nombre ?: "Sin categoría")
-                InfoRow("Vendedor", propietario?.nombre)
-                antiguedad?.let { InfoRow("Antigüedad", it) }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(color = Color(0xFFE8E8E8))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                if (etiqueta_ids.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Etiquetas",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        etiqueta_ids.forEach { etiqueta ->
-                            SuggestionChip(
-                                onClick = {},
-                                label = { Text(etiqueta.name) }
+                        Text(
+                            text = "Características",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Primary
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        InfoRow("Estado", estado)
+                        InfoRow("Ubicación", ubicacion)
+                        antiguedad?.let {
+                            InfoRow("Antigüedad", it)
+                        }
+                        InfoRow("Vendedor", propietario?.nombre)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        HorizontalDivider(color = Color(0xFFE8E8E8))
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Categoría",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Primary
+                            )
+                            Text(
+                                text = categoria?.nombre ?: "Sin categoría",
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
+
+                        if (etiquetas.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            HorizontalDivider(color = Color(0xFFE8E8E8))
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Etiquetas",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Primary
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                etiquetas.forEach { etiqueta ->
+                                    SuggestionChip(
+                                        onClick = {},
+                                        label = { Text(etiqueta.displayName) }
+                                    )
+                                }
+                            }
+                        }
+
                     }
                 }
 
-
             }
+            } // Surface
 
         }
 
@@ -278,7 +373,7 @@ private fun ImageCarousel(imagenes: List<ImagenDetalle>, onImageClick: () -> Uni
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(280.dp)
+                .height(360.dp)
                 .background(Color(0xFFE0E0E0)),
             contentAlignment = Alignment.Center
         ) {
@@ -298,7 +393,7 @@ private fun ImageCarousel(imagenes: List<ImagenDetalle>, onImageClick: () -> Uni
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(280.dp)
+            .height(360.dp)
     ) {
         HorizontalPager(
             state = pagerState,
