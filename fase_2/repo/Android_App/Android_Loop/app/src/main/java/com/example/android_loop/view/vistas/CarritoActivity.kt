@@ -81,7 +81,7 @@ fun Carrito(
                                     contentDescription = "Eliminar del carrito"
                                 )
                             }
-                            val checked = viewModel.selectedItems.contains(product)
+                            val checked = viewModel.selectedItems.any { it.id == product.id }
                             Checkbox(
                                 checked = checked,
                                 onCheckedChange = { viewModel.toggleSeleccion(product, it) }
