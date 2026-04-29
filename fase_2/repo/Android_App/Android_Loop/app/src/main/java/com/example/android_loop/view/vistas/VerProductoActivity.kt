@@ -41,7 +41,6 @@ import com.example.android_loop.data.model_dataClass.productoResult.Imagen
 import com.example.android_loop.data.model_dataClass.productoResult.ImagenDetalle
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.data.model_dataClass.productoResult.Propietario
-import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import androidx.activity.ComponentActivity
@@ -77,7 +76,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var antiguedad: String? by rememberSaveable { mutableStateOf("") }
     var categoria by remember { mutableStateOf<Categoria?>(null) }
     var propietario by remember { mutableStateOf<Propietario?>(null) }
-    var etiquetas by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
+    var etiqueta_ids by rememberSaveable { mutableStateOf(emptyList<Etiqueta>()) }
     var thumbnail: String? by rememberSaveable { mutableStateOf("") }
 
     var showImageViewer by remember { mutableStateOf(false) }
@@ -86,6 +85,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
     LaunchedEffect(productoId) {
         verProductoVM.cargarProducto(token, productoId)
+
         verProductoVM.cargarImagenes(token, productoId)
     }
 
@@ -108,7 +108,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 antiguedad = producto.resp.antiguedad
                 categoria = producto.resp.categoria
                 propietario = producto.resp.propietario
-                etiquetas = producto.resp.etiquetas
+                etiqueta_ids = producto.resp.etiquetas
                 thumbnail = producto.resp.thumbnail
             }
 
@@ -177,7 +177,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 InfoRow("Vendedor", propietario?.nombre)
                 antiguedad?.let { InfoRow("Antigüedad", it) }
 
-                if (etiquetas.isNotEmpty()) {
+                if (etiqueta_ids.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Etiquetas",
@@ -189,7 +189,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        etiquetas.forEach { etiqueta ->
+                        etiqueta_ids.forEach { etiqueta ->
                             SuggestionChip(
                                 onClick = {},
                                 label = { Text(etiqueta.name) }
@@ -215,7 +215,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 Button(
                     onClick = {
                         val imagenesParaProducto = listaImagenes.map { Imagen(id = it.id, principal = it.principal, orden = it.sequence) }
-                        carritoViewModel.addToCart(Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail))
+                        carritoViewModel.addToCart(Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiqueta_ids, imagenesParaProducto, thumbnail))
                         navController.navigate(ROUTES.CARRITO)
                     },
                     modifier = Modifier.fillMaxWidth()

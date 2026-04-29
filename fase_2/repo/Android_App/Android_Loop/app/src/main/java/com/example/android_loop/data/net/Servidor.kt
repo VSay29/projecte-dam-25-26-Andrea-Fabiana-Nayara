@@ -7,6 +7,6 @@ object Servidor {
      //val BASE_URL = "http://192.168.51.1:8069"
 
      //val BASE_URL = "http://localhost:8069"  // Solo para pruebas en el emulador
-     val BASE_URL = "http://10.121.223.229:8069"
+     val BASE_URL = "http://10.26.28.229:8069"
 
 }
