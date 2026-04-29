@@ -21,6 +21,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
+import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.tuapp.ui.theme.Primary
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -45,6 +48,7 @@ import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
@@ -85,7 +89,6 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
     LaunchedEffect(productoId) {
         verProductoVM.cargarProducto(token, productoId)
-
         verProductoVM.cargarImagenes(token, productoId)
     }
 
@@ -132,6 +135,43 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                 }
             )
+        },
+        bottomBar = {
+            Surface(
+                shadowElevation = 8.dp,
+                color = Color.White
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        border = BorderStroke(1.5.dp, Primary),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Primary,
+                            containerColor = Color.White
+                        )
+                    ) {
+                        Text("Ver perfil", style = MaterialTheme.typography.labelLarge)
+                    }
+                    BotonCrearProducto(
+                        texto = "Añadir al carrito",
+                        onClick = { navController.navigate(ROUTES.CARRITO) },
+                        modifier = Modifier.weight(1f),
+                        enabled = true
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Column(
@@ -198,32 +238,6 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // SECCION: Reseñas
-                OutlinedButton(
-                    onClick = {
-                        navController.navigate("perfil_Vendedor/${propietario?.id}/${Uri.encode(propietario?.nombre)}")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ver perfil del vendedor")
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = {
-                        val imagenesParaProducto = listaImagenes.map { Imagen(id = it.id, principal = it.principal, orden = it.sequence) }
-                        carritoViewModel.addToCart(Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiqueta_ids, imagenesParaProducto, thumbnail))
-                        navController.navigate(ROUTES.CARRITO)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(Icons.Default.ShoppingCart, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Añadir al carrito")
-                }
 
             }
 
