@@ -282,7 +282,7 @@ fun Home(navController: NavHostController) {
                                         ProductCardSquare(
                                             product = product,
                                             onClick = { navController.navigate("${ROUTES.VER_PRODUCTO}/${product.id}") },
-                                            onAddToCart = { null },
+                                            onAddToCart = { carritoViewModel.addToCart(product) },
                                             isFavorite = false,
                                             onToggleFavorite = {}
                                         )

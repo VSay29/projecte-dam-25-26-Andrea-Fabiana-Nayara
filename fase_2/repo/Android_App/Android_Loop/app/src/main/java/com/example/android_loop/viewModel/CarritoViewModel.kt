@@ -20,6 +20,7 @@ class CarritoViewModel : ViewModel() {
 
     fun removeFromCart(product: Producto) {
         cartItems.removeAll { it.id == product.id }
+        selectedItems.removeAll { it.id == product.id }
     }
 
     fun toggleSeleccion(product: Producto, selected: Boolean) {
