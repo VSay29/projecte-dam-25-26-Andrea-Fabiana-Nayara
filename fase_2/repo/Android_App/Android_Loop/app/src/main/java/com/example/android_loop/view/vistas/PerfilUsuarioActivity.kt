@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import android.net.Uri
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
@@ -402,8 +403,11 @@ fun PerfilUsuario(navController: NavHostController) {
                                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                             comentarios.forEach { comentario ->
                                                 ComentarioBurbuja(
-                                                    comentario = comentario,
-                                                    esMio = comentario.comentador == comentariosViewModel.currentUserName
+                                                        comentario = comentario,
+                                                        esMio = comentario.comentador == comentariosViewModel.currentUserName,
+                                                        onPerfilClick = { id, nombre ->
+                                                        navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
+                                                    },
                                                 )
                                             }
                                         }
