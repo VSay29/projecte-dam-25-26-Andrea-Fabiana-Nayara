@@ -5,16 +5,18 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
+import com.example.android_loop.utils.getUserIdFromToken
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private val cartJson = Json { ignoreUnknownKeys = true }
 private const val PREFS_NAME = "loop_prefs"
-private const val KEY_CARRITO = "carrito_items"
 
 class CarritoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    private var cartKey: String = ""
 
     val cartItems = mutableStateListOf<Producto>()
     val selectedItems = mutableStateListOf<Producto>()
@@ -23,7 +25,20 @@ class CarritoViewModel(application: Application) : AndroidViewModel(application)
         get() = selectedItems.sumOf { it.precio }
 
     init {
-        val saved = prefs.getString(KEY_CARRITO, null)
+        loadCartFromPrefs()
+    }
+
+    private fun computeCartKey(): String {
+        val token = prefs.getString("token", null) ?: ""
+        val userId = getUserIdFromToken(token)?.toString() ?: "guest"
+        return "carrito_items_$userId"
+    }
+
+    private fun loadCartFromPrefs() {
+        cartKey = computeCartKey()
+        cartItems.clear()
+        selectedItems.clear()
+        val saved = prefs.getString(cartKey, null)
         if (saved != null) {
             try {
                 cartItems.addAll(cartJson.decodeFromString<List<Producto>>(saved))
@@ -31,8 +46,13 @@ class CarritoViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun reloadCart() {
+        val newKey = computeCartKey()
+        if (newKey != cartKey) loadCartFromPrefs()
+    }
+
     private fun saveCart() {
-        prefs.edit().putString(KEY_CARRITO, cartJson.encodeToString(cartItems.toList())).apply()
+        prefs.edit().putString(cartKey, cartJson.encodeToString(cartItems.toList())).apply()
     }
 
     fun addToCart(product: Producto) {
