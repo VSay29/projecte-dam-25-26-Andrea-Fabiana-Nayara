@@ -27,7 +27,6 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
     fun cambiarPasswd(token: String, passwd: String) {
@@ -45,7 +44,6 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
     fun cambiarMobile(token: String, mobile: String) {
@@ -63,7 +61,6 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
     fun cambiarTelephone(token: String, tel: String) {
@@ -81,14 +78,13 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
     fun cambiarIdioma(token: String, idioma: String) {
         viewModelScope.launch {
             settingsState = SettingsUiState.Loading
 
-            val result = repository.cambiarIdioma(token, idioma)
+            val result = repository.cambiarIdioma(token, idioma.substring(0, 2).toLowerCase())
 
             settingsState = result.fold(
                 onSuccess = {
@@ -99,7 +95,6 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
     fun borrarCuenta(token: String) {
@@ -117,7 +112,6 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 }
             )
         }
-        settingsState = SettingsUiState.Idle
     }
 
 }
