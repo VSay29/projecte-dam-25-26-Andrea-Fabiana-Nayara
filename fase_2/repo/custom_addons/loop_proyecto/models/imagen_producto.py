@@ -29,9 +29,12 @@ class ImagenProducto(models.Model):
         string='Imagen principal'
     )
 
+    """
+
     @api.constrains('imagen_ids')
     def _comprobar_cantidad_imagenes(self):
         for producto in self:
             count = len(producto.imagen_ids)
             if count < 1 or count > 10:
                 raise ValidationError('Un producto debe tener entre 1 y 10 imágenes.')
+                """

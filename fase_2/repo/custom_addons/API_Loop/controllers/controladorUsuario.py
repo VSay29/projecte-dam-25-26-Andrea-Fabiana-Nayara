@@ -30,20 +30,6 @@ class CRUD_User_Controller(http.Controller):
 
         data = params.get('data') # recoge data con los parametros que se le pasan
 
-        # Ejemplo de cómo tiene que ser la estructura a la hora de enviar los datos por JSON:
-        #{
-        #    "jsonrpc": "2.0",
-        #    "method": "call",
-        #    "params": {
-        #        "data": {
-        #            "name": "Juan Jose",
-        #            "username": "Juan",
-        #            "password": "juan123",
-        #            "email": "juan@test.com"
-        #        }
-        #    }
-        #}
-
         if not data:
             return {'error': 'No se han enviado datos'}
         
@@ -92,7 +78,8 @@ class CRUD_User_Controller(http.Controller):
             'email': user.email,
             'phone': user.phone,
             'mobile': user.mobile,
-            'idioma': user.idioma
+            'idioma': user.idioma,
+            'image_1920': user.image_1920.decode('utf-8') if user.image_1920 else ''
         }
 
     """
@@ -109,7 +96,7 @@ class CRUD_User_Controller(http.Controller):
         if not data:
             return {'error': 'No data to update'}
 
-        allowed = {'name', 'username', 'email', 'phone', 'mobile', 'idioma', 'image_1920'}
+        allowed = {'name', 'username', 'email', 'phone', 'mobile', 'idioma', 'image_1920', 'password'}
         update_vals = {k: v for k, v in data.items() if k in allowed}
 
         # Validar que image_1920 sea base64 si viene

@@ -17,7 +17,7 @@ class UsuariosApp(models.Model):
 
     rol = fields.Selection([('cliente', 'Cliente'), ('empleado', 'Empleado'), ('admin', 'Administrador')], string='Rol', default='cliente', required=True, help='Rol del usuario en la aplicación.')
 
-    idioma = fields.Selection([('es', 'Español'), ('en', 'Inglés'), ('ca', 'Catalán')], string='Idioma Preferido', default='es', help='Idioma preferido del usuario para la interfaz de la aplicación.')
+    idioma = fields.Selection([('es', 'Español'), ('en', 'English'), ('ca', 'Catalán')], string='Idioma Preferido', default='es', help='Idioma preferido del usuario para la interfaz de la aplicación.')
 
     valoracion_ids = fields.One2many(
         'loop_proyecto.valoracion',
