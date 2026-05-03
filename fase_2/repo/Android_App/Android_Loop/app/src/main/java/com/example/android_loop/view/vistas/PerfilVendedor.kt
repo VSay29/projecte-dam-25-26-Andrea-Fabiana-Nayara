@@ -1,7 +1,10 @@
 package com.example.android_loop.view.vistas
 
 import android.content.Context.MODE_PRIVATE
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +66,7 @@ import android.net.Uri
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
+import com.example.android_loop.utils.NavigationCache
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentariosViewModel
@@ -82,6 +86,19 @@ fun PerfilVendedor(
     val viewmodelProducto: PerfilViewModel = viewModel()
 
     val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
+
+    val profileBitmap: ImageBitmap = remember {
+        val cached = NavigationCache.profileImage
+        NavigationCache.profileImage = null
+        cached
+            ?.takeIf { it.isNotBlank() && it != "false" }
+            ?.let {
+                try {
+                    val bytes = Base64.decode(it, Base64.DEFAULT)
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                } catch (e: Exception) { null }
+            } ?: defaultAvatar
+    }
 
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("En venta", "Reseñas")
@@ -161,7 +178,7 @@ fun PerfilVendedor(
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(
-                            bitmap = defaultAvatar,
+                            bitmap = profileBitmap,
                             contentDescription = null,
                             modifier = Modifier.size(110.dp).clip(CircleShape)
                         )
@@ -297,7 +314,7 @@ fun PerfilVendedor(
                                                 comentario = comentario,
                                                 esMio = esMioEsteComentario,
                                                 onPerfilClick = { id, nombre ->
-                                                    navController.navigate("perfilVendedor/$id/${Uri.encode(nombre)}")
+                                                    navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
                                                 },
                                                 onDelete = if (esMioEsteComentario) {{
                                                     comentariosViewModel.eliminarComentario(storedToken!!, comentario.id, vendedorId)

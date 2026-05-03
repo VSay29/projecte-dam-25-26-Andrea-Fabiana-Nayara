@@ -20,6 +20,16 @@ fun setToken(context: Context, token: String) {
 }
 
 // TODO: FALTA REGENERAR TOKEN AL CADUCAR
+
+// SE TOMA EL ID DEL TOKEN DEL USUARIO PARA QUE CADA CARRITO SEA ASOCIADO A SU USUARIO CORRESPONDIENTE
+fun getUserIdFromToken(token: String): Int? {
+    return try {
+        JWT.decode(token).getClaim("uid").asInt()
+    } catch (e: Exception) {
+        null
+    }
+}
+
 fun tokenValido(token: String): Boolean {
 
     if (token.isEmpty() || token == "") return false
