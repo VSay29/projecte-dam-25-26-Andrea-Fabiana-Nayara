@@ -1,5 +1,6 @@
 package com.example.android_loop.view.vistas
 
+import android.content.Context.MODE_PRIVATE
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,12 +61,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
 import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.toBase64
 import com.example.android_loop.view.theme.Android_LoopTheme
@@ -84,6 +87,7 @@ fun PerfilUsuario(navController: NavHostController) {
 
     val context = LocalContext.current
     val token = getToken(context)
+    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
 
     val perfilViewModel: PerfilViewModel = viewModel()
     val perfilState = perfilViewModel.perfilUiState
@@ -125,6 +129,9 @@ fun PerfilUsuario(navController: NavHostController) {
                 username = user.resp.username
                 image_1920 = user.resp.image_1920
                 idioma = user.resp.idioma
+                prefs.edit {
+                    putString("IDIOMA", idioma)
+                }
 
                 // Pintar la foto de perfil
 
@@ -176,7 +183,7 @@ fun PerfilUsuario(navController: NavHostController) {
                         .align(Alignment.TopEnd),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    IconButton(onClick = { navController.navigate("ajustes/$idioma") }) {
+                    IconButton(onClick = { navController.navigate(ROUTES.AJUSTES) }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Ajustes",
@@ -288,7 +295,7 @@ fun PerfilUsuario(navController: NavHostController) {
                                     style = TextStyle(textDecoration = TextDecoration.None),
                                     maxLines = 1,
                                     overflow = TextOverflow.Visible,
-                                    )
+                                )
                                 },
                                 modifier = Modifier
                                     .background(
@@ -403,10 +410,10 @@ fun PerfilUsuario(navController: NavHostController) {
                                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                             comentarios.forEach { comentario ->
                                                 ComentarioBurbuja(
-                                                        comentario = comentario,
-                                                        esMio = comentario.comentador == comentariosViewModel.currentUserName,
-                                                        onPerfilClick = { id, nombre ->
-                                                        navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
+                                                    comentario = comentario,
+                                                    esMio = comentario.comentador == comentariosViewModel.currentUserName,
+                                                    onPerfilClick = { id, nombre ->
+                                                        navController.navigate("${ROUTES.PERFIL_VENDEDOR}/$id/${Uri.encode(nombre)}")
                                                     },
                                                 )
                                             }

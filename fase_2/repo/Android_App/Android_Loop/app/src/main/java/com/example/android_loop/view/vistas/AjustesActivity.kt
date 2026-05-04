@@ -1,6 +1,7 @@
 package com.example.android_loop.view.vistas
 
 import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,10 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +25,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -35,6 +40,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +50,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
@@ -53,37 +63,43 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.utils.encriptarPasswd
 import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.view.theme.isDarkTheme
 import com.example.android_loop.viewModel.AjustesViewModel
+import com.example.android_loop.viewModel.SettingsUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Ajustes(navController: NavHostController, idioma: String) {
+fun Ajustes(navController: NavHostController) {
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
+    var idioma by remember { mutableStateOf(prefs.getString("IDIOMA", "Español") ?: "Español") }
     val token = getToken(context)
 
     val viewModelSettings: AjustesViewModel = viewModel()
+    val state = viewModelSettings.settingsState
 
     var dialogTipo by remember { mutableStateOf<String?>(null) }
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     var mobile by remember { mutableStateOf("") }
     var tel by remember { mutableStateOf("") }
-    var idioma by remember { mutableStateOf(idioma) }
 
     var expanded by remember { mutableStateOf(false) }
-    val idiomas = listOf("Español", "Catálan", "Inglés")
+    val idiomas = listOf("Español", "Catálan", "English")
 
     var mostrarDialogConfirmacion by remember { mutableStateOf(false) }
     var textoConfirmacion by remember { mutableStateOf("") }
     var inputConfirmacion by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
+
+    val isLoading = state is SettingsUiState.Loading
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -134,7 +150,7 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                     Box(modifier = Modifier.fillMaxWidth()) {
 
-                        SettingItem("Cambiar idioma: $idioma") {
+                        SettingItem("Cambiar idioma: ${idioma.substring(0, 2).toUpperCase()}") {
                             expanded = true
                         }
 
@@ -147,7 +163,10 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                                     text = { Text(it) },
                                     onClick = {
                                         idioma = it
-                                        viewModelSettings.cambiarIdioma(token!!, idioma)
+                                        viewModelSettings.cambiarIdioma(token, idioma)
+                                        prefs.edit {
+                                            putString("IDIOMA", idioma)
+                                        }
                                         expanded = false
                                     }
                                 )
@@ -216,13 +235,14 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     value = email,
                     onValueChange = { email = it },
                     onConfirm = {
+                        keyboardController?.hide()
                         viewModelSettings.cambiarCorreo(token, email)
-                        dialogTipo = null
                     },
-                    onDismiss = { dialogTipo = null },
+                    onDismiss = { if (!isLoading) dialogTipo = null },
                     confirmEnabled = true,
                     accionPeligrosa = false,
-                    keyboardType = KeyboardType.Email
+                    keyboardType = KeyboardType.Email,
+                    isLoading = isLoading
                 )
             }
 
@@ -233,13 +253,15 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     value = passwd,
                     onValueChange = { passwd = it },
                     onConfirm = {
+                        keyboardController?.hide()
                         viewModelSettings.cambiarPasswd(token, encriptarPasswd(passwd))
-                        dialogTipo = null
                     },
-                    onDismiss = { dialogTipo = null },
+                    onDismiss = { if (!isLoading) dialogTipo = null },
                     confirmEnabled = true,
                     accionPeligrosa = false,
-                    keyboardType = KeyboardType.Password
+                    keyboardType = KeyboardType.Password,
+                    visualTransformation = PasswordVisualTransformation(),
+                    isLoading = isLoading
                 )
             }
 
@@ -250,13 +272,14 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     value = mobile,
                     onValueChange = { mobile = it },
                     onConfirm = {
-                        viewModelSettings.cambiarMobile(token!!, mobile)
-                        dialogTipo = null
+                        keyboardController?.hide()
+                        viewModelSettings.cambiarMobile(token, mobile)
                     },
-                    onDismiss = { dialogTipo = null },
+                    onDismiss = { if (!isLoading) dialogTipo = null },
                     confirmEnabled = true,
                     accionPeligrosa = false,
-                    keyboardType = KeyboardType.Phone
+                    keyboardType = KeyboardType.Phone,
+                    isLoading = isLoading
                 )
             }
 
@@ -267,13 +290,14 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     value = tel,
                     onValueChange = { tel = it },
                     onConfirm = {
-                        viewModelSettings.cambiarTelephone(token!!, tel)
-                        dialogTipo = null
+                        keyboardController?.hide()
+                        viewModelSettings.cambiarTelephone(token, tel)
                     },
-                    onDismiss = { dialogTipo = null },
+                    onDismiss = { if (!isLoading) dialogTipo = null },
                     confirmEnabled = true,
                     accionPeligrosa = false,
-                    keyboardType = KeyboardType.Phone
+                    keyboardType = KeyboardType.Phone,
+                    isLoading = isLoading
                 )
             }
 
@@ -283,9 +307,16 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     "Está a punto de cerrar sesión",
                     onConfirm = {
                         prefs.edit { putString("token", "") }
-                        navController.navigate("login")
                         dialogTipo = null
+
+                        scope.launch {
+
+                            delay(1000)
+
+                        }
+
                         Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+                        navController.navigate(ROUTES.LOGIN)
                     },
                     onDismiss = {
                         dialogTipo = null
@@ -294,7 +325,8 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                     accionPeligrosa = true,
                     value = null,
                     onValueChange = null,
-                    keyboardType = null
+                    keyboardType = null,
+                    isLoading = isLoading
                 )
             }
 
@@ -308,23 +340,62 @@ fun Ajustes(navController: NavHostController, idioma: String) {
                 inputConfirmacion,
                 { inputConfirmacion = it },
                 onConfirm = {
-
-                    scope.launch {
-
-                        delay(1000)
-
-                    }
-
-                    navController.navigate("login")
-                    viewModelSettings.borrarCuenta(token!!)
+                    viewModelSettings.borrarCuenta(token)
                     prefs.edit { putString("token", "") }
                     Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
+                    navController.navigate(ROUTES.LOGIN)
                 },
                 onDismiss = {},
                 confirmEnabled = (inputConfirmacion == textoConfirmacion),
                 accionPeligrosa = true,
-                null
+                KeyboardType.Text,
+                isLoading = isLoading
             )
+        }
+
+        LaunchedEffect(state) {
+            when (state) {
+                is SettingsUiState.Loading -> {
+                    Toast.makeText(context, "Cargando...", Toast.LENGTH_SHORT).show()
+                }
+                is SettingsUiState.Success -> {
+                    Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
+                    dialogTipo = null
+                    mostrarDialogConfirmacion = false
+                }
+                is SettingsUiState.Error -> {
+                    Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+                }
+                else -> {}
+            }
+
+            if (state is SettingsUiState.Success) {
+                dialogTipo = null
+            }
+        }
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .clickable(enabled = false) {},
+                contentAlignment = Alignment.Center
+            ) {
+                Card(
+                    shape = MaterialTheme.shapes.medium,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("Cargando...", style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
         }
 
     }
@@ -345,36 +416,66 @@ fun SettingItem(text: String, textColor: Color = MaterialTheme.colorScheme.onSur
 }
 
 @Composable
-fun MostrarDialog(title: String, header: String, value: String?, onValueChange: ((String) -> Unit)?, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean, accionPeligrosa: Boolean, keyboardType: KeyboardType?) {
+fun MostrarDialog(title: String, header: String, value: String?, onValueChange: ((String) -> Unit)?, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean, accionPeligrosa: Boolean, keyboardType: KeyboardType? = KeyboardType.Text, visualTransformation: VisualTransformation = VisualTransformation.None, isLoading: Boolean) {
     AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text(title) },
+        onDismissRequest = {
+            if (!isLoading) onDismiss()
+        },
+        title = {
+            if (!isLoading) Text(title)
+        },
         text = {
-            Column {
-                Text(header)
-
-                if(value != null && onValueChange != null) {
-
-                    keyboardType?.let { it ->
-                        OutlinedTextField(
-                            value = value,
-                            onValueChange = { onValueChange(it) },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = it)
-                        )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isLoading) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        Spacer(Modifier.height(16.dp))
+                        Text("Procesando...", style = MaterialTheme.typography.bodyMedium)
                     }
-
+                } else {
+                    Column {
+                        Text(header)
+                        Spacer(Modifier.height(8.dp))
+                        if (value != null && onValueChange != null && keyboardType != null) {
+                            OutlinedTextField(
+                                value = value,
+                                onValueChange = { onValueChange(it) },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = keyboardType
+                                ),
+                                visualTransformation = visualTransformation
+                            )
+                        }
+                    }
                 }
             }
         },
         confirmButton = {
-            Button(
-                onClick = onConfirm,
-                enabled = confirmEnabled
-            ) { Text(if(accionPeligrosa) "Confirmar" else "Guardar") }
+            if (!isLoading) {
+                Button(
+                    onClick = onConfirm,
+                    enabled = confirmEnabled
+                ) {
+                    Text(if (accionPeligrosa) "Confirmar" else "Guardar")
+                }
+            }
         },
         dismissButton = {
-            Button(onClick = { onDismiss() }) { Text("Cancelar") }
+            if (!isLoading) {
+                Button(onClick = onDismiss) {
+                    Text("Cancelar")
+                }
+            }
         }
     )
 }
@@ -400,6 +501,6 @@ fun generarTextoConfirmacion() : String {
 @Composable
 fun SettingsScreenPreview() {
     Android_LoopTheme {
-        Ajustes(navController = rememberNavController(), "Español")
+        Ajustes(navController = rememberNavController())
     }
 }
