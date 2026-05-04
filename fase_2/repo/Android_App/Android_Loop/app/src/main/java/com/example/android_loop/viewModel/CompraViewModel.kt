@@ -1,4 +1,6 @@
 package com.example.android_loop.viewModel
 
-class CompraViewModel {
+import androidx.lifecycle.ViewModel
+
+class CompraViewModel : ViewModel() {
 }

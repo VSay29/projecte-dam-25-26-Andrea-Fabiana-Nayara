@@ -34,6 +34,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
+import com.example.android_loop.utils.NavigationCache
 
 @Composable
 fun ComentarioBurbuja(
@@ -60,7 +61,10 @@ fun ComentarioBurbuja(
     } ?: defaultAvatar
 
     val clickableModifier: Modifier = if (onPerfilClick != null && comentario.comentador_partner_id != null)
-        Modifier.clickable { onPerfilClick(comentario.comentador_partner_id, comentario.comentador) }
+        Modifier.clickable {
+            NavigationCache.profileImage = comentario.imagen_comentador
+            onPerfilClick(comentario.comentador_partner_id, comentario.comentador)
+        }
     else Modifier
 
     Card(

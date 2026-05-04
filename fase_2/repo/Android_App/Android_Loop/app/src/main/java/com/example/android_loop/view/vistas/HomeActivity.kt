@@ -68,7 +68,9 @@ fun Home(navController: NavHostController) {
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
-    LaunchedEffect(Unit) {
+    // Se recarga el carrito para que se cargue el carrito correspondiente al usuario que inició sesión
+    LaunchedEffect(token) {
+        carritoViewModel.reloadCart()
         homeViewModel.cargarProductos(token)
         homeViewModel.cargarCategorias(token)
     }

@@ -1,0 +1,208 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>loop_proyecto.models.usuarios_app &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">loop_proyecto.models.usuarios_app</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para loop_proyecto.models.usuarios_app</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Módulo de usuarios de la App.</span>
+
+<span class="sd">Extiende el modelo `res.partner` para incluir información específica</span>
+<span class="sd">de los usuarios de la aplicación, como nombre de usuario, rol, idioma,</span>
+<span class="sd">favoritos y valoraciones.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">api</span>
+
+
+<div class="viewcode-block" id="UsuariosApp">
+<a class="viewcode-back" href="../../../loop_proyecto.models.html#loop_proyecto.models.usuarios_app.UsuariosApp">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UsuariosApp</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Modelo que representa usuarios de la aplicación.</span>
+
+<span class="sd">    Extiende `res.partner` añadiendo campos específicos de la App.</span>
+
+<span class="sd">    Atributos:</span>
+<span class="sd">        username (str): Nombre único para iniciar sesión en la aplicación.</span>
+<span class="sd">        password (str): Contraseña del usuario.</span>
+<span class="sd">        date_joined (datetime): Fecha de registro del usuario.</span>
+<span class="sd">        active (bool): Indica si el usuario está activo.</span>
+<span class="sd">        rol (str): Rol del usuario (&#39;cliente&#39;, &#39;empleado&#39;, &#39;admin&#39;).</span>
+<span class="sd">        idioma (str): Idioma preferido del usuario (&#39;Español&#39;, &#39;Inglés&#39;, &#39;Catalán&#39;).</span>
+<span class="sd">        favorito_ids (loop_proyecto.producto): Productos favoritos del usuario.</span>
+<span class="sd">        valoracion_ids (loop_proyecto.valoracion): Valoraciones recibidas por el usuario.</span>
+<span class="sd">        valoracion_media (float): Valoración media calculada.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_inherit</span> <span class="o">=</span> <span class="s1">&#39;res.partner&#39;</span>
+    <span class="n">_description</span> <span class="o">=</span> <span class="s1">&#39;Usuarios de la App&#39;</span>
+    <span class="n">_order</span> <span class="o">=</span> <span class="s1">&#39;date_joined desc&#39;</span>
+
+    <span class="n">username</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Char</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Nombre de Usuario&#39;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Nombre único para iniciar sesión en la aplicación.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Char</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span>
+        <span class="n">groups</span><span class="o">=</span><span class="s2">&quot;base.group_system&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">date_joined</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Datetime</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Fecha de Registro&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">fields</span><span class="o">.</span><span class="n">Datetime</span><span class="o">.</span><span class="n">now</span><span class="p">,</span>
+        <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Fecha y hora en que el usuario se registró en la aplicación.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">active</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Activo&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Indica si el usuario está activo en la aplicación.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">rol</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Selection</span><span class="p">(</span>
+        <span class="p">[(</span><span class="s1">&#39;cliente&#39;</span><span class="p">,</span> <span class="s1">&#39;Cliente&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;empleado&#39;</span><span class="p">,</span> <span class="s1">&#39;Empleado&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;Administrador&#39;</span><span class="p">)],</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Rol&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;cliente&#39;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Rol del usuario en la aplicación.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">idioma</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Selection</span><span class="p">(</span>
+        <span class="p">[(</span><span class="s1">&#39;Español&#39;</span><span class="p">,</span> <span class="s1">&#39;Español&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Inglés&#39;</span><span class="p">,</span> <span class="s1">&#39;Inglés&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Catalán&#39;</span><span class="p">,</span> <span class="s1">&#39;Catalán&#39;</span><span class="p">)],</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Idioma Preferido&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Español&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Idioma preferido del usuario para la interfaz de la aplicación.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">favorito_ids</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Many2many</span><span class="p">(</span>
+        <span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;loop_favorito_rel&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;usuario_id&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;producto_id&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Favoritos&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">valoracion_ids</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">One2many</span><span class="p">(</span>
+        <span class="s1">&#39;loop_proyecto.valoracion&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;usuario_valorado&#39;</span><span class="p">,</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Valoraciones recibidas&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">valoracion_media</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Float</span><span class="p">(</span>
+        <span class="n">string</span><span class="o">=</span><span class="s1">&#39;Valoración media&#39;</span><span class="p">,</span>
+        <span class="n">compute</span><span class="o">=</span><span class="s1">&#39;_compute_valoracion_media&#39;</span><span class="p">,</span>
+        <span class="n">store</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_valoracion_media</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calcula la valoración media de un usuario.</span>
+
+<span class="sd">        Actualiza el campo `valoracion_media` con el promedio</span>
+<span class="sd">        de todas las valoraciones recibidas.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">valoracion_ids</span><span class="p">:</span>
+                <span class="n">record</span><span class="o">.</span><span class="n">valoracion_media</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">valoracion</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">valoracion_ids</span>
+                <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">valoracion_ids</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">record</span><span class="o">.</span><span class="n">valoracion_media</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

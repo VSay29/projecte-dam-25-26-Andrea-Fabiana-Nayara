@@ -6,10 +6,8 @@ from .controladorToken import get_current_user_from_token
 
 
 class ControladorImagenProducto(http.Controller):
+    """Controlador HTTP para gestionar las imágenes de productos en Loop Proyecto."""
 
-    # --------------------------------------------------------------------------
-    #  OBTENER IMÁGENES DE UN PRODUCTO (GET)
-    # --------------------------------------------------------------------------
     @http.route(
         '/api/v1/loop/productos/<int:product_id>/imagenes',
         auth='none',
@@ -18,7 +16,31 @@ class ControladorImagenProducto(http.Controller):
         type='http'
     )
     def get_imagenes_producto(self, product_id):
+        """
+        Obtiene todas las imágenes de un producto dado su ID.
 
+        Args:
+            product_id (int): ID del producto del que se quieren obtener las imágenes.
+
+        Returns:
+            Response HTTP con JSON:
+                - En caso de éxito (200):
+                    {
+                        'ok': True,
+                        'imagenes': [
+                            {
+                                'id': <id_imagen>,
+                                'imagen': <base64>,
+                                'is_principal': <bool>,
+                                'sequence': <int>
+                            },
+                            ...
+                        ]
+                    }
+                - En caso de error:
+                    - 401 Unauthorized: {'error': 'Unauthorized'}
+                    - 404 Not Found: {'error': 'Producto no encontrado'}
+        """
         user = get_current_user_from_token()
         if not user:
             return request.make_response(

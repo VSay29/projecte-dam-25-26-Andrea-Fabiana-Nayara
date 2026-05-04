@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="loop_compra_action" model="ir.actions.act_window">
+        <field name="name">Compras</field>
+        <field name="res_model">loop_proyecto.compra</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <menuitem id="menu_compras" name="Compras" parent="loop_base_menu" action="loop_compra_action" sequence="20"/>
+
+    <record id="view_compra_tree" model="ir.ui.view">
+        <field name="name">loop_proyecto.compra.tree</field>
+        <field name="model">loop_proyecto.compra</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="producto_id"/>
+                <field name="comprador_id"/>
+                <field name="vendedor_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>
