@@ -99,7 +99,7 @@ class ComentarioRepository(private val cliente: HttpClient = HttpClientProvider.
                             put("method", "call")
                             put("params", buildJsonObject {
                                 put("data", buildJsonObject {
-                                    put("estado", request.contenido)
+                                    put("estado", request.estado)
                                     put("contenido", request.contenido)
                                     put("valoracion", request.valoracion)
                                 })
