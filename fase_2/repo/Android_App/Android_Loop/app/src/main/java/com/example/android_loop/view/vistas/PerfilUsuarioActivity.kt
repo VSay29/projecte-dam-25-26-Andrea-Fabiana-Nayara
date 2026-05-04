@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
@@ -53,7 +55,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -106,8 +107,7 @@ fun PerfilUsuario(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var idioma by remember { mutableStateOf("Español") }
     var image_1920 by remember { mutableStateOf("") }
-    val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
-    var avatarImage by remember { mutableStateOf<ImageBitmap?>(defaultAvatar) }
+    var avatarImage by remember { mutableStateOf<ImageBitmap?>(null) }
 
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("En venta", "Reseñas")
@@ -165,6 +165,7 @@ fun PerfilUsuario(navController: NavHostController) {
         Column(
             Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 90.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -218,16 +219,33 @@ fun PerfilUsuario(navController: NavHostController) {
                         }
                     }
 
-                    Box {
-                        avatarImage?.let { img ->
+                    Box(contentAlignment = Alignment.Center) {
+                        if (avatarImage != null) {
                             Image(
-                                bitmap = img,
+                                bitmap = avatarImage!!,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .size(110.dp)
+                                    .size(130.dp)
                                     .clip(CircleShape)
+                                    .border(3.dp, Color(0xFFDDDDDD), CircleShape)
                             )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(130.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE8EEF4))
+                                    .border(3.dp, Color(0xFFDDDDDD), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9E9E9E),
+                                    modifier = Modifier.size(76.dp)
+                                )
+                            }
                         }
 
                         // Botón editar moderno
