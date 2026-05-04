@@ -60,13 +60,9 @@ fun Home(navController: NavHostController) {
     // SECCION: VARIABLES
 
     val productos = (productoHomeState as? ProductoHomeUiState.SuccessCargarProductos)?.resp ?: emptyList()
-
     val cartCount = carritoViewModel.cartItems.size
-
     var buscador by remember { mutableStateOf("") }
-
     var categoriaSeleccionada by remember { mutableStateOf<String?>(null) }
-
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
