@@ -65,7 +65,7 @@ fun AppNavGraph(navController: NavHostController) {
         NavHost(
         navController = navController,
         startDestination = rutaInicio,
-        modifier = Modifier.Companion.padding(paddingValues)
+        modifier = Modifier.Companion.padding(bottom = paddingValues.calculateBottomPadding())
     ) {
             composable(ROUTES.LOGIN) { Loggeo(navController) }
             composable(ROUTES.REGISTRO) { Registro(navController) }
@@ -83,9 +83,18 @@ fun AppNavGraph(navController: NavHostController) {
                 backStackEntry -> val productId = backStackEntry.arguments!!.getInt("productId")
                 VerProducto(productId, navController)
             }
+            composable(ROUTES.AJUSTES, listOf(navArgument("idioma") { type = NavType.StringType })) {
+                    backStackEntry -> val idioma = backStackEntry.arguments!!.getString("idioma") ?: "Español"
+                Ajustes(navController, idioma)
+            }
 
+
+
+
+            //composable(ROUTES.PERFIL_VENDEDOR,
 
             composable(ROUTES.PERFIL_VENDEDOR_PARAMS,
+
                 listOf(
                     navArgument("vendedorId") { type = NavType.IntType },
                     navArgument("vendedorNombre") { type = NavType.StringType }

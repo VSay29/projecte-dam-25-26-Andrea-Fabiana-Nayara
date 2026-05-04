@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Ajustes(navController: NavHostController) {
+fun Ajustes(navController: NavHostController, idioma: String) {
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
@@ -501,6 +501,7 @@ fun generarTextoConfirmacion() : String {
 @Composable
 fun SettingsScreenPreview() {
     Android_LoopTheme {
-        Ajustes(navController = rememberNavController())
+        Ajustes(navController = rememberNavController(),
+            idioma = "Español")
     }
 }
