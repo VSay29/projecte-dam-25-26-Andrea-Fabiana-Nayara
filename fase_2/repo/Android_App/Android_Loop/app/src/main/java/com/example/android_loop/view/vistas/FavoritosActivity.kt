@@ -1,6 +1,8 @@
 package com.example.android_loop.view.vistas
-/*
+
 import android.content.Context.MODE_PRIVATE
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,19 +39,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.view.theme.Android_LoopTheme
-import java.text.Normalizer
+import com.example.android_loop.viewModel.FavoritosUiState
+import com.example.android_loop.viewModel.FavoritosViewModel
 
 @Composable
 fun Favoritos(navController: NavHostController) {
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val storedToken = prefs.getString("token", null)
+    val token = prefs.getString("token", null)
 
     var filtro by rememberSaveable { mutableStateOf("") }
 
-    val viewModelFavoritos : FavoritosViewModel = viewModel()
+    // DOC: Esta declaración hace que el viewModel de favoritos esté compartido con el home
+    val viewModelFavoritos: FavoritosViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val favState = viewModelFavoritos.favState
 
     Box(
@@ -61,7 +66,7 @@ fun Favoritos(navController: NavHostController) {
         // Llamar al endpoint
 
         LaunchedEffect(Unit)  {
-            viewModelFavoritos.favoritosGet(storedToken!!)
+            viewModelFavoritos.favoritosGet(token!!)
         }
 
         // UI
@@ -144,7 +149,7 @@ fun Favoritos(navController: NavHostController) {
                                                 .align(Alignment.TopEnd)
                                                 .padding(4.dp)
                                                 .clickable {
-                                                    viewModelFavoritos.favoritosDelete(storedToken!!, producto.id)
+                                                    viewModelFavoritos.agregarOquitarfavorito(token!!, producto.id)
                                                 },
                                             tint = Color.Red
                                         )
@@ -155,7 +160,7 @@ fun Favoritos(navController: NavHostController) {
                     }
                 }
 
-                is FavoritosUiState.ErrorGet -> Text("Ha ocurrido un error")
+                is FavoritosUiState.ErrorGet -> Text(favState.message)
 
                 else -> {}
             }
@@ -187,11 +192,3 @@ fun FavoritosPreview() {
         Favoritos(navController = rememberNavController())
     }
 }
-
-/**
- * Quitar acentos en los filtros
- */
-fun String.sinAcentos(): String {
-    val normalized = Normalizer.normalize(this, Normalizer.Form.NFD)
-    return normalized.replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
-}*/
