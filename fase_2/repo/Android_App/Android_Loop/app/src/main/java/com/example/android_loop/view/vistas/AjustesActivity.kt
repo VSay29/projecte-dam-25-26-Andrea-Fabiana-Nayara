@@ -336,7 +336,7 @@ fun Ajustes(navController: NavHostController) {
             MostrarDialog(
                 "¡Atención!",
                 "La cuenta está a punto de ser eliminada.\n" +
-                "Introduce el siguiente texto para confirmar esta acción:\n\n$textoConfirmacion",
+                        "Introduce el siguiente texto para confirmar esta acción:\n\n$textoConfirmacion",
                 inputConfirmacion,
                 { inputConfirmacion = it },
                 onConfirm = {
@@ -345,7 +345,7 @@ fun Ajustes(navController: NavHostController) {
                     Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
                     navController.navigate(ROUTES.LOGIN)
                 },
-                onDismiss = {},
+                onDismiss = {mostrarDialogConfirmacion = false},
                 confirmEnabled = (inputConfirmacion == textoConfirmacion),
                 accionPeligrosa = true,
                 KeyboardType.Text,
@@ -416,7 +416,19 @@ fun SettingItem(text: String, textColor: Color = MaterialTheme.colorScheme.onSur
 }
 
 @Composable
-fun MostrarDialog(title: String, header: String, value: String?, onValueChange: ((String) -> Unit)?, onConfirm: () -> Unit, onDismiss: () -> Unit, confirmEnabled: Boolean, accionPeligrosa: Boolean, keyboardType: KeyboardType? = KeyboardType.Text, visualTransformation: VisualTransformation = VisualTransformation.None, isLoading: Boolean) {
+fun MostrarDialog(
+    title: String,
+    header: String,
+    value: String?,
+    onValueChange: ((String) -> Unit)?,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    confirmEnabled: Boolean,
+    accionPeligrosa: Boolean,
+    keyboardType: KeyboardType? = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isLoading: Boolean
+) {
     AlertDialog(
         onDismissRequest = {
             if (!isLoading) onDismiss()
@@ -425,11 +437,10 @@ fun MostrarDialog(title: String, header: String, value: String?, onValueChange: 
             if (!isLoading) Text(title)
         },
         text = {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp),
-                contentAlignment = Alignment.Center
+                    .verticalScroll(rememberScrollState())
             ) {
                 if (isLoading) {
                     Column(
@@ -482,11 +493,11 @@ fun MostrarDialog(title: String, header: String, value: String?, onValueChange: 
 
 fun generarTextoConfirmacion() : String {
     val caracteres = (
-        ('a' .. 'z') +
-        ('A' .. 'Z') +
-        (0 .. 9) +
-        listOf('!', '@', '#', '$', '%', '&', '*', '+', '-', '_')
-    )
+            ('a' .. 'z') +
+                    ('A' .. 'Z') +
+                    (0 .. 9) +
+                    listOf('!', '@', '#', '$', '%', '&', '*', '+', '-', '_')
+            )
 
     val longitud = 12
 

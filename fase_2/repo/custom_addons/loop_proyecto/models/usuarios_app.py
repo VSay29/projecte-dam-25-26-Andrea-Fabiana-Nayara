@@ -43,6 +43,14 @@ class UsuariosApp(models.Model):
         'producto_id',
         string='Favoritos'
     )
+    
+    carrito_ids = fields.Many2many(
+        'loop_proyecto.producto',
+        'loop_carrito_rel',
+        'usuario_id',
+        'producto_id',
+        string='Carrito'
+    )
 
     valoracion_ids = fields.One2many(
         'loop_proyecto.valoracion',
