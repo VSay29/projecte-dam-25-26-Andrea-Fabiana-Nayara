@@ -30,10 +30,13 @@ import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
 import com.example.android_loop.viewModel.HomeViewModel
 import com.example.android_loop.viewModel.ProductoHomeUiState
+import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
+import com.example.android_loop.view.componentes.PantallaHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +52,8 @@ fun Home(navController: NavHostController) {
     // SECCION: CARGA DE VIEWMODELS
 
     val homeViewModel: HomeViewModel = viewModel()
+    // DOC: Esta declaración hace que el viewModel de favoritos esté compartido con esta ventana
+    val favoritoViewModel: FavoritosViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val homeUiState = homeViewModel.homeUiState
     val productoHomeState = homeViewModel.productosUiState
 
@@ -60,13 +65,9 @@ fun Home(navController: NavHostController) {
     // SECCION: VARIABLES
 
     val productos = (productoHomeState as? ProductoHomeUiState.SuccessCargarProductos)?.resp ?: emptyList()
-
     val cartCount = carritoViewModel.cartItems.size
-
     var buscador by remember { mutableStateOf("") }
-
     var categoriaSeleccionada by remember { mutableStateOf<String?>(null) }
-
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
@@ -104,8 +105,6 @@ fun Home(navController: NavHostController) {
 
         is HomeUiState.Error -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Log.d("DEBUG_HOME_HOMESTATE", homeUiState.message)
-
                 Text(homeUiState.message)
             }
             return
@@ -140,23 +139,16 @@ fun Home(navController: NavHostController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-
-                windowInsets = WindowInsets(0),
-                title = {
-                    Text(
-                        "Página principal",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Primary,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                ),
-                actions = {
-
-                    // DOC: Icono del carrito con badge que muestra la cantidad de artículos
+            Box(Modifier.fillMaxWidth()) {
+                PantallaHeader(titulo = "Productos")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .matchParentSize()
+                        .padding(end = 8.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     BadgedBox(
                         badge = {
                             if (cartCount > 0) {
@@ -167,12 +159,13 @@ fun Home(navController: NavHostController) {
                         IconButton(onClick = { navController.navigate(ROUTES.CARRITO) }) {
                             Icon(
                                 imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Carrito"
+                                contentDescription = "Carrito",
+                                tint = OnPrimary
                             )
                         }
                     }
                 }
-            )
+            }
         }
     ) { paddingValues ->
 
@@ -288,8 +281,8 @@ fun Home(navController: NavHostController) {
                                             product = product,
                                             onClick = { navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${product.id}") },
                                             onAddToCart = { carritoViewModel.addToCart(product) },
-                                            isFavorite = false,
-                                            onToggleFavorite = {}
+                                            isFavorite = favoritoViewModel.favoritoIds.contains(product.id),
+                                            onToggleFavorite = { favoritoViewModel.agregarOquitarfavorito(token, product.id) }
                                         )
                                     }
                                 }

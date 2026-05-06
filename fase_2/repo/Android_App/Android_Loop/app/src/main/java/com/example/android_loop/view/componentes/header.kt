@@ -24,13 +24,12 @@ fun PantallaHeader(titulo: String) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                // Degradado horizontal de azul oscuro (Primary) a azul océano (Secondary)
                 brush = Brush.horizontalGradient(
                     colors = listOf(Primary, Secondary)
                 )
             )
-            .padding(vertical = 20.dp),
-        contentAlignment = Alignment.Center
+            .padding(top = 48.dp, bottom = 16.dp, start = 20.dp, end = 20.dp),
+        contentAlignment = Alignment.BottomStart
     ) {
         Text(
             text = titulo,

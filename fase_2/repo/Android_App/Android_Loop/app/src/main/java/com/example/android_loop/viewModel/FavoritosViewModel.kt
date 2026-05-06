@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.model_dataClass.favoritoResult.Favorito
 import com.example.android_loop.data.repository.FavoritoRepository
+import com.example.android_loop.view.vistas.Favoritos
 import kotlinx.coroutines.launch
 
 class FavoritosViewModel(private val repo: FavoritoRepository = FavoritoRepository()) : ViewModel() {
 
     var favState by mutableStateOf<FavoritosUiState>(FavoritosUiState.Idle)
+    var favoritoIds by mutableStateOf(setOf<Int>())
+        private set
 
     fun favoritosGet(token : String) {
         viewModelScope.launch {
@@ -20,22 +23,36 @@ class FavoritosViewModel(private val repo: FavoritoRepository = FavoritoReposito
             val result = repo.getUserFavoritos(token)
 
             favState = result.fold(
-                onSuccess = { FavoritosUiState.SuccessGet(it.result) },
-                onFailure = { FavoritosUiState.ErrorGet(it.message ?: "Hubo un error") }
+                onSuccess = {
+                    favoritoIds = it.result.map { fav -> fav.id }.toSet()
+                    FavoritosUiState.SuccessGet(it.result)
+                },
+                onFailure = { FavoritosUiState.ErrorGet(it.message ?: "No se pudo agregar el producto a favoritos") }
             )
         }
     }
 
-    fun favoritosDelete(token: String, productoId: Int) {
-
+    fun agregarOquitarfavorito(token: String, productId: Int) {
         viewModelScope.launch {
 
-            repo.removeFavorito(token, productoId)
+            val esFavorito = favoritoIds.contains(productId)
+
+            if(esFavorito) {
+                repo.removeFavorito(token, productId)
+                favoritoIds = favoritoIds - productId
+            } else {
+                repo.addFavoritos(token, productId)
+                favoritoIds = favoritoIds + productId
+            }
 
             if (favState is FavoritosUiState.SuccessGet) {
-                val currentLista = (favState as FavoritosUiState.SuccessGet).result
-
-                val nuevaLista = currentLista.filter { it.id != productoId }
+                val lista = (favState as FavoritosUiState.SuccessGet).result
+                val nuevaLista = if (esFavorito) {
+                    lista.filter { it.id != productId }
+                } else {
+                    favoritosGet(token)
+                    return@launch
+                }
 
                 favState = FavoritosUiState.SuccessGet(nuevaLista)
 
@@ -43,39 +60,6 @@ class FavoritosViewModel(private val repo: FavoritoRepository = FavoritoReposito
 
         }
     }
-
-    fun favoritosAdd(token: String, productoId: Int) {
-        viewModelScope.launch {
-            val result = repo.addFavoritos(token, productoId)
-
-            favState = result.fold(
-                onSuccess = { FavoritosUiState.SuccessAdd(it.success) },
-                onFailure = { FavoritosUiState.ErrorAdd(it.message ?: "Hubo un error") }
-            )
-        }
-    }
-
-    /* TODO: ORIENTACIÓN PARA QUITAR FAVORITOS Y AGREGARLOS CONTANDO CON EL ICONO DEL HOME
-    //estado que guara los ids de productos favoritos
-    var favoritoIds by mutableStateOf(setOf<Int>())
-        private set
-
-
-    fun añadirOquitarfavorito(token: String, productId: Int) {
-        viewModelScope.launch {
-            favoritoIds = if (favoritoIds.contains(productId)) {
-                repository.removeFavorito(token, productId)
-                favoritoIds - productId   // Ya era favorito → lo quitamos
-            } else {
-                repository.addFavoritos(token, productId)
-                favoritoIds + productId   // No era favorito → lo añadimos
-            }
-
-
-        }
-    }
-}*/
-
 }
 
 sealed class FavoritosUiState {
