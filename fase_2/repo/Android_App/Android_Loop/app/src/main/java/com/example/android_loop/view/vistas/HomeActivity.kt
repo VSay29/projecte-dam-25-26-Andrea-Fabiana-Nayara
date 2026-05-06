@@ -41,9 +41,11 @@ import com.example.android_loop.view.componentes.PantallaHeader
 @Composable
 fun Home(navController: NavHostController) {
 
+    // SECCION: CONTEXT
+    val context = LocalContext.current
+
     // SECCION: TOKEN
 
-    val context = LocalContext.current
     val token = getToken(context)
 
     // SECCION: CARGA DE VIEWMODELS
@@ -101,6 +103,7 @@ fun Home(navController: NavHostController) {
         is HomeUiState.Error -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Log.d("DEBUG_HOME_HOMESTATE", homeUiState.message)
+
                 Text(homeUiState.message)
             }
             return
