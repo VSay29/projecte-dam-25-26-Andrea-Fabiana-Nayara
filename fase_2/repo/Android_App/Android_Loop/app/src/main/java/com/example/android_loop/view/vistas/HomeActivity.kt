@@ -71,9 +71,8 @@ fun Home(navController: NavHostController) {
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
-    // Se recarga el carrito para que se cargue el carrito correspondiente al usuario que inició sesión
     LaunchedEffect(token) {
-        carritoViewModel.reloadCart()
+        carritoViewModel.cargarCarrito(token)
         homeViewModel.cargarProductos(token)
         homeViewModel.cargarCategorias(token)
     }
@@ -280,7 +279,7 @@ fun Home(navController: NavHostController) {
                                         ProductCardSquare(
                                             product = product,
                                             onClick = { navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${product.id}") },
-                                            onAddToCart = { carritoViewModel.addToCart(product) },
+                                            onAddToCart = { carritoViewModel.addToCart(token, product) },
                                             isFavorite = favoritoViewModel.favoritoIds.contains(product.id),
                                             onToggleFavorite = { favoritoViewModel.agregarOquitarfavorito(token, product.id) }
                                         )

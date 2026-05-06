@@ -132,9 +132,9 @@ class CRUD_User_Controller(http.Controller):
 
         return {'success': True}
     
-
-
-
+    """
+    ENDPOINT: OBTENER FAVORITOS
+    """
 
     @http.route('/api/v1/loop/favoritos', type='json', auth='none', csrf=False, cors='*', methods=['GET'])
     def get_favoritos(self, **params):
@@ -157,6 +157,9 @@ class CRUD_User_Controller(http.Controller):
         return {'result': productos}
     
 
+    """
+    ENDPOINT: AÑADIR PRODUCTO A FAVORITOS
+    """
     
     @http.route('/api/v1/loop/favoritos/add', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def add_favorito(self, **params):
@@ -184,7 +187,9 @@ class CRUD_User_Controller(http.Controller):
         return {'success': True}
     
 
-
+    """
+    ENDPOINT: ELIMINAR PRODUCTO DE FAVORITOS
+    """
     
     @http.route('/api/v1/loop/favoritos/remove', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def remove_favorito(self, **params):
@@ -205,4 +210,85 @@ class CRUD_User_Controller(http.Controller):
             return {'error': 'No está en favoritos'}
 
         user.sudo().write({'favorito_ids': [(3, producto_id)]})
+        return {'success': True}
+
+
+    """
+    ENDPOINT: OBTENER CARRITO
+    """
+
+    @http.route('/api/v1/loop/carrito', type='json', auth='none', csrf=False, cors='*', methods=['GET'])
+    def get_carrito(self, **params):
+        user = get_current_user_from_token()
+        if not user:
+            return {'error': 'Unauthorized'}
+
+        productos = []
+        for p in user.carrito_ids:
+            imagenes = [img.imagen for img in p.imagen_ids]
+            productos.append({
+                'id': p.id,
+                'nombre': p.nombre,
+                'descripcion': p.descripcion,
+                'precio': p.precio,
+                'ubicacion': p.ubicacion,
+                'imagenes': imagenes
+            })
+
+        return {'productos': productos}
+
+
+    """
+    ENDPOINT: AÑADIR PRODUCTO AL CARRITO
+    """
+
+    @http.route('/api/v1/loop/carrito/add', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
+    def add_carrito(self, **params):
+        user = get_current_user_from_token()
+        if not user:
+            return {'error': 'Unauthorized'}
+
+        data = params.get('data')
+        if not data or 'producto_id' not in data:
+            return {'error': 'producto_id requerido'}
+
+        try:
+            producto_id = int(data.get('producto_id'))
+        except (TypeError, ValueError):
+            return {'error': 'producto_id inválido'}
+
+        producto = request.env['loop_proyecto.producto'].sudo().browse(producto_id)
+        if not producto.exists():
+            return {'error': 'Producto no encontrado'}
+
+        if producto_id in user.carrito_ids.ids:
+            return {'error': 'Ya está en el carrito'}
+
+        user.write({'carrito_ids': [(4, producto_id)]})
+        return {'success': True}
+
+
+    """
+    ENDPOINT: ELIMINAR PRODUCTO DEL CARRITO
+    """
+
+    @http.route('/api/v1/loop/carrito/remove', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
+    def remove_carrito(self, **params):
+        user = get_current_user_from_token()
+        if not user:
+            return {'error': 'Unauthorized'}
+
+        data = params.get('data')
+        if not data or 'producto_id' not in data:
+            return {'error': 'producto_id requerido'}
+
+        try:
+            producto_id = int(data.get('producto_id'))
+        except (TypeError, ValueError):
+            return {'error': 'producto_id inválido'}
+
+        if producto_id not in user.carrito_ids.ids:
+            return {'error': 'No está en el carrito'}
+
+        user.sudo().write({'carrito_ids': [(3, producto_id)]})
         return {'success': True}
