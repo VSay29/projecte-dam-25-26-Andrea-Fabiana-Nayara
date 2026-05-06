@@ -30,6 +30,7 @@ import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
 import com.example.android_loop.viewModel.HomeViewModel
 import com.example.android_loop.viewModel.ProductoHomeUiState
@@ -51,6 +52,8 @@ fun Home(navController: NavHostController) {
     // SECCION: CARGA DE VIEWMODELS
 
     val homeViewModel: HomeViewModel = viewModel()
+    // DOC: Esta declaración hace que el viewModel de favoritos esté compartido con esta ventana
+    val favoritoViewModel: FavoritosViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val homeUiState = homeViewModel.homeUiState
     val productoHomeState = homeViewModel.productosUiState
 
@@ -102,8 +105,6 @@ fun Home(navController: NavHostController) {
 
         is HomeUiState.Error -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Log.d("DEBUG_HOME_HOMESTATE", homeUiState.message)
-
                 Text(homeUiState.message)
             }
             return
@@ -280,8 +281,8 @@ fun Home(navController: NavHostController) {
                                             product = product,
                                             onClick = { navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${product.id}") },
                                             onAddToCart = { carritoViewModel.addToCart(product) },
-                                            isFavorite = false,
-                                            onToggleFavorite = {}
+                                            isFavorite = favoritoViewModel.favoritoIds.contains(product.id),
+                                            onToggleFavorite = { favoritoViewModel.agregarOquitarfavorito(token, product.id) }
                                         )
                                     }
                                 }
