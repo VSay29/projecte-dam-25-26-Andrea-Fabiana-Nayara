@@ -47,9 +47,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
 import com.example.android_loop.utils.navegacionConfig.ROUTES
-import com.example.android_loop.utils.obtenerUbiSP
 import com.example.android_loop.utils.setToken
-import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.LoginUiState
 import com.example.android_loop.viewModel.LoginViewModel
@@ -177,7 +176,7 @@ fun Loggeo(navController: NavHostController) {
 
                         Spacer(Modifier.height(22.dp))
 
-                        BotonCrearProducto(
+                        Boton_Componente(
                             texto = "Iniciar Sesión",
                             onClick = {
                                 errorNombre = username.isEmpty()

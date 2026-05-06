@@ -46,7 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.android_loop.R
 import com.example.android_loop.utils.navegacionConfig.ROUTES
-import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.viewModel.RegistroUiState
 import com.example.android_loop.viewModel.RegistroViewModel
 
@@ -219,7 +219,7 @@ fun Registro(navController: NavHostController) {
 
                         Spacer(Modifier.height(22.dp))
 
-                        BotonCrearProducto(
+                        Boton_Componente(
                             texto = "Registrarse",
                             onClick = {
                                 errorName = name.isEmpty()

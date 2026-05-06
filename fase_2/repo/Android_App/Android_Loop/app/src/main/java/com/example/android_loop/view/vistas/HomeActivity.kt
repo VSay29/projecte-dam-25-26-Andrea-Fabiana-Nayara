@@ -36,7 +36,7 @@ import com.example.android_loop.viewModel.HomeViewModel
 import com.example.android_loop.viewModel.ProductoHomeUiState
 import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
-import com.example.android_loop.view.componentes.PantallaHeader
+import com.example.android_loop.view.componentes.Header_Componente
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,7 +140,7 @@ fun Home(navController: NavHostController) {
     Scaffold(
         topBar = {
             Box(Modifier.fillMaxWidth()) {
-                PantallaHeader(titulo = "Productos")
+                Header_Componente(titulo = "Productos")
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

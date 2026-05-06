@@ -23,7 +23,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Share
-import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.example.android_loop.view.componentes.Boton_Componente
 import com.tuapp.ui.theme.Primary
 import android.util.Log
 import android.widget.Toast
@@ -159,7 +159,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     ) {
                         Text("Ver perfil", style = MaterialTheme.typography.labelLarge)
                     }
-                    BotonCrearProducto(
+                    Boton_Componente(
                         texto = "Añadir al carrito",
                         onClick = {
                             val imagenesParaProducto = listaImagenes.map {
