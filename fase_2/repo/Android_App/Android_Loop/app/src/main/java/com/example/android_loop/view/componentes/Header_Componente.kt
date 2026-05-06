@@ -19,7 +19,7 @@ import com.tuapp.ui.theme.Secondary
 // Recibe "titulo" como parámetro, así cada pantalla puede tener su propio texto.
 // Ejemplo de uso: PantallaHeader(titulo = "Crear Producto")
 @Composable
-fun PantallaHeader(titulo: String) {
+fun Header_Componente(titulo: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
