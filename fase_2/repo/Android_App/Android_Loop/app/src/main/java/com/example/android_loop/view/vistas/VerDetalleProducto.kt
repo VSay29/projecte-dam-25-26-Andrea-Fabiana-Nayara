@@ -166,6 +166,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                                 Imagen(id = it.id, principal = it.principal, orden = it.sequence)
                             }
                             carritoViewModel.addToCart(
+                                token,
                                 Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail)
                             )
                             navController.navigate(ROUTES.CARRITO)
