@@ -34,7 +34,9 @@ import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
 import com.example.android_loop.viewModel.HomeViewModel
 import com.example.android_loop.viewModel.ProductoHomeUiState
+import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
+import com.example.android_loop.view.componentes.PantallaHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,13 +65,9 @@ fun Home(navController: NavHostController) {
     // SECCION: VARIABLES
 
     val productos = (productoHomeState as? ProductoHomeUiState.SuccessCargarProductos)?.resp ?: emptyList()
-
     val cartCount = carritoViewModel.cartItems.size
-
     var buscador by remember { mutableStateOf("") }
-
     var categoriaSeleccionada by remember { mutableStateOf<String?>(null) }
-
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
@@ -141,23 +139,16 @@ fun Home(navController: NavHostController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-
-                windowInsets = WindowInsets(0),
-                title = {
-                    Text(
-                        "Página principal",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Primary,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                ),
-                actions = {
-
-                    // DOC: Icono del carrito con badge que muestra la cantidad de artículos
+            Box(Modifier.fillMaxWidth()) {
+                PantallaHeader(titulo = "Productos")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .matchParentSize()
+                        .padding(end = 8.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     BadgedBox(
                         badge = {
                             if (cartCount > 0) {
@@ -168,12 +159,13 @@ fun Home(navController: NavHostController) {
                         IconButton(onClick = { navController.navigate(ROUTES.CARRITO) }) {
                             Icon(
                                 imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Carrito"
+                                contentDescription = "Carrito",
+                                tint = OnPrimary
                             )
                         }
                     }
                 }
-            )
+            }
         }
     ) { paddingValues ->
 

@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
@@ -50,8 +52,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -71,7 +74,9 @@ import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.toBase64
+import com.example.android_loop.view.componentes.PantallaHeader
 import com.example.android_loop.view.theme.Android_LoopTheme
+import com.tuapp.ui.theme.OnPrimary
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentarioUiState
 import com.example.android_loop.viewModel.ComentariosViewModel
@@ -102,16 +107,13 @@ fun PerfilUsuario(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var idioma by remember { mutableStateOf("Español") }
     var image_1920 by remember { mutableStateOf("") }
-    val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
-    var avatarImage by remember { mutableStateOf<ImageBitmap?>(defaultAvatar) }
+    var avatarImage by remember { mutableStateOf<ImageBitmap?>(null) }
 
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("En venta", "Reseñas")
 
     val productosState = perfilViewModel.perfilUiState
     var filtro by rememberSaveable { mutableStateOf("") }
-
-
 
 
     LaunchedEffect(Unit) {
@@ -163,102 +165,113 @@ fun PerfilUsuario(navController: NavHostController) {
         Column(
             Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 90.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(top = 32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                // -- BOTÓN AJUSTES --
+            // -- HEADER CON NOMBRE Y AJUSTES --
+            Box(Modifier.fillMaxWidth()) {
+                PantallaHeader(titulo = username.ifBlank { "Mi perfil" }.replaceFirstChar { it.uppercase() })
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopEnd),
-                    horizontalArrangement = Arrangement.End
+                        .matchParentSize()
+                        .padding(end = 8.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     IconButton(onClick = { navController.navigate(ROUTES.AJUSTES) }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Ajustes",
-                            tint = Color(0xFF003459),
+                            tint = OnPrimary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                 }
+            }
 
-                // -- FOTO DE PERFIL EDITABLE --
-
-                Column(Modifier.verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,) {
-                    avatarImage?.let { img ->
-                        Image(
-                            bitmap = img,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(110.dp)
-                                .clip(CircleShape)
-                        )
-                    }
-
+            // -- FOTO DE PERFIL EDITABLE --
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     val launcher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.GetContent()
                     ) { uri ->
                         uri?.let {
                             val nuevaFoto = toBase64(context, it)
-
                             isLoading = true
-
                             scope.launch {
                                 perfilViewModel.cambiarFotoPerfil(getToken(context), nuevaFoto)
                                 avatarImage = base64ToImage(nuevaFoto)
-
                                 delay(1000)
                                 isLoading = false
-
                                 Toast.makeText(context, "¡Foto de perfil actualizada!", Toast.LENGTH_SHORT).show()
                             }
+                        }
+                    }
 
+                    Box(contentAlignment = Alignment.Center) {
+                        if (avatarImage != null) {
+                            Image(
+                                bitmap = avatarImage!!,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(130.dp)
+                                    .clip(CircleShape)
+                                    .border(3.dp, Color(0xFFDDDDDD), CircleShape)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(130.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE8EEF4))
+                                    .border(3.dp, Color(0xFFDDDDDD), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9E9E9E),
+                                    modifier = Modifier.size(76.dp)
+                                )
+                            }
+                        }
+
+                        // Botón editar moderno
+                        Box(
+                            modifier = Modifier
+                                .size(34.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF003459))
+                                .clickable { launcher.launch("image/*") }
+                                .align(Alignment.BottomEnd),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Cambiar imagen",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp)
+                            )
                         }
                     }
 
                     if (isLoading) CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
-
-                    // -- BOTÓN LÁPIZ CAMBIAR FOTO DE PERFIL --
-
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Cambiar imagen",
-                            tint = Color(0xFF003459),
-                            modifier = Modifier.size(16.dp).clickable(onClick = {
-                                launcher.launch("image/*")
-                            })
-                        )
-                    }
-
-                    Spacer(Modifier.Companion.height(8.dp))
-
-                    Text(username)
-
                 }
-
             }
 
-            Spacer(Modifier.Companion.height(30.dp))
+            Spacer(Modifier.height(30.dp))
 
             Card(
                 modifier = Modifier.fillMaxSize(),
@@ -315,28 +328,27 @@ fun PerfilUsuario(navController: NavHostController) {
                     when (selectedTab) {
                         0 -> {
                             TextField(
-                                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(30.dp)),
                                 value = filtro,
-                                onValueChange = {
-                                    filtro = it
-                                },
+                                onValueChange = { filtro = it },
                                 placeholder = { Text("Buscar producto") },
                                 leadingIcon = {
                                     Icon(
                                         painter = painterResource(R.drawable.lupa),
                                         contentDescription = "Buscar",
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 },
                                 singleLine = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(30.dp)),
                                 colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color.LightGray,
-                                    unfocusedContainerColor = Color.LightGray,
-                                    disabledContainerColor = Color.LightGray,
+                                    focusedContainerColor = Color(0xFFF0F4F8),
+                                    unfocusedContainerColor = Color(0xFFF0F4F8),
                                     focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent
                                 )
-
                             )
 
                             // MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
@@ -356,21 +368,49 @@ fun PerfilUsuario(navController: NavHostController) {
                                     }
 
                                     if(!productosFiltrados.isEmpty()) {
-                                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        Spacer(Modifier.height(10.dp))
+                                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                             productosFiltrados.forEach { producto ->
                                                 Card(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(10.dp),
-                                                    shape = RoundedCornerShape(12.dp)
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    shape = RoundedCornerShape(16.dp),
+                                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
+                                                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                                                 ) {
-                                                    Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                                                        Column {
-                                                            Text(text = producto.nombre)
-                                                            Text(text = producto.descripcion)
-                                                            Text(text = "Precio: ${producto.precio}")
-                                                            Text(text = producto.ubicacion)
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(14.dp),
+                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Column(Modifier.weight(1f)) {
+                                                            Text(
+                                                                text = producto.nombre,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                fontSize = 15.sp
+                                                            )
+                                                            Text(
+                                                                text = producto.descripcion,
+                                                                fontSize = 12.sp,
+                                                                color = Color.Gray,
+                                                                maxLines = 1,
+                                                                overflow = TextOverflow.Ellipsis
+                                                            )
+                                                            if (producto.ubicacion.isNotBlank()) {
+                                                                Text(
+                                                                    text = producto.ubicacion,
+                                                                    fontSize = 12.sp,
+                                                                    color = Color.Gray
+                                                                )
+                                                            }
                                                         }
+                                                        Text(
+                                                            text = "${producto.precio} €",
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = Color(0xFF003459),
+                                                            fontSize = 15.sp
+                                                        )
                                                     }
                                                 }
                                             }
