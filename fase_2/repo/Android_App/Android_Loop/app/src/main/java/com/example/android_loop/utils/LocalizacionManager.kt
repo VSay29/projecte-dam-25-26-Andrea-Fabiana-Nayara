@@ -167,11 +167,6 @@ fun mostrarMapa(showMap: Boolean, onDismiss: () -> Unit, locationState: DoubleAr
 
     Log.d("DEBUG_MAPA", "$locationState")
 
-    LaunchedEffect(showMap) {
-        if (showMap) {
-            incrementarContadorMapa(context)
-        }
-    }
     val showMap1 = showMap
     if (showMap1) {
         ModalBottomSheet(
