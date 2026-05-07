@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
         else println("No hay permisos de acceso al sensor de ubicación.")
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,13 +49,11 @@ class MainActivity : ComponentActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         requestPermissions()
-        getLastLocation()
 
-        val builder = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            100
-        )
-        locationRequest = builder.build()
+        locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            60 * 60 * 1000
+        ).build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
                         location.latitude,
                         location.longitude
                     )
+                    guardarUbiSP(this@MainActivity, locationState.value[0], locationState.value[1])
                 }
             }
         }
