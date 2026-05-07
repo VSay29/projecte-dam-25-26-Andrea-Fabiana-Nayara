@@ -16,6 +16,8 @@ ktorClientContentNegotiation = "2.3.4"
 ktorClientCore = "2.3.4"
 ktorSerializationKotlinxJsonVersion = "2.3.4"
 playServicesLocation = "21.3.0"
+mapsCompose = "4.4.1"
+playServicesMaps = "19.2.0"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -43,6 +45,8 @@ ktor-client-content-negotiation = {module = "io.ktor:ktor-client-content-negotia
 ktor-client-core = {module = "io.ktor:ktor-client-core",version.ref = "ktorClientCore" }
 ktor-serialization-kotlinx-json = {module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJsonVersion" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

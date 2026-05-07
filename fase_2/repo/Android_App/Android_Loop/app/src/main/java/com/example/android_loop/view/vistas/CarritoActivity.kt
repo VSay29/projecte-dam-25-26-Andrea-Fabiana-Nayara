@@ -9,11 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.viewModel.CarritoViewModel
 
@@ -21,6 +23,9 @@ import com.example.android_loop.viewModel.CarritoViewModel
 fun Carrito(
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val token = getToken(context)
+
     val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val items = viewModel.cartItems
     val total = viewModel.total
@@ -70,12 +75,8 @@ fun Carrito(
                                     style = MaterialTheme.typography.titleSmall
                                 )
                                 Text(text = "%.2f €".format(product.precio))
-                                Text(
-                                    text = product.categoria?.nombre ?: "",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
                             }
-                            IconButton(onClick = { viewModel.removeFromCart(product) }) {
+                            IconButton(onClick = { viewModel.removeFromCart(token, product) }) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Eliminar del carrito"

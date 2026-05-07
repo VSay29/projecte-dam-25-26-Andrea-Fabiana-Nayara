@@ -21,11 +21,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Share
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.tuapp.ui.theme.Primary
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -51,6 +51,12 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.DialogProperties
+import com.example.android_loop.utils.mostrarMapa
+import com.example.android_loop.utils.normalizarLocation
+import com.example.android_loop.utils.traducirLatLngAUbicacion
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
@@ -59,8 +65,6 @@ import kotlin.collections.emptyList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerProducto(productoId: Int, navController: NavController) {
-
-    Log.d("DEBUG_IDPRODUCTO", productoId.toString())
 
     val context = LocalContext.current
     val token = getToken(context)
@@ -87,6 +91,11 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
     var showImageViewer by remember { mutableStateOf(false) }
 
+    var showMap by remember { mutableStateOf(false) }
+    var locationState by remember { mutableStateOf<DoubleArray?>(null) }
+
+    var location by rememberSaveable { mutableStateOf(doubleArrayOf(0.0, 0.0)) }
+
     // SECCION: CARGAR PRODUCTO
 
     LaunchedEffect(productoId) {
@@ -95,7 +104,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
     }
 
     // FIXME: SUSTITUIR LAS VARIABLES POR LA VARIABLE PRODUCTO (NOS AHORRAMOS 10 VARIBLES)
-    val producto = (verProductoState as? VerProductoUiState.SuccessCargarProducto)?.resp
+    //val producto = (verProductoState as? VerProductoUiState.SuccessCargarProducto)?.resp
 
     val listaImagenes = verProductoVM.imagenesUiState
 
@@ -110,6 +119,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 precio = producto.resp.precio
                 estado = producto.resp.estado
                 ubicacion = producto.resp.ubicacion
+                location = normalizarLocation(ubicacion)
                 antiguedad = producto.resp.antiguedad
                 categoria = producto.resp.categoria
                 propietario = producto.resp.propietario
@@ -144,7 +154,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                         onClick = {
                             val id = propietario?.id ?: return@OutlinedButton
                             val nombre = propietario?.nombre ?: return@OutlinedButton
-                            navController.navigate("perfil_Vendedor/$id/${Uri.encode(nombre)}")
+                            navController.navigate("${ROUTES.PERFIL_VENDEDOR}/$id/${Uri.encode(nombre)}")
                         },
                         enabled = propietario != null,
                         modifier = Modifier
@@ -166,6 +176,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                                 Imagen(id = it.id, principal = it.principal, orden = it.sequence)
                             }
                             carritoViewModel.addToCart(
+                                token,
                                 Producto(id, nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria, propietario, etiquetas, imagenesParaProducto, thumbnail)
                             )
                             navController.navigate(ROUTES.CARRITO)
@@ -198,7 +209,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.ArrowBackIosNew,
                         contentDescription = "Volver",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable { navController.popBackStack() }
@@ -207,7 +218,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.Share,
                         contentDescription = "Compartir",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
@@ -230,142 +241,171 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 color = MaterialTheme.colorScheme.background,
                 shadowElevation = 0.dp
             ) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
 
-                Text(
-                    text = nombre.replaceFirstChar { it.uppercase() },
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "%.2f €".format(precio),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = "Descripción",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Primary
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = descripcion,
-                            style = MaterialTheme.typography.bodyMedium
+                            text = nombre.replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        HorizontalDivider(color = Color(0xFFE8E8E8))
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            text = "Características",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Primary
+                        Icon(
+                            Icons.Default.LocationOn,
+                            contentDescription = "Ver en el mapa",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    locationState = normalizarLocation(ubicacion)
+                                    showMap = true
+                                }
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
 
-                        InfoRow("Estado", estado)
-                        InfoRow("Ubicación", ubicacion)
-                        antiguedad?.let {
-                            InfoRow("Antigüedad", it)
-                        }
-                        InfoRow("Vendedor", propietario?.nombre)
+                    }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        HorizontalDivider(color = Color(0xFFE8E8E8))
-                        Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Text(
+                        text = "%.2f €".format(precio),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+
                             Text(
-                                text = "Categoría",
+                                text = "Descripción",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Primary
                             )
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = categoria?.nombre ?: "Sin categoría",
+                                text = descripcion,
                                 style = MaterialTheme.typography.bodyMedium
                             )
-                        }
 
-                        if (etiquetas.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(16.dp))
                             HorizontalDivider(color = Color(0xFFE8E8E8))
                             Spacer(modifier = Modifier.height(16.dp))
+
                             Text(
-                                text = "Etiquetas",
+                                text = "Características",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Primary
                             )
                             Spacer(modifier = Modifier.height(12.dp))
+
+                            InfoRow("Estado", estado)
+                            InfoRow("Ubicación", traducirLatLngAUbicacion(context, location))
+                            antiguedad?.let {
+                                InfoRow("Antigüedad", it)
+                            }
+                            InfoRow("Vendedor", propietario?.nombre)
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            HorizontalDivider(color = Color(0xFFE8E8E8))
+                            Spacer(modifier = Modifier.height(16.dp))
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                etiquetas.forEach { etiqueta ->
-                                    SuggestionChip(
-                                        onClick = {},
-                                        label = { Text(etiqueta.displayName) }
-                                    )
+                                Text(
+                                    text = "Categoría",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Primary
+                                )
+                                Text(
+                                    text = categoria?.nombre ?: "Sin categoría",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+
+                            if (etiquetas.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                HorizontalDivider(color = Color(0xFFE8E8E8))
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Etiquetas",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Primary
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    etiquetas.forEach { etiqueta ->
+                                        SuggestionChip(
+                                            onClick = {},
+                                            label = { Text(etiqueta.displayName) }
+                                        )
+                                    }
                                 }
                             }
+
                         }
-
                     }
-                }
 
+                }
             }
-            } // Surface
 
         }
 
-        if (showImageViewer) {
-            Dialog(
-                onDismissRequest = { showImageViewer = false },
-                properties = androidx.compose.ui.window.DialogProperties(
-                    usePlatformDefaultWidth = false
-                )
-            ) {
-                Box(Modifier.fillMaxSize().background(Color.Black)) {
-                    MostrarImagenes(listaImagenes)
+        showImageViewer = MostrarCarrousel(showImageViewer, listaImagenes)
 
-                    IconButton(
-                        onClick = { showImageViewer = false },
-                        Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Cerrar",
-                            tint = Color.White
-                        )
-                    }
-                }
-            }
-        }
+        mostrarMapa(showMap, onDismiss = { showMap = false }, locationState)
 
     }
+}
+
+@Composable
+private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<ImagenDetalle>, ): Boolean {
+    var showImageViewer1 = showImageViewer
+    if (showImageViewer1) {
+        Dialog(
+            onDismissRequest = { showImageViewer1 = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            Box(Modifier
+                .fillMaxSize()
+                .background(Color.Black)) {
+                MostrarImagenes(listaImagenes)
+
+                IconButton(
+                    onClick = { showImageViewer1 = false },
+                    Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Cerrar",
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    }
+    return showImageViewer1
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -408,7 +448,7 @@ private fun ImageCarousel(imagenes: List<ImagenDetalle>, onImageClick: () -> Uni
                     try {
                         val bytes = Base64.decode(it, Base64.DEFAULT)
                         BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         null
                     }
                 }
@@ -463,20 +503,19 @@ private fun InfoRow(label: String, value: String?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 4.dp)
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
             color = Color.Gray
         )
-        if (value != null) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+
+        Text(
+            text = value ?: "",
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End
+        )
     }
 }
 
@@ -500,7 +539,7 @@ private fun MostrarImagenes(imagenes: List<ImagenDetalle>) {
                 val bytes = Base64.decode(img.imagen, Base64.DEFAULT)
                 BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     ?.asImageBitmap()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }
