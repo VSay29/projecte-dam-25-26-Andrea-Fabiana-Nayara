@@ -16,7 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import com.example.android_loop.view.componentes.Loading_Componente
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -169,18 +169,7 @@ fun Favoritos(navController: NavHostController) {
 
         // UI de carga
 
-        if (favState is FavoritosUiState.Loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = Color.Blue
-                )
-            }
-        }
+        Loading_Componente(visible = favState is FavoritosUiState.Loading)
     }
 
 }
