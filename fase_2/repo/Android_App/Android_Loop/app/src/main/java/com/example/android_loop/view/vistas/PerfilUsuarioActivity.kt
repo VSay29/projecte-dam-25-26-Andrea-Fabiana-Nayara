@@ -36,8 +36,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import com.example.android_loop.view.componentes.Busqueda_Componente
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -327,28 +326,10 @@ fun PerfilUsuario(navController: NavHostController) {
 
                     when (selectedTab) {
                         0 -> {
-                            TextField(
+                            Busqueda_Componente(
                                 value = filtro,
                                 onValueChange = { filtro = it },
-                                placeholder = { Text("Buscar producto") },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(R.drawable.lupa),
-                                        contentDescription = "Buscar",
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                },
-                                singleLine = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(30.dp)),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color(0xFFF0F4F8),
-                                    unfocusedContainerColor = Color(0xFFF0F4F8),
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent
-                                )
+                                placeholder = "Buscar producto"
                             )
 
                             // MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
