@@ -283,26 +283,12 @@ fun ProductCardSquare(
 
                 Spacer(modifier = Modifier.height(2.dp))
 
-                // Ubicación + botón + en la misma fila
+                // Botón + en la misma fila
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = Color(0xFF8FA3B1),
-                        modifier = Modifier.size(10.dp)
-                    )
-                    Text(
-                        text = product.ubicacion,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF8FA3B1),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-
                     // Botón + añadir al carrito
                     Box(
                         modifier = Modifier

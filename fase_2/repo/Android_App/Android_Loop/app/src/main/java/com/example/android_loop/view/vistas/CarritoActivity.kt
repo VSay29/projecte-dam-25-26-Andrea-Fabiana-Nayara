@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,6 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
@@ -25,6 +27,9 @@ import com.example.android_loop.viewModel.CarritoViewModel
 
 @Composable
 fun Carrito(navController: NavController) {
+    val context = LocalContext.current
+    val token = getToken(context)
+
     val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val items = viewModel.cartItems
     val total = viewModel.total
@@ -90,7 +95,7 @@ fun Carrito(navController: NavController) {
                                     color = Color(0xFF003459),
                                     fontSize = 15.sp
                                 )
-                                IconButton(onClick = { viewModel.removeFromCart(product) }) {
+                                IconButton(onClick = { viewModel.removeFromCart(token, product) }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Eliminar del carrito",
