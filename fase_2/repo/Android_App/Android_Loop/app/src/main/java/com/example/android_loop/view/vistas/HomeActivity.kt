@@ -1,6 +1,5 @@
 package com.example.android_loop.view.vistas
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +28,9 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
@@ -127,7 +129,6 @@ fun Home(navController: NavHostController) {
 
         is ProductoHomeUiState.Error -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Log.d("DEBUG_HOME_PRODUCTOHOMESTATE", productoHomeState.message)
                 Text(productoHomeState.message)
             }
             return
