@@ -74,7 +74,7 @@ import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.toBase64
-import com.example.android_loop.view.componentes.PantallaHeader
+import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.tuapp.ui.theme.OnPrimary
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
@@ -174,7 +174,7 @@ fun PerfilUsuario(navController: NavHostController) {
 
             // -- HEADER CON NOMBRE Y AJUSTES --
             Box(Modifier.fillMaxWidth()) {
-                PantallaHeader(titulo = username.ifBlank { "Mi perfil" }.replaceFirstChar { it.uppercase() })
+                Header_Componente(titulo = username.ifBlank { "Mi perfil" }.replaceFirstChar { it.uppercase() })
                 Row(
                     modifier = Modifier
                         .matchParentSize()

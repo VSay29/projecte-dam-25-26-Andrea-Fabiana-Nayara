@@ -32,8 +32,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.tuapp.ui.theme.Primary
 import com.tuapp.ui.theme.Secondary
-import com.example.android_loop.view.componentes.PantallaHeader
-import com.example.android_loop.view.componentes.BotonCrearProducto
+import com.example.android_loop.view.componentes.Header_Componente
+import com.example.android_loop.view.componentes.Boton_Componente
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -140,7 +140,7 @@ fun CrearProducto(navController: NavController) {
 
         // Header a tope con los bordes, fuera del scroll
         // TODO: Agregar un botón para volver a la pantalla ROUTES.HOME
-        PantallaHeader(titulo = "Crear Producto")
+        Header_Componente(titulo = "Crear Producto")
 
         // Column interior: weight(1f) = ocupa el espacio disponible excepto el botón de abajo
         // El scroll está aquí para que solo el contenido se desplace, no el botón
@@ -465,7 +465,7 @@ fun CrearProducto(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        BotonCrearProducto(
+        Boton_Componente(
             texto = "Guardar Producto",
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onClick = {

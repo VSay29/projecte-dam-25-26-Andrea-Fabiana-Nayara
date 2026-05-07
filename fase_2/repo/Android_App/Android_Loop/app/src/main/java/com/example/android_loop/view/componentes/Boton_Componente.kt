@@ -24,7 +24,7 @@ import com.tuapp.ui.theme.Secondary
 
 // Ejemplo de uso: LoopBoton(texto = "Guardar Producto", onClick = { ... })
 @Composable
-fun BotonCrearProducto(
+fun Boton_Componente(
     texto: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,  // Modifier por defecto vacío, se puede personalizar al usarlo
