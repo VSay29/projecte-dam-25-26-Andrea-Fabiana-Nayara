@@ -60,6 +60,8 @@ import com.example.android_loop.utils.traducirLatLngAUbicacion
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.collections.emptyList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,6 +97,18 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var locationState by remember { mutableStateOf<DoubleArray?>(null) }
 
     var location by rememberSaveable { mutableStateOf(doubleArrayOf(0.0, 0.0)) }
+
+    var ubicacionTexto by remember {
+        mutableStateOf("Cargando...")
+    }
+
+    // SECCION: Cargar ubicacion traducido
+
+    LaunchedEffect(location) {
+        ubicacionTexto = withContext(Dispatchers.IO) {
+            traducirLatLngAUbicacion(context, location)
+        }
+    }
 
     // SECCION: CARGAR PRODUCTO
 
@@ -311,7 +325,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                             Spacer(modifier = Modifier.height(12.dp))
 
                             InfoRow("Estado", estado)
-                            InfoRow("Ubicación", traducirLatLngAUbicacion(context, location))
+                            InfoRow("Ubicación", ubicacionTexto)
                             antiguedad?.let {
                                 InfoRow("Antigüedad", it)
                             }
@@ -372,7 +386,8 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
         showImageViewer = MostrarCarrousel(showImageViewer, listaImagenes)
 
-        mostrarMapa(showMap, onDismiss = { showMap = false }, locationState)
+        if (showMap && locationState != null) mostrarMapa(true, onDismiss = { showMap = false },
+            locationState!!, context)
 
     }
 }
