@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import com.auth0.jwt.JWT
-import java.util.Date
+import com.auth0.jwt.algorithms.Algorithm
+import com.example.android_loop.data.repository.UsuarioRepository
 
 fun getToken(context: Context): String {
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
@@ -14,12 +15,14 @@ fun getToken(context: Context): String {
 
 // TODO: Falta encriptar el Token
 
-fun setToken(context: Context, token: String) {
+fun setToken(context: Context, token: String, username: String, passwd: String) {
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    prefs.edit { putString("token", token) }
+    prefs.edit {
+        putString("token", token)
+        putString("username", username)
+        putString("passwd", passwd)
+    }
 }
-
-// TODO: FALTA REGENERAR TOKEN AL CADUCAR
 
 // SE TOMA EL ID DEL TOKEN DEL USUARIO PARA QUE CADA CARRITO SEA ASOCIADO A SU USUARIO CORRESPONDIENTE
 fun getUserIdFromToken(token: String): Int? {
@@ -30,14 +33,21 @@ fun getUserIdFromToken(token: String): Int? {
     }
 }
 
-fun tokenValido(token: String): Boolean {
+fun tokenExpirado(token: String): Boolean {
+
+    val repoUser = UsuarioRepository()
 
     if (token.isEmpty() || token == "") return false
 
     return try {
-        val tokenDecodificado = JWT.decode(token)
-        val exp = tokenDecodificado.expiresAt ?: return false
-        exp.after(Date())
+        val clave = "1*/GvDCk_]ni`H8M164(t=€j(FD}3L-~k2c<LoPE+(uxTo+.R"
+        val algoritmo = Algorithm.HMAC256(clave)
+
+        val verificador = JWT.require(algoritmo)
+            .withIssuer("AdminLoop")
+            .build()
+        verificador.verify(token)
+        true
     } catch (e: Exception) {
         return false
     }
