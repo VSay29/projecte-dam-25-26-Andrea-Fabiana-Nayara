@@ -72,8 +72,10 @@ import com.example.android_loop.R
 import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.toBase64
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.tuapp.ui.theme.OnPrimary
@@ -92,6 +94,25 @@ fun PerfilUsuario(navController: NavHostController) {
 
     val context = LocalContext.current
     val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
+
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
 
     val perfilViewModel: PerfilViewModel = viewModel()

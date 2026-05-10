@@ -1,7 +1,6 @@
 package com.example.android_loop.view.vistas
 
 import android.content.Context.MODE_PRIVATE
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,16 +53,16 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.android_loop.utils.encriptarPasswd
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.view.theme.isDarkTheme
 import com.example.android_loop.viewModel.AjustesViewModel
@@ -79,6 +78,24 @@ fun Ajustes(navController: NavHostController) {
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
     var idioma by remember { mutableStateOf(prefs.getString("IDIOMA", "Español") ?: "Español") }
     val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     val viewModelSettings: AjustesViewModel = viewModel()
     val state = viewModelSettings.settingsState
@@ -254,7 +271,7 @@ fun Ajustes(navController: NavHostController) {
                     onValueChange = { passwd = it },
                     onConfirm = {
                         keyboardController?.hide()
-                        viewModelSettings.cambiarPasswd(token, encriptarPasswd(passwd))
+                        viewModelSettings.cambiarPasswd(token, passwd)
                     },
                     onDismiss = { if (!isLoading) dialogTipo = null },
                     confirmEnabled = true,

@@ -1,6 +1,6 @@
 package com.example.android_loop.view.vistas
 
-import android.content.Context.MODE_PRIVATE
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -39,7 +39,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.FavoritosUiState
 import com.example.android_loop.viewModel.FavoritosViewModel
@@ -48,8 +52,25 @@ import com.example.android_loop.viewModel.FavoritosViewModel
 fun Favoritos(navController: NavHostController) {
 
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val token = prefs.getString("token", null)
+    val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     var filtro by rememberSaveable { mutableStateOf("") }
 

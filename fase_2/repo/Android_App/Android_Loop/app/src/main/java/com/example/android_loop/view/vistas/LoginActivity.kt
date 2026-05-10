@@ -1,5 +1,6 @@
 package com.example.android_loop.view.vistas
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,8 +47,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.encriptacionConfig.encriptarToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.LoginUiState
@@ -226,10 +229,15 @@ fun Loggeo(navController: NavHostController) {
         LaunchedEffect(loginState) {
             when (loginState) {
                 is LoginUiState.Success -> {
-                    val token = loginState.token
-                    setToken(context, token)
-                    kotlinx.coroutines.delay(1000)
-                    navController.navigate(ROUTES.HOME)
+                    val tokenOriginal = loginState.token
+
+                    setToken(context, tokenOriginal)
+
+                    if (tokenValido(tokenOriginal)) {
+                        navController.navigate(ROUTES.HOME) {
+                            popUpTo(ROUTES.LOGIN) { inclusive = true }
+                        }
+                    }
                 }
                 is LoginUiState.Error -> {
                     Toast.makeText(context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
