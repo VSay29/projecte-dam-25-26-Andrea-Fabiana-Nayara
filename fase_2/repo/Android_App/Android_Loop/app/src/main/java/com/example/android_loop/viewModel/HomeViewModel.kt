@@ -1,6 +1,5 @@
 package com.example.android_loop.viewModel
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,23 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.model_dataClass.categoriaResult.Categoria
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.data.repository.ProductoRepository
-import com.example.android_loop.data.repository.UsuarioRepository
-import com.example.android_loop.utils.encriptarPasswd
-import com.example.android_loop.utils.getToken
-import com.example.android_loop.utils.setToken
-import com.example.android_loop.utils.tokenExpirado
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val productoRepo: ProductoRepository = ProductoRepository(), private val regenerarToken: GetTokenValidoUseCase): ViewModel() {
+class HomeViewModel(private val productoRepo: ProductoRepository = ProductoRepository()): ViewModel() {
 
     var homeUiState by mutableStateOf<HomeUiState>(HomeUiState.Idle)
     var productosUiState by mutableStateOf<ProductoHomeUiState>(ProductoHomeUiState.Idle)
 
-    fun cargarProductos() {
+    fun cargarProductos(token: String) {
 
         viewModelScope.launch {
-
-            val token = regenerarToken()
 
             productosUiState = ProductoHomeUiState.Loading
             val result = productoRepo.getProductos(token)
@@ -37,10 +29,8 @@ class HomeViewModel(private val productoRepo: ProductoRepository = ProductoRepos
         }
     }
 
-    fun cargarCategorias() {
+    fun cargarCategorias(token: String) {
         viewModelScope.launch {
-
-            val token = regenerarToken()
 
             homeUiState = HomeUiState.Loading
             val result = productoRepo.getCategoriasProductos(token)

@@ -1,5 +1,7 @@
 package com.example.android_loop.view.vistas
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +32,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
@@ -39,6 +43,7 @@ import com.example.android_loop.viewModel.ProductoHomeUiState
 import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
 import com.example.android_loop.view.componentes.Header_Componente
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,10 +51,6 @@ fun Home(navController: NavHostController) {
 
     // SECCION: CONTEXT
     val context = LocalContext.current
-
-    // SECCION: TOKEN
-
-    val token = getToken(context)
 
     // SECCION: CARGA DE VIEWMODELS
 
@@ -63,6 +64,23 @@ fun Home(navController: NavHostController) {
     // DOC: para el contador de productos en el carrito ya que la información es compartida
 
     val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+
+    // SECCION: TOKEN
+
+    var token by remember { mutableStateOf(getToken(context)) }
+
+    LaunchedEffect(Unit) {
+        var tokenRecuperado = getToken(context)
+
+        if (tokenRecuperado.isEmpty()) {
+            delay(100)
+            tokenRecuperado = getToken(context)
+        }
+
+        if (!tokenValido(tokenRecuperado)) {
+            Log.d("DEBUG_HOME", "Token no válido en Home: '$tokenRecuperado'")
+        }
+    }
 
     // SECCION: VARIABLES
 

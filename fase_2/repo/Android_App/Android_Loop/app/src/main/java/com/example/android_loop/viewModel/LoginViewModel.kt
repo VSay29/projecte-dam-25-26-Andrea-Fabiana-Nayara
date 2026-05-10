@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.repository.UsuarioRepository
-import com.example.android_loop.utils.encriptarPasswd
 import kotlinx.coroutines.launch
 
 class LoginViewModel (private val repository: UsuarioRepository = UsuarioRepository()) : ViewModel() {
@@ -17,7 +16,7 @@ class LoginViewModel (private val repository: UsuarioRepository = UsuarioReposit
         viewModelScope.launch {
             loginState = LoginUiState.Loading
 
-            val result = repository.generarSesion(username, encriptarPasswd(passwd))
+            val result = repository.generarSesion(username, passwd)
 
             loginState = try {
                 result.fold(

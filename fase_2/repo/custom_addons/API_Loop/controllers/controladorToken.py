@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 from odoo import http
 from odoo.http import request
+from passlib.context import CryptContext
 
 # Función para obtener una clave secreta
 
@@ -59,35 +60,26 @@ class JWTAuthController(http.Controller):
         username = (params.get("username") or "").strip()
         password = params.get("password") or ""
 
-        """
-            Hay que enviar los datos a la API con esta estructura:
-
-            "jsonrpc": "2.0",
-            "method": "call",
-            "params": {
-                "username": "antonio",
-                "password": "123456"
-                }
-            }
-
-        """
-
         if not username or not password:
             _logger.warning("MISSING username/password")
             return {"ok": False, 'error': 'Missing username/password'}
 
-        user = request.env['res.partner'].sudo().search([('username','=',username), ('password','=',password)], limit=1)
+        user = request.env['res.partner'].sudo().search([('username','=',username)], limit=1)
 
         if not user:
-            _logger.warning("INVALID CREDENTIALS")
-            return {'error': 'Invalid credentials'}
+            return {'error': 'Usuario no encontrado'}
+        
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        if not pwd_context.verify(password, user.password):
+            return {'error': 'Contraseña incorrecta'}
         
         now = datetime.datetime.now()
         payload = {
             'uid': user.id,
             'username': user.username,
-            'exp': now + datetime.timedelta(hours=1),
-            'iat': now
+            'iss': 'AdminLoop',
+            'exp': now + datetime.timedelta(days=15),
+            'iat': int(now.timestamp())
         }
 
         token = jwt.encode(payload, _get_secret_key(), algorithm='HS256')

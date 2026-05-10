@@ -56,6 +56,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.example.android_loop.utils.mostrarMapa
 import com.example.android_loop.utils.normalizarLocation
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.utils.traducirLatLngAUbicacion
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
@@ -70,6 +72,24 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
     val context = LocalContext.current
     val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     // SECCION: Declaración de viewModels
 

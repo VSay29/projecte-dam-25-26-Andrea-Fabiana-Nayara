@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.repository.UsuarioRepository
-import com.example.android_loop.utils.encriptarPasswd
 import kotlinx.coroutines.launch
 
 class RegistroViewModel(private val repository: UsuarioRepository = UsuarioRepository()): ViewModel() {
@@ -18,7 +17,7 @@ class RegistroViewModel(private val repository: UsuarioRepository = UsuarioRepos
 
             registroState = RegistroUiState.Loading
 
-            val result = repository.registro(name, username, email, encriptarPasswd(passwd))
+            val result = repository.registro(name, username, email, passwd)
 
             registroState = result.fold(
                 onSuccess = { RegistroUiState.Success(true) },

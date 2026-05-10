@@ -4,24 +4,26 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import com.example.android_loop.data.repository.UsuarioRepository
+import com.example.android_loop.utils.encriptacionConfig.desencriptarToken
+import com.example.android_loop.utils.encriptacionConfig.encriptarToken
+import java.util.Date
 
 fun getToken(context: Context): String {
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val token = prefs.getString("token", "") ?: ""
-    return token
+    val cifrado = prefs.getString("token", "") ?: ""
+    if (cifrado.isEmpty()) return ""
+
+    return desencriptarToken(cifrado)
 }
 
-// TODO: Falta encriptar el Token
-
-fun setToken(context: Context, token: String, username: String, passwd: String) {
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    prefs.edit {
-        putString("token", token)
-        putString("username", username)
-        putString("passwd", passwd)
+fun setToken(context: Context, token: String) {
+    val prefs = context.getSharedPreferences("loop_prefs", Context.MODE_PRIVATE)
+    if (token.isEmpty()) {
+        prefs.edit { putString("token", "").commit() }
+        return
     }
+    val tokenCifrado = encriptarToken(token)
+    prefs.edit { putString("token", tokenCifrado).commit() }
 }
 
 // SE TOMA EL ID DEL TOKEN DEL USUARIO PARA QUE CADA CARRITO SEA ASOCIADO A SU USUARIO CORRESPONDIENTE
@@ -33,23 +35,21 @@ fun getUserIdFromToken(token: String): Int? {
     }
 }
 
-fun tokenExpirado(token: String): Boolean {
-
-    val repoUser = UsuarioRepository()
-
-    if (token.isEmpty() || token == "") return false
+fun tokenValido(token: String): Boolean {
+    if (token.isEmpty()) return false
 
     return try {
-        val clave = "1*/GvDCk_]ni`H8M164(t=€j(FD}3L-~k2c<LoPE+(uxTo+.R"
-        val algoritmo = Algorithm.HMAC256(clave)
+        val jwt = JWT.decode(token)
 
-        val verificador = JWT.require(algoritmo)
-            .withIssuer("AdminLoop")
-            .build()
-        verificador.verify(token)
-        true
+        val expiresAt = jwt.expiresAt
+        val issuer = jwt.issuer
+
+        val isNotExpired = expiresAt.after(Date())
+        val isCorrectIssuer = issuer == "AdminLoop"
+
+        isNotExpired && isCorrectIssuer
     } catch (e: Exception) {
-        return false
+        false
     }
 }
 

@@ -45,6 +45,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.viewModel.CrearProductoUiState
 import com.example.android_loop.viewModel.CrearProductoViewModel
 import com.tuapp.ui.theme.OnPrimary
@@ -57,6 +59,24 @@ fun CrearProducto(navController: NavController) {
 
     val context = LocalContext.current
     val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     val scrollState = rememberScrollState()
 
