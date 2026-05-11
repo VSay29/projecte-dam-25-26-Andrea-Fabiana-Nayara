@@ -70,15 +70,15 @@ fun Home(navController: NavHostController) {
     var token by remember { mutableStateOf(getToken(context)) }
 
     LaunchedEffect(Unit) {
-        var tokenRecuperado = getToken(context)
+        token = getToken(context)
 
-        if (tokenRecuperado.isEmpty()) {
+        if (token.isEmpty()) {
             delay(100)
-            tokenRecuperado = getToken(context)
+            token = getToken(context)
         }
 
-        if (!tokenValido(tokenRecuperado)) {
-            Log.d("DEBUG_HOME", "Token no válido en Home: '$tokenRecuperado'")
+        if (!tokenValido(token)) {
+            Log.d("DEBUG_HOME", "Token no válido en Home: '$token'")
         }
     }
 
