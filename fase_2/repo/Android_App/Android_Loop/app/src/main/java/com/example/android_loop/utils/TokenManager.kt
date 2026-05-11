@@ -4,22 +4,27 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import com.auth0.jwt.JWT
+import com.example.android_loop.utils.encriptacionConfig.desencriptarToken
+import com.example.android_loop.utils.encriptacionConfig.encriptarToken
 import java.util.Date
 
 fun getToken(context: Context): String {
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val token = prefs.getString("token", "") ?: ""
-    return token
-}
+    val cifrado = prefs.getString("token", "") ?: ""
+    if (cifrado.isEmpty()) return ""
 
-// TODO: Falta encriptar el Token
+    return desencriptarToken(cifrado)
+}
 
 fun setToken(context: Context, token: String) {
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    prefs.edit { putString("token", token) }
+    val prefs = context.getSharedPreferences("loop_prefs", Context.MODE_PRIVATE)
+    if (token.isEmpty()) {
+        prefs.edit { putString("token", "").commit() }
+        return
+    }
+    val tokenCifrado = encriptarToken(token)
+    prefs.edit { putString("token", tokenCifrado).commit() }
 }
-
-// TODO: FALTA REGENERAR TOKEN AL CADUCAR
 
 // SE TOMA EL ID DEL TOKEN DEL USUARIO PARA QUE CADA CARRITO SEA ASOCIADO A SU USUARIO CORRESPONDIENTE
 fun getUserIdFromToken(token: String): Int? {
@@ -31,15 +36,19 @@ fun getUserIdFromToken(token: String): Int? {
 }
 
 fun tokenValido(token: String): Boolean {
-
-    if (token.isEmpty() || token == "") return false
+    if (token.isEmpty()) return false
 
     return try {
-        val tokenDecodificado = JWT.decode(token)
-        val exp = tokenDecodificado.expiresAt ?: return false
-        exp.after(Date())
+        val jwt = JWT.decode(token)
+
+        val expiresAt = jwt.expiresAt
+        val issuer = jwt.issuer
+
+        val isNotExpired = expiresAt.after(Date())
+        val isCorrectIssuer = issuer == "AdminLoop"
+
+        isNotExpired && isCorrectIssuer
     } catch (e: Exception) {
-        return false
+        false
     }
 }
-

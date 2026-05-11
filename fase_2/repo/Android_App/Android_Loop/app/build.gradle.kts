@@ -38,6 +38,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
@@ -80,6 +81,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 
     implementation("com.auth0:java-jwt:4.5.1")
+    implementation("org.mindrot:jbcrypt:0.4")
 
     implementation(libs.play.services.location)
     implementation(libs.maps.compose)

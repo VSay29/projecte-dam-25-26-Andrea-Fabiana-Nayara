@@ -1,6 +1,5 @@
 package com.example.android_loop.view.vistas
 
-import android.content.Context.MODE_PRIVATE
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
@@ -63,11 +62,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
+import android.widget.Toast
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
 import com.example.android_loop.utils.NavigationCache
+import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentariosViewModel
 import com.example.android_loop.viewModel.PerfilViewModel
@@ -79,8 +83,25 @@ fun PerfilVendedor(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val storedToken = prefs.getString("token", null)
+    val storedToken = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(storedToken)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     val comentariosViewModel: ComentariosViewModel = viewModel()
     val viewmodelProducto: PerfilViewModel = viewModel()
