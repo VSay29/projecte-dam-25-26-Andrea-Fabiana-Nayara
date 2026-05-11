@@ -2,10 +2,12 @@
 
 import json
 import base64
+from venv import logger
 from odoo import http
 from odoo.http import request
 from .controladorToken import get_current_user_from_token
 from pathlib import Path
+from passlib.context import CryptContext
 
 def img_a_base64(ruta):
     """ Convierte una imagen de la ruta proporcionada a base64 """
@@ -28,6 +30,8 @@ class CRUD_User_Controller(http.Controller):
     @http.route('/api/v1/loop/register', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def api_register(self, **params):
 
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
         data = params.get('data') # recoge data con los parametros que se le pasan
 
         if not data:
@@ -44,6 +48,9 @@ class CRUD_User_Controller(http.Controller):
 
         if request.env['res.partner'].sudo().search([('username','=',data['username'])], limit=1):
             return {'error': 'El username ya existe'}
+        
+        passwd_plano = data['password']
+        passwd_encriptado = pwd_context.hash(passwd_plano)
 
         # Se crea el usuario
 
@@ -51,9 +58,16 @@ class CRUD_User_Controller(http.Controller):
             user = request.env['res.partner'].sudo().create({
                 'name': data['name'], 
                 'username': data['username'],
-                'password': data['password'],
+                'password': passwd_encriptado,
                 'email': data.get('email')
             })
+
+            try:
+                template = request.env['mail.template'].sudo().browse(7)
+                if template:
+                    template.send_mail(user.id, force_send=True)
+            except Exception as mail_e:
+                logger.error(f"Error enviando mail: {str(mail_e)}")
 
             return {'success': True}
         except Exception as e:
@@ -131,7 +145,8 @@ class CRUD_User_Controller(http.Controller):
         request.env['res.partner'].with_user(1).browse(user.id).unlink()
 
         return {'success': True}
-    
+
+
     """
     ENDPOINT: OBTENER FAVORITOS
     """
@@ -158,9 +173,9 @@ class CRUD_User_Controller(http.Controller):
     
 
     """
-    ENDPOINT: AÑADIR PRODUCTO A FAVORITOS
+    ENDPOINT: AGREGAR FAVORITO
     """
-    
+
     @http.route('/api/v1/loop/favoritos/add', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def add_favorito(self, **params):
         user = get_current_user_from_token()
@@ -186,9 +201,8 @@ class CRUD_User_Controller(http.Controller):
         user.write({'favorito_ids': [(4, producto.id)]})
         return {'success': True}
     
-
     """
-    ENDPOINT: ELIMINAR PRODUCTO DE FAVORITOS
+    ENDPOINT: ELIMINAR FAVORITO
     """
     
     @http.route('/api/v1/loop/favoritos/remove', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
