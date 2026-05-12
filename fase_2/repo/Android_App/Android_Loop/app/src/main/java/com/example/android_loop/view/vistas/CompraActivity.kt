@@ -30,6 +30,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.componentes.Loading_Componente

@@ -43,7 +43,8 @@ fun Carrito(navController: NavController) {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(16.dp)
         ) {
             if (items.isEmpty()) {
@@ -84,9 +85,11 @@ fun Carrito(navController: NavController) {
                                         fontSize = 15.sp
                                     )
                                     Text(
-                                        text = product.categoria?.nombre ?: "",
+                                        text = product.descripcion,
                                         fontSize = 12.sp,
-                                        color = Color.Gray
+                                        color = Color.Gray,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                     )
                                 }
                                 Text(
