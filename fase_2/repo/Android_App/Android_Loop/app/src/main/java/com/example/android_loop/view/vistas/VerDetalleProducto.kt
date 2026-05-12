@@ -51,6 +51,7 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
@@ -60,6 +61,8 @@ import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.utils.traducirLatLngAUbicacion
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.viewModel.DenunciaUiState
+import com.example.android_loop.viewModel.DenunciaViewModel
 import com.example.android_loop.viewModel.VerProductoUiState
 import com.example.android_loop.viewModel.VerProductoViewModel
 import kotlinx.coroutines.Dispatchers
@@ -96,6 +99,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
     val verProductoVM: VerProductoViewModel = viewModel()
     val verProductoState = verProductoVM.verProductoUiState
     val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val denunciaViewModel: DenunciaViewModel = viewModel()
 
     // SECCION: VARIABLES
 
@@ -116,6 +120,9 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var showMap by remember { mutableStateOf(false) }
     var locationState by remember { mutableStateOf<DoubleArray?>(null) }
 
+    var showDenunciaDialog by remember { mutableStateOf(false) }
+    var motivoDenuncia by remember { mutableStateOf("") }
+
     var location by rememberSaveable { mutableStateOf(doubleArrayOf(0.0, 0.0)) }
 
     var ubicacionTexto by remember {
@@ -127,6 +134,16 @@ fun VerProducto(productoId: Int, navController: NavController) {
     LaunchedEffect(location) {
         ubicacionTexto = withContext(Dispatchers.IO) {
             traducirLatLngAUbicacion(context, location)
+        }
+    }
+
+    LaunchedEffect(denunciaViewModel.emitirDenunciaState) {
+        when (denunciaViewModel.emitirDenunciaState) {
+            is DenunciaUiState.SuccessEmitirDenunciaProducto ->
+                Toast.makeText(context, "Denuncia enviada correctamente", Toast.LENGTH_SHORT).show()
+            is DenunciaUiState.Error ->
+                Toast.makeText(context, "Error al enviar la denuncia", Toast.LENGTH_SHORT).show()
+            else -> {}
         }
     }
 
@@ -279,26 +296,37 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = nombre.replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f)
                         )
 
-                        Icon(
-                            Icons.Default.LocationOn,
-                            contentDescription = "Ver en el mapa",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {
-                                    locationState = normalizarLocation(ubicacion)
-                                    showMap = true
-                                }
-                        )
-
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(
+                                Icons.Default.Flag,
+                                contentDescription = "Denunciar producto",
+                                tint = Color.Gray,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable { showDenunciaDialog = true }
+                            )
+                            Icon(
+                                Icons.Default.LocationOn,
+                                contentDescription = "Ver en el mapa",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        locationState = normalizarLocation(ubicacion)
+                                        showMap = true
+                                    }
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -408,6 +436,43 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
         if (showMap && locationState != null) mostrarMapa(true, onDismiss = { showMap = false },
             locationState!!, context)
+
+        if (showDenunciaDialog) {
+            AlertDialog(
+                onDismissRequest = { showDenunciaDialog = false; motivoDenuncia = "" },
+                title = { Text("Denunciar producto") },
+                text = {
+                    Column {
+                        Text("Describe el motivo de la denuncia:")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = motivoDenuncia,
+                            onValueChange = { motivoDenuncia = it },
+                            placeholder = { Text("Motivo...") },
+                            maxLines = 4,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            denunciaViewModel.emitirDenunciaProducto(token, id, motivoDenuncia)
+                            showDenunciaDialog = false
+                            motivoDenuncia = ""
+                        },
+                        enabled = motivoDenuncia.isNotBlank()
+                    ) {
+                        Text("Denunciar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDenunciaDialog = false; motivoDenuncia = "" }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
 
     }
 }

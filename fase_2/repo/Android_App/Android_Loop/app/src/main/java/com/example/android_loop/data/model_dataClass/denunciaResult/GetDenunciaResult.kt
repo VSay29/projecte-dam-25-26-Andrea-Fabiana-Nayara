@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetDenunciaResult(
-    val denuncias: List<Denuncia>
+    val denuncias: List<Denuncia> = emptyList()
 )

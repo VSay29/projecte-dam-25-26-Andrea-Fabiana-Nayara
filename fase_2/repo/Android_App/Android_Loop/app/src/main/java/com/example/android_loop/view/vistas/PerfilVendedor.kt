@@ -30,8 +30,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -74,6 +76,8 @@ import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentariosViewModel
+import com.example.android_loop.viewModel.DenunciaUiState
+import com.example.android_loop.viewModel.DenunciaViewModel
 import com.example.android_loop.viewModel.PerfilViewModel
 
 @Composable
@@ -129,6 +133,11 @@ fun PerfilVendedor(
     var estrellasSeleccionadas by remember { mutableIntStateOf(0) }
     var editandoComentario by remember { mutableStateOf<Comentario?>(null) }
 
+    var showDenunciaDialog by remember { mutableStateOf(false) }
+    var motivoDenuncia by remember { mutableStateOf("") }
+    var comentarioADenunciar by remember { mutableStateOf<Int?>(null) }
+    val denunciaViewModel: DenunciaViewModel = viewModel()
+
     val comentarios = comentariosViewModel.comentarios
     val isLoading = comentariosViewModel.isLoading
     val currentUser = comentariosViewModel.currentUserName
@@ -156,6 +165,16 @@ fun PerfilVendedor(
     LaunchedEffect(storedToken) {
         if (storedToken != null) {
             viewmodelProducto.loadProductosUsuario(storedToken, vendedorId)
+        }
+    }
+
+    LaunchedEffect(denunciaViewModel.emitirDenunciaState) {
+        when (denunciaViewModel.emitirDenunciaState) {
+            is DenunciaUiState.SuccessEmitirDenunciaComentario ->
+                Toast.makeText(context, "Denuncia enviada correctamente", Toast.LENGTH_SHORT).show()
+            is DenunciaUiState.Error ->
+                Toast.makeText(context, "Error al enviar la denuncia", Toast.LENGTH_SHORT).show()
+            else -> {}
         }
     }
 
@@ -349,7 +368,8 @@ fun PerfilVendedor(
                                                     estrellasSeleccionadas = comentario.valoracion?.toInt() ?: 0
                                                 }} else null,
                                                 onReport = if (!esMioEsteComentario) {{
-                                                    // TODO: implementar denuncias
+                                                    comentarioADenunciar = comentario.id
+                                                    showDenunciaDialog = true
                                                 }} else null
                                             )
                                         }
@@ -452,5 +472,45 @@ fun PerfilVendedor(
                 }
             }
         }
+    }
+
+    if (showDenunciaDialog) {
+        AlertDialog(
+            onDismissRequest = { showDenunciaDialog = false; motivoDenuncia = "" },
+            title = { Text("Denunciar reseña") },
+            text = {
+                Column {
+                    Text("Describe el motivo de la denuncia:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = motivoDenuncia,
+                        onValueChange = { motivoDenuncia = it },
+                        placeholder = { Text("Motivo...") },
+                        maxLines = 4,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        comentarioADenunciar?.let { id ->
+                            storedToken?.let { token ->
+                                denunciaViewModel.emitirDenunciaComentario(token, id, motivoDenuncia)
+                            }
+                        }
+                        showDenunciaDialog = false
+                        motivoDenuncia = ""
+                        comentarioADenunciar = null
+                    },
+                    enabled = motivoDenuncia.isNotBlank()
+                ) { Text("Denunciar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDenunciaDialog = false; motivoDenuncia = "" }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
