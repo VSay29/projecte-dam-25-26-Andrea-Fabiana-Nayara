@@ -10,6 +10,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -94,7 +95,7 @@ class DenunciaRepository(private val cliente: HttpClient = HttpClientProvider.cl
     suspend fun retirarDenuncia(token: String, denunciaId: Int): Result<RetirarDenunciaResult> {
         return try {
             val resp: RpcResponse<RetirarDenunciaResult> =
-                cliente.get("${Servidor.BASE_URL}/api/v1/loop/denuncias") {
+                cliente.patch("${Servidor.BASE_URL}/api/v1/loop/denuncias") {
                     header("Authorization", "Bearer $token")
                     contentType(ContentType.Application.Json)
                     setBody(
