@@ -2,8 +2,13 @@ package com.example.android_loop.view.componentes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,11 +20,8 @@ import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
 import com.tuapp.ui.theme.Secondary
 
-// Componente reutilizable para el encabezado de cualquier pantalla.
-// Recibe "titulo" como parámetro, así cada pantalla puede tener su propio texto.
-// Ejemplo de uso: PantallaHeader(titulo = "Crear Producto")
 @Composable
-fun Header_Componente(titulo: String) {
+fun Header_Componente(titulo: String, onBack: (() -> Unit)? = null) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,13 +30,35 @@ fun Header_Componente(titulo: String) {
                     colors = listOf(Primary, Secondary)
                 )
             )
-            .padding(top = 48.dp, bottom = 16.dp, start = 20.dp, end = 20.dp),
+            .padding(
+                top = 48.dp,
+                bottom = 16.dp,
+                start = if (onBack != null) 4.dp else 20.dp,
+                end = 20.dp
+            ),
         contentAlignment = Alignment.BottomStart
     ) {
-        Text(
-            text = titulo,
-            style = MaterialTheme.typography.titleLarge,
-            color = OnPrimary
-        )
+        if (onBack != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Volver",
+                        tint = OnPrimary
+                    )
+                }
+                Text(
+                    text = titulo,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = OnPrimary
+                )
+            }
+        } else {
+            Text(
+                text = titulo,
+                style = MaterialTheme.typography.titleLarge,
+                color = OnPrimary
+            )
+        }
     }
 }

@@ -22,7 +22,7 @@ import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
 import com.tuapp.ui.theme.Secondary
 
-// Ejemplo de uso: LoopBoton(texto = "Guardar Producto", onClick = { ... })
+// Ejemplo de uso: Boton_componente(texto = "Guardar Producto", onClick = { ... })
 @Composable
 fun Boton_Componente(
     texto: String,
