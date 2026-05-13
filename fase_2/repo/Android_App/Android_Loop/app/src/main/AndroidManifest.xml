@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Android_Loop">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCvjP6HEMtlEJMw7cxM54cpg8ZWE7Uz9OY"/> <!--API KEY-->
+            android:value=""/> <!--API KEY-->
         <activity
             android:name=".view.MainActivity"
             android:exported="true"
