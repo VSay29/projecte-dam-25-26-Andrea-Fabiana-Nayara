@@ -1,12 +1,10 @@
 package com.example.android_loop.view.vistas
 
-import android.content.Context.MODE_PRIVATE
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -31,12 +30,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import com.example.android_loop.view.componentes.Busqueda_Componente
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,12 +52,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,14 +64,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
+import android.widget.Toast
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
 import com.example.android_loop.utils.NavigationCache
+import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
-import com.example.android_loop.view.componentes.Header_Componente
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentariosViewModel
+import com.example.android_loop.viewModel.DenunciaUiState
+import com.example.android_loop.viewModel.DenunciaViewModel
 import com.example.android_loop.viewModel.PerfilViewModel
 
 @Composable
@@ -80,8 +87,25 @@ fun PerfilVendedor(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val storedToken = prefs.getString("token", null)
+    val storedToken = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(storedToken)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     val comentariosViewModel: ComentariosViewModel = viewModel()
     val viewmodelProducto: PerfilViewModel = viewModel()
@@ -108,6 +132,11 @@ fun PerfilVendedor(
     var textoResena by remember { mutableStateOf("") }
     var estrellasSeleccionadas by remember { mutableIntStateOf(0) }
     var editandoComentario by remember { mutableStateOf<Comentario?>(null) }
+
+    var showDenunciaDialog by remember { mutableStateOf(false) }
+    var motivoDenuncia by remember { mutableStateOf("") }
+    var comentarioADenunciar by remember { mutableStateOf<Int?>(null) }
+    val denunciaViewModel: DenunciaViewModel = viewModel()
 
     val comentarios = comentariosViewModel.comentarios
     val isLoading = comentariosViewModel.isLoading
@@ -139,41 +168,63 @@ fun PerfilVendedor(
         }
     }
 
+    LaunchedEffect(denunciaViewModel.emitirDenunciaState) {
+        when (denunciaViewModel.emitirDenunciaState) {
+            is DenunciaUiState.SuccessEmitirDenunciaComentario ->
+                Toast.makeText(context, "Denuncia enviada correctamente", Toast.LENGTH_SHORT).show()
+            is DenunciaUiState.Error ->
+                Toast.makeText(context, "Error al enviar la denuncia", Toast.LENGTH_SHORT).show()
+            else -> {}
+        }
+    }
+
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.Transparent)
     ) {
         Column(Modifier.fillMaxSize()) {
 
+            // Contenido desplazable
             Column(
                 Modifier
                     .weight(1f)
-                    .background(Color.White)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Header_Componente(
-                    titulo = vendedorNombre,
-                    onBack = { navController.popBackStack() }
-                )
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp),
+                        .height(200.dp)
+                        .padding(top = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        bitmap = profileBitmap,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                    Row(
                         modifier = Modifier
-                            .size(130.dp)
-                            .clip(CircleShape)
-                            .border(3.dp, Color(0xFFDDDDDD), CircleShape)
-                    )
+                            .fillMaxWidth()
+                            .align(Alignment.TopStart),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = Color(0xFF003459),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            bitmap = profileBitmap,
+                            contentDescription = null,
+                            modifier = Modifier.size(110.dp).clip(CircleShape)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(vendedorNombre)
+                    }
                 }
 
                 Spacer(Modifier.height(30.dp))
@@ -226,65 +277,54 @@ fun PerfilVendedor(
 
                         when (selectedTab) {
                             0 -> {
-                                Busqueda_Componente(
+                                TextField(
+                                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(30.dp)),
                                     value = filtro,
                                     onValueChange = { filtro = it },
-                                    placeholder = "Buscar producto"
+                                    placeholder = { Text("Buscar producto") },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.lupa),
+                                            contentDescription = "Buscar",
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    },
+                                    singleLine = true,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.LightGray,
+                                        unfocusedContainerColor = Color.LightGray,
+                                        disabledContainerColor = Color.LightGray,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    )
                                 )
+                                //TODO: MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
 
                                 val productosFiltrados = remember(viewmodelProducto.products, filtro) {
-                                    if (filtro.isEmpty()) viewmodelProducto.products
+                                    if(filtro.isEmpty()) viewmodelProducto.products
                                     else viewmodelProducto.products.filter {
                                         it.nombre.sinAcentos().lowercase().contains(filtro.sinAcentos().lowercase())
                                     }
                                 }
 
-                                if (productosFiltrados.isEmpty()) {
+                                if(productosFiltrados.isEmpty()) {
                                     Text("No hay productos en venta")
                                 } else {
-                                    Spacer(Modifier.height(10.dp))
-                                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                         productosFiltrados.forEach { producto ->
                                             Card(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                shape = RoundedCornerShape(16.dp),
-                                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
-                                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(10.dp),
+                                                shape = RoundedCornerShape(12.dp)
                                             ) {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(14.dp),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Column(Modifier.weight(1f)) {
-                                                        Text(
-                                                            text = producto.nombre,
-                                                            fontWeight = FontWeight.SemiBold,
-                                                            fontSize = 15.sp
-                                                        )
-                                                        Text(
-                                                            text = producto.descripcion,
-                                                            fontSize = 12.sp,
-                                                            color = Color.Gray,
-                                                            maxLines = 1,
-                                                            overflow = TextOverflow.Ellipsis
-                                                        )
-                                                        if (producto.ubicacion.isNotBlank()) {
-                                                            Text(
-                                                                text = producto.ubicacion,
-                                                                fontSize = 12.sp,
-                                                                color = Color.Gray
-                                                            )
-                                                        }
+                                                Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+                                                    Column {
+                                                        Text(text = producto.nombre)
+                                                        Text(text = producto.descripcion)
+                                                        Text(text = "Precio: ${producto.precio}")
+                                                        Text(text = producto.ubicacion)
                                                     }
-                                                    Text(
-                                                        text = "${producto.precio} €",
-                                                        fontWeight = FontWeight.Bold,
-                                                        color = Color(0xFF003459),
-                                                        fontSize = 15.sp
-                                                    )
                                                 }
                                             }
                                         }
@@ -328,7 +368,8 @@ fun PerfilVendedor(
                                                     estrellasSeleccionadas = comentario.valoracion?.toInt() ?: 0
                                                 }} else null,
                                                 onReport = if (!esMioEsteComentario) {{
-                                                    // TODO: implementar denuncias
+                                                    comentarioADenunciar = comentario.id
+                                                    showDenunciaDialog = true
                                                 }} else null
                                             )
                                         }
@@ -345,6 +386,7 @@ fun PerfilVendedor(
                 }
             }
 
+            // Input fijo en la parte inferior (solo tab Reseñas y si no es mi perfil)
             if (selectedTab == 1 && !esMiPerfil) {
                 HorizontalDivider()
                 if (!mostrarFormulario) {
@@ -368,6 +410,7 @@ fun PerfilVendedor(
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+                        // Etiqueta cuando se está editando
                         if (editandoComentario != null) {
                             Text(
                                 text = "Editando reseña",
@@ -375,6 +418,7 @@ fun PerfilVendedor(
                                 color = Color(0xFF003459)
                             )
                         }
+                        // Selector de estrellas
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             (1..5).forEach { star ->
                                 Icon(
@@ -388,6 +432,7 @@ fun PerfilVendedor(
                                 )
                             }
                         }
+                        // Campo de texto + botón enviar
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -427,5 +472,45 @@ fun PerfilVendedor(
                 }
             }
         }
+    }
+
+    if (showDenunciaDialog) {
+        AlertDialog(
+            onDismissRequest = { showDenunciaDialog = false; motivoDenuncia = "" },
+            title = { Text("Denunciar reseña") },
+            text = {
+                Column {
+                    Text("Describe el motivo de la denuncia:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = motivoDenuncia,
+                        onValueChange = { motivoDenuncia = it },
+                        placeholder = { Text("Motivo...") },
+                        maxLines = 4,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        comentarioADenunciar?.let { id ->
+                            storedToken?.let { token ->
+                                denunciaViewModel.emitirDenunciaComentario(token, id, motivoDenuncia)
+                            }
+                        }
+                        showDenunciaDialog = false
+                        motivoDenuncia = ""
+                        comentarioADenunciar = null
+                    },
+                    enabled = motivoDenuncia.isNotBlank()
+                ) { Text("Denunciar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDenunciaDialog = false; motivoDenuncia = "" }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
