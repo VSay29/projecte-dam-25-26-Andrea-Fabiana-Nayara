@@ -107,11 +107,13 @@ fun Carrito(
                                         fontWeight = FontWeight.SemiBold,
                                         fontSize = 15.sp
                                     )
-                                    Text(
-                                        text = product.categoria?.nombre ?: "",
-                                        fontSize = 12.sp,
-                                        color = Color.Gray
-                                    )
+                                    product.categoria?.let {
+                                        Text(
+                                            text = it,
+                                            fontSize = 12.sp,
+                                            color = Color.Gray
+                                        )
+                                    }
                                 }
                                 Text(
                                     text = "%.2f €".format(product.precio),
@@ -119,7 +121,7 @@ fun Carrito(
                                     color = Color(0xFF003459),
                                     fontSize = 15.sp
                                 )
-                                IconButton(onClick = { viewModel.removeFromCart(product) }) {
+                                IconButton(onClick = { viewModel.removeFromCart(token, product) }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Eliminar del carrito",

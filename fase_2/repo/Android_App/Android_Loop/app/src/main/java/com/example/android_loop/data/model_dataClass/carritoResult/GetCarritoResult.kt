@@ -11,6 +11,7 @@ data class GetCarritoResult(
 data class ProductoCarrito(
     val id: Int,
     val nombre: String,
+    val categoria: String?,
     val descripcion: String,
     val precio: Double,
     val ubicacion: String,
