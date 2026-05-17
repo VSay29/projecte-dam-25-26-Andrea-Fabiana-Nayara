@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,13 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.view.componentes.Boton_Componente
+import com.example.android_loop.view.componentes.Header_Componente
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun Carrito(
@@ -52,95 +58,112 @@ fun Carrito(
     val items = viewModel.cartItems
     val total = viewModel.total
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Carrito de compra",
-            style = MaterialTheme.typography.headlineMedium
+    Column(Modifier.fillMaxSize()) {
+
+        Header_Componente(
+            titulo = "Carrito",
+            onBack = { navController.popBackStack() }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (items.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Tu carrito está vacío",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items, key = { it.id }) { product ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Row(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (items.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Tu carrito está vacío",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray
+                    )
+                }
+            } else {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(items, key = { it.id }) { product ->
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                         ) {
-                            Column(modifier = Modifier.weight(1f)) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(14.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = product.nombre,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 15.sp
+                                    )
+                                    Text(
+                                        text = product.categoria?.nombre ?: "",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray
+                                    )
+                                }
                                 Text(
-                                    text = product.nombre,
-                                    style = MaterialTheme.typography.titleSmall
+                                    text = "%.2f €".format(product.precio),
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF003459),
+                                    fontSize = 15.sp
                                 )
-                                Text(text = "%.2f €".format(product.precio))
-                            }
-                            IconButton(onClick = { viewModel.removeFromCart(token, product) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Eliminar del carrito"
+                                IconButton(onClick = { viewModel.removeFromCart(product) }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Eliminar del carrito",
+                                        tint = Color.Gray
+                                    )
+                                }
+                                val checked = viewModel.selectedItems.any { it.id == product.id }
+                                Checkbox(
+                                    checked = checked,
+                                    onCheckedChange = { viewModel.toggleSeleccion(product, it) }
                                 )
                             }
-                            val checked = viewModel.selectedItems.any { it.id == product.id }
-                            Checkbox(
-                                checked = checked,
-                                onCheckedChange = { viewModel.toggleSeleccion(product, it) }
-                            )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Total: %.2f €".format(total),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF003459)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Boton_Componente(
+                    texto = "Continuar al pago",
+                    onClick = { navController.navigate(ROUTES.COMPRA) },
+                    enabled = viewModel.selectedItems.isNotEmpty()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Total: %.2f €".format(total),
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { navController.navigate(ROUTES.COMPRA) },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = viewModel.selectedItems.isNotEmpty()
+            OutlinedButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Continuar al pago")
+                Text("Seguir comprando")
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        OutlinedButton(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Seguir comprando")
         }
     }
 }
