@@ -66,6 +66,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.border
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario

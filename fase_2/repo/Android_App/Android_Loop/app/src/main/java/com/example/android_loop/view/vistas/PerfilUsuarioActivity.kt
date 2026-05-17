@@ -84,6 +84,7 @@ import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurb
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
+import com.example.android_loop.view.componentes.Busqueda_Componente
 import com.example.android_loop.viewModel.ComentarioUiState
 import com.example.android_loop.viewModel.ComentariosViewModel
 import com.example.android_loop.viewModel.DenunciaUiState

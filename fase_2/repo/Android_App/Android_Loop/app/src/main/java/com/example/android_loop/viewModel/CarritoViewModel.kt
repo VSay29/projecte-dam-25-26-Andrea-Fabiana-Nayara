@@ -34,6 +34,7 @@ class CarritoViewModel(private val repo: CarritoApiRepository = CarritoApiReposi
                     ProductoCarrito(
                         id = product.id,
                         nombre = product.nombre,
+                        categoria = product.categoria as String?,
                         descripcion = product.descripcion,
                         precio = product.precio,
                         ubicacion = product.ubicacion,
