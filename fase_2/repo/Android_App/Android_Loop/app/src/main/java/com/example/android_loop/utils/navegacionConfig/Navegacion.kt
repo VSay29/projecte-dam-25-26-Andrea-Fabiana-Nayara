@@ -23,6 +23,8 @@ import com.example.android_loop.view.vistas.CrearProducto
 import com.example.android_loop.view.vistas.Home
 import com.example.android_loop.view.vistas.Carrito
 import com.example.android_loop.view.vistas.Compra
+import com.example.android_loop.view.vistas.Denuncias
+import com.example.android_loop.view.vistas.Favoritos
 import com.example.android_loop.view.vistas.Loggeo
 import com.example.android_loop.view.vistas.PerfilUsuario
 //import com.example.android_loop.view.ui.perfilUsuario.PerfilUsuario
@@ -48,6 +50,7 @@ fun AppNavGraph(navController: NavHostController) {
         ROUTES.DETALLE_PRODUCTO_ID,
         ROUTES.AJUSTES,
         ROUTES.CARRITO,
+        ROUTES.DENUNCIAS,
         ROUTES.PERFIL_USUARIO,
         ROUTES.COMPRA
     )
@@ -70,7 +73,8 @@ fun AppNavGraph(navController: NavHostController) {
             composable(ROUTES.LOGIN) { Loggeo(navController) }
             composable(ROUTES.REGISTRO) { Registro(navController) }
             composable(ROUTES.PERFIL_USUARIO) { PerfilUsuario(navController) }
-            //composable(ROUTES.FAVORITOS) { Favoritos(navController) }
+            composable(ROUTES.FAVORITOS) { Favoritos(navController) }
+            composable(ROUTES.DENUNCIAS) { Denuncias(navController) }
             composable(ROUTES.COMPRA) { Compra(navController) }
             composable(ROUTES.CARRITO) { Carrito(navController) }
             composable(ROUTES.CREAR_PRODUCTO) { CrearProducto(navController) }

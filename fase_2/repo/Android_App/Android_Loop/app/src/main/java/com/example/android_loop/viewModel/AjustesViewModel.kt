@@ -5,80 +5,125 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android_loop.data.model_dataClass.usuarioResult.GetUserDataResult
 import com.example.android_loop.data.repository.UsuarioRepository
-import com.example.android_loop.utils.encriptarPasswd
 import kotlinx.coroutines.launch
 
-class AjustesViewModel(private val repository: UsuarioRepository = UsuarioRepository()) : ViewModel() {
+class AjustesViewModel(private val repository: UsuarioRepository = UsuarioRepository()): ViewModel() {
 
     var settingsState by mutableStateOf<SettingsUiState>(SettingsUiState.Idle)
-    var userData by mutableStateOf<GetUserDataResult?>(null)
-        private set
 
-    fun cargarDatosUsuario(token: String) {
-        viewModelScope.launch {
-            repository.getUserData(token).onSuccess { userData = it }
-        }
-    }
-
-    private fun ejecutarCambio(accion: suspend () -> Result<*>) {
+    fun cambiarCorreo(token: String, correo: String) {
         viewModelScope.launch {
             settingsState = SettingsUiState.Loading
-            val result = accion()
+
+            val result = repository.cambiarCorreo(token, correo)
+
             settingsState = result.fold(
-                onSuccess = { SettingsUiState.Success(true) },
-                onFailure = { SettingsUiState.Error(it.message ?: "Operación fallida") }
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo actualizar el correo")
+                }
             )
         }
     }
 
-    fun cambiarCorreo(token: String, correo: String) =
-        ejecutarCambio { repository.cambiarCorreo(token, correo) }
-
-    fun cambiarPasswd(token: String, passwd: String) =
-        ejecutarCambio { repository.cambiarPasswd(token, passwd) }
-
-    fun cambiarMobile(token: String, mobile: String) =
-        ejecutarCambio { repository.cambiarMobile(token, mobile) }
-
-    fun cambiarTelephone(token: String, tel: String) =
-        ejecutarCambio { repository.cambiarTelephone(token, tel) }
-
-    fun cambiarIdioma(token: String, idioma: String) =
-        ejecutarCambio { repository.cambiarIdioma(token, idioma.substring(0, 2).lowercase()) }
-
-    fun borrarCuenta(token: String) =
-        ejecutarCambio { repository.borrarCuenta(token) }
-
-    fun editarPerfil(token: String, correo: String, passwdActual: String, passwdNueva: String, mobile: String, tel: String) {
+    fun cambiarPasswd(token: String, passwd: String) {
         viewModelScope.launch {
             settingsState = SettingsUiState.Loading
-            var errorMsg: String? = null
 
-            if (passwdNueva.isNotBlank()) {
-                val username = userData?.username ?: ""
-                repository.generarSesion(username, passwdActual)
-                    .onFailure { errorMsg = "Contraseña actual incorrecta" }
-            }
+            val result = repository.cambiarPasswd(token, passwd)
 
-            if (correo.isNotBlank() && errorMsg == null)
-                repository.cambiarCorreo(token, correo).onFailure { errorMsg = it.message ?: "Operación fallida" }
-            if (passwdNueva.isNotBlank() && errorMsg == null)
-                repository.cambiarPasswd(token, encriptarPasswd(passwdNueva)).onFailure { errorMsg = it.message ?: "Operación fallida" }
-            if (mobile.isNotBlank() && errorMsg == null)
-                repository.cambiarMobile(token, mobile).onFailure { errorMsg = it.message ?: "Operación fallida" }
-            if (tel.isNotBlank() && errorMsg == null)
-                repository.cambiarTelephone(token, tel).onFailure { errorMsg = it.message ?: "Operación fallida" }
-
-            settingsState = if (errorMsg != null) SettingsUiState.Error(errorMsg!!) else SettingsUiState.Success(true)
+            settingsState = result.fold(
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo actualizar la contraseña")
+                }
+            )
         }
     }
+
+    fun cambiarMobile(token: String, mobile: String) {
+        viewModelScope.launch {
+            settingsState = SettingsUiState.Loading
+
+            val result = repository.cambiarMobile(token, mobile)
+
+            settingsState = result.fold(
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo actualizar el número de contacto")
+                }
+            )
+        }
+    }
+
+    fun cambiarTelephone(token: String, tel: String) {
+        viewModelScope.launch {
+            settingsState = SettingsUiState.Loading
+
+            val result = repository.cambiarTelephone(token, tel)
+
+            settingsState = result.fold(
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo actualizar el telefono")
+                }
+            )
+        }
+    }
+
+    fun cambiarIdioma(token: String, idioma: String) {
+        viewModelScope.launch {
+            settingsState = SettingsUiState.Loading
+
+            val result = repository.cambiarIdioma(token, idioma.substring(0, 2).toLowerCase())
+
+            settingsState = result.fold(
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo cambiar el idioma")
+                }
+            )
+        }
+    }
+
+    fun borrarCuenta(token: String) {
+        viewModelScope.launch {
+            settingsState = SettingsUiState.Loading
+
+            val result = repository.borrarCuenta(token)
+
+            settingsState = result.fold(
+                onSuccess = {
+                    SettingsUiState.Success(true)
+                },
+                onFailure = {
+                    SettingsUiState.Error(it.message ?: "No se pudo borrar la cuenta")
+                }
+            )
+        }
+    }
+
 }
 
 sealed class SettingsUiState {
+
     object Idle : SettingsUiState()
-    object Loading : SettingsUiState()
-    data class Success(val resp: Boolean) : SettingsUiState()
-    data class Error(val message: String) : SettingsUiState()
+
+    object Loading: SettingsUiState()
+
+    data class Success(val resp: Boolean): SettingsUiState()
+
+    data class Error(val message: String): SettingsUiState()
+
 }

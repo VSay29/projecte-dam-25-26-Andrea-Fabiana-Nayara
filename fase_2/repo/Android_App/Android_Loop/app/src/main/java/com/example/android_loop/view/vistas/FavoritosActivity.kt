@@ -1,6 +1,6 @@
 package com.example.android_loop.view.vistas
 
-import android.content.Context.MODE_PRIVATE
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -16,7 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import com.example.android_loop.view.componentes.Loading_Componente
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -39,7 +39,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.FavoritosUiState
 import com.example.android_loop.viewModel.FavoritosViewModel
@@ -48,8 +52,25 @@ import com.example.android_loop.viewModel.FavoritosViewModel
 fun Favoritos(navController: NavHostController) {
 
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
-    val token = prefs.getString("token", null)
+    val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
 
     var filtro by rememberSaveable { mutableStateOf("") }
 
@@ -169,7 +190,18 @@ fun Favoritos(navController: NavHostController) {
 
         // UI de carga
 
-        Loading_Componente(visible = favState is FavoritosUiState.Loading)
+        if (favState is FavoritosUiState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = Color.Blue
+                )
+            }
+        }
     }
 
 }

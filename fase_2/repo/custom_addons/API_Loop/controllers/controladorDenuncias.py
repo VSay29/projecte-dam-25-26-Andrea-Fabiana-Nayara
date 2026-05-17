@@ -85,7 +85,8 @@ class CRUD_Denuncias_Controller(http.Controller):
             return {'error': 'Unauthorized'}
         
         denuncias_user = request.env['loop_proyecto.denuncia_reporte'].sudo().search([
-            ('denunciante_id', '=', user.id)
+            ('denunciante_id', '=', user.id),
+            ('estado_usuario', '!=', 'retirada')
         ])
 
         if not denuncias_user:
@@ -98,8 +99,12 @@ class CRUD_Denuncias_Controller(http.Controller):
                         'id': d.id,
                         'motivo_denuncia': d.motivo_denuncia,
                         'producto_id': d.producto_id.id if d.producto_id else None,
+                        'producto_nombre': d.producto_id.nombre if d.producto_id else None,
                         'comentario_id': d.comentario_id.id if d.comentario_id else None,
-                        'usuario_denunciado_id': d.usuario_denunciado_id.id
+                        'comentario_texto': d.comentario_id.contenido if d.comentario_id else None,
+                        'usuario_denunciado_id': d.usuario_denunciado_id.id if d.usuario_denunciado_id else None,
+                        'usuario_denunciado_nombre': d.usuario_denunciado_id.name if d.usuario_denunciado_id else None,
+                        'estado_moderacion': d.estado_moderacion,
                     }
                     for d in denuncias_user
                 ]
