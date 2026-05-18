@@ -113,6 +113,10 @@ class CRUD_User_Controller(http.Controller):
         allowed = {'name', 'username', 'email', 'phone', 'mobile', 'idioma', 'image_1920', 'password'}
         update_vals = {k: v for k, v in data.items() if k in allowed}
 
+        if 'password' in update_vals:
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            update_vals['password'] = pwd_context.hash(update_vals['password'])
+
         # Validar que image_1920 sea base64 si viene
         if 'image_1920' in update_vals:
             valor = update_vals['image_1920']

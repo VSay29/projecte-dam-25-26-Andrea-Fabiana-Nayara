@@ -37,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import com.example.android_loop.view.componentes.Busqueda_Componente
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -65,6 +66,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.border
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.android_loop.R
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
@@ -74,6 +78,7 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import com.example.android_loop.viewModel.ComentariosViewModel
 import com.example.android_loop.viewModel.DenunciaUiState
@@ -181,7 +186,7 @@ fun PerfilVendedor(
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.Transparent)
+            .background(Color.White)
     ) {
         Column(Modifier.fillMaxSize()) {
 
@@ -189,42 +194,31 @@ fun PerfilVendedor(
             Column(
                 Modifier
                     .weight(1f)
+                    .background(Color.White)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
+                Header_Componente(
+                    titulo = vendedorNombre,
+                    onBack = { navController.popBackStack() }
+                )
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
                         .padding(top = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(
+                    Image(
+                        bitmap = profileBitmap,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopStart),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Volver",
-                                tint = Color(0xFF003459),
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            bitmap = profileBitmap,
-                            contentDescription = null,
-                            modifier = Modifier.size(110.dp).clip(CircleShape)
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(vendedorNombre)
-                    }
+                            .size(130.dp)
+                            .clip(CircleShape)
+                            .border(3.dp, Color(0xFFDDDDDD), CircleShape)
+                    )
                 }
 
                 Spacer(Modifier.height(30.dp))
@@ -277,26 +271,10 @@ fun PerfilVendedor(
 
                         when (selectedTab) {
                             0 -> {
-                                TextField(
-                                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(30.dp)),
+                                Busqueda_Componente(
                                     value = filtro,
                                     onValueChange = { filtro = it },
-                                    placeholder = { Text("Buscar producto") },
-                                    leadingIcon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.lupa),
-                                            contentDescription = "Buscar",
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    },
-                                    singleLine = true,
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.LightGray,
-                                        unfocusedContainerColor = Color.LightGray,
-                                        disabledContainerColor = Color.LightGray,
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    )
+                                    placeholder = "Buscar producto"
                                 )
                                 //TODO: MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
 
@@ -310,21 +288,49 @@ fun PerfilVendedor(
                                 if(productosFiltrados.isEmpty()) {
                                     Text("No hay productos en venta")
                                 } else {
-                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Spacer(Modifier.height(10.dp))
+                                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                         productosFiltrados.forEach { producto ->
                                             Card(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(10.dp),
-                                                shape = RoundedCornerShape(12.dp)
+                                                modifier = Modifier.fillMaxWidth(),
+                                                shape = RoundedCornerShape(16.dp),
+                                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
+                                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                                             ) {
-                                                Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                                                    Column {
-                                                        Text(text = producto.nombre)
-                                                        Text(text = producto.descripcion)
-                                                        Text(text = "Precio: ${producto.precio}")
-                                                        Text(text = producto.ubicacion)
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(14.dp),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Column(Modifier.weight(1f)) {
+                                                        Text(
+                                                            text = producto.nombre,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            fontSize = 15.sp
+                                                        )
+                                                        Text(
+                                                            text = producto.descripcion,
+                                                            fontSize = 12.sp,
+                                                            color = Color.Gray,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis
+                                                        )
+                                                        if (producto.ubicacion.isNotBlank()) {
+                                                            Text(
+                                                                text = producto.ubicacion,
+                                                                fontSize = 12.sp,
+                                                                color = Color.Gray
+                                                            )
+                                                        }
                                                     }
+                                                    Text(
+                                                        text = "${producto.precio} €",
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = Color(0xFF003459),
+                                                        fontSize = 15.sp
+                                                    )
                                                 }
                                             }
                                         }
