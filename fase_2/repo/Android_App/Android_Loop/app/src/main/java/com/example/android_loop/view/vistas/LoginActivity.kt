@@ -20,7 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
+import com.example.android_loop.view.componentes.Loading_Componente
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -246,16 +246,7 @@ fun Loggeo(navController: NavHostController) {
             }
         }
 
-        if (loginState is LoginUiState.Loading || loginState is LoginUiState.Success) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = Color(0xFF003459))
-            }
-        }
+        Loading_Componente(visible = loginState is LoginUiState.Loading || loginState is LoginUiState.Success)
     }
 }
 

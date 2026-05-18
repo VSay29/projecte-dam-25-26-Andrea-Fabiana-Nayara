@@ -69,6 +69,13 @@ import com.example.android_loop.viewModel.AjustesViewModel
 import com.example.android_loop.viewModel.SettingsUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.android_loop.view.componentes.Boton_Componente
+import com.example.android_loop.view.componentes.Header_Componente
+import com.example.android_loop.view.componentes.Loading_Componente
+import androidx.compose.ui.text.toUpperCase
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,11 +107,17 @@ fun Ajustes(navController: NavHostController) {
     val viewModelSettings: AjustesViewModel = viewModel()
     val state = viewModelSettings.settingsState
 
-    var dialogTipo by remember { mutableStateOf<String?>(null) }
+    val userData = viewModelSettings.userData
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var mostrarEditarPerfil by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
-    var passwd by remember { mutableStateOf("") }
+    var passwdActual by remember { mutableStateOf("") }
+    var passwdNueva by remember { mutableStateOf("") }
     var mobile by remember { mutableStateOf("") }
     var tel by remember { mutableStateOf("") }
+
+    var dialogTipo by remember { mutableStateOf<String?>(null) }
 
     var expanded by remember { mutableStateOf(false) }
     val idiomas = listOf("Español", "Catálan", "English")
@@ -118,317 +131,291 @@ fun Ajustes(navController: NavHostController) {
     val isLoading = state is SettingsUiState.Loading
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Ajustes") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
+    // Cargar datos del usuario al entrar en la pantalla
+    LaunchedEffect(Unit) { viewModelSettings.cargarDatosUsuario(token) }
+
+    // Pre-rellenar campos al abrir el sheet con los datos actuales
+    LaunchedEffect(mostrarEditarPerfil) {
+        if (mostrarEditarPerfil && userData != null) {
+            email = userData.email
+            mobile = userData.mobile ?: ""
+            tel = userData.phone ?: ""
+            passwdActual = ""
+            passwdNueva = ""
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Header_Componente(titulo = "Ajustes", onBack = { navController.popBackStack() })
+
+            // Contenido con scroll
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+
+                // Cuenta
+                SectionTitle("Cuenta")
+                Card(shape = MaterialTheme.shapes.large) {
+                    Column {
+                        SettingItem("Editar perfil") { mostrarEditarPerfil = true }
+                        HorizontalDivider()
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            SettingItem("Idioma: ${idioma.substring(0, 2).toUpperCase()}") {
+                                expanded = true
+                            }
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                idiomas.forEach {
+                                    DropdownMenuItem(
+                                        text = { Text(it) },
+                                        onClick = {
+                                            idioma = it
+                                            viewModelSettings.cambiarIdioma(token, idioma)
+                                            prefs.edit { putString("IDIOMA", idioma) }
+                                            expanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        HorizontalDivider()
+                        SettingItem(
+                            text = "Cerrar sesión",
+                            textColor = MaterialTheme.colorScheme.error
+                        ) { dialogTipo = "cerrarSesion" }
+                    }
+                }
+
+                // Preferencias
+                SectionTitle("Preferencias")
+                Card(shape = MaterialTheme.shapes.large) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Modo oscuro", style = MaterialTheme.typography.bodyLarge)
+                        Switch(
+                            checked = isDarkTheme,
+                            onCheckedChange = {
+                                isDarkTheme = it
+                                prefs.edit { putBoolean("dark_mode", it) }
+                            }
                         )
                     }
                 }
-            )
-        }
-    ) { innerPadding ->
 
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-                .navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                // Espacio extra al final del scroll para que no quede pegado al botón
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // ── Botón fijo en la parte inferior ──────────────────────
+            HorizontalDivider()
+            TextButton(
+                onClick = {
+                    textoConfirmacion = generarTextoConfirmacion()
+                    inputConfirmacion = ""
+                    mostrarDialogConfirmacion = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Eliminar cuenta de Loop",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+
+        Loading_Componente(visible = isLoading)
+    }
+
+    // ── Bottom sheet: Editar perfil ───────────────────────────────────
+    if (mostrarEditarPerfil) {
+        ModalBottomSheet(
+            onDismissRequest = { if (!isLoading) mostrarEditarPerfil = false },
+            sheetState = sheetState
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 32.dp)
+                    .navigationBarsPadding(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("Editar perfil", style = MaterialTheme.typography.titleLarge)
 
-            Text("Cuenta", style = MaterialTheme.typography.titleMedium)
-
-            Card {
-                Column {
-
-                    SettingItem("Cambiar correo") {
-                        dialogTipo = "correo"
-                    }
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    SettingItem("Cambiar contraseña") {
-                        dialogTipo = "passwd"
-                    }
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    SettingItem("Cambiar número de contacto") {
-                        dialogTipo = "mobile"
-                    }
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    SettingItem("Cambiar número de telefono") {
-                        dialogTipo = "telephone"
-                    }
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    Box(modifier = Modifier.fillMaxWidth()) {
-
-                        SettingItem("Cambiar idioma: ${idioma.substring(0, 2).toUpperCase()}") {
-                            expanded = true
-                        }
-
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            idiomas.forEach {
-                                DropdownMenuItem(
-                                    text = { Text(it) },
-                                    onClick = {
-                                        idioma = it
-                                        viewModelSettings.cambiarIdioma(token, idioma)
-                                        prefs.edit {
-                                            putString("IDIOMA", idioma)
-                                        }
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-
-                    }
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
-                    SettingItem("Cerrar sesión", textColor = MaterialTheme.colorScheme.error) {
-                        dialogTipo = "cerrarSesion"
-                    }
-
-                }
-            }
-
-            Text("Preferencias", style = MaterialTheme.typography.titleMedium)
-
-            Card {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Modo oscuro")
-                    Switch(
-                        checked = isDarkTheme,
-                        onCheckedChange = {
-                            isDarkTheme = it
-                            prefs.edit { putBoolean("dark_mode", it) }
-                        }
-                    )
-                }
-            }
-
-            Text("Acciones peligrosas", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
-
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SettingItem(text = "Borrar cuenta", textColor = MaterialTheme.colorScheme.error, backgroundColor = MaterialTheme.colorScheme.errorContainer
-                    ) {
-
-                        textoConfirmacion = generarTextoConfirmacion()
-
-                        inputConfirmacion = ""
-
-                        mostrarDialogConfirmacion = true
-
-                    }
-                }
-            }
-        }
-
-        when (dialogTipo) {
-            "correo" -> {
-                MostrarDialog(
-                    "Cambiar correo",
-                    "Introduce el nuevo correo",
+                Spacer(modifier = Modifier.height(4.dp))
+                OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    onConfirm = {
-                        keyboardController?.hide()
-                        viewModelSettings.cambiarCorreo(token, email)
-                    },
-                    onDismiss = { if (!isLoading) dialogTipo = null },
-                    confirmEnabled = true,
-                    accionPeligrosa = false,
-                    keyboardType = KeyboardType.Email,
-                    isLoading = isLoading
+                    label = { Text("Correo") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-
-            "passwd" -> {
-                MostrarDialog(
-                    "Cambiar contraseña",
-                    "Introduce la nueva contraseña",
-                    value = passwd,
-                    onValueChange = { passwd = it },
-                    onConfirm = {
-                        keyboardController?.hide()
-                        viewModelSettings.cambiarPasswd(token, passwd)
-                    },
-                    onDismiss = { if (!isLoading) dialogTipo = null },
-                    confirmEnabled = true,
-                    accionPeligrosa = false,
-                    keyboardType = KeyboardType.Password,
+                OutlinedTextField(
+                    value = passwdNueva,
+                    onValueChange = { passwdNueva = it },
+                    label = { Text("Nueva contraseña") },
+                    placeholder = { Text("Dejar vacío para no cambiar") },
+                    singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
-                    isLoading = isLoading
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-
-            "mobile" -> {
-                MostrarDialog(
-                    "Cambiar el número de contacto",
-                    "Introduce el nuevo contacto",
+                if (passwdNueva.isNotBlank()) {
+                    OutlinedTextField(
+                        value = passwdActual,
+                        onValueChange = { passwdActual = it },
+                        label = { Text("Contraseña actual") },
+                        placeholder = { Text("Requerida para confirmar el cambio") },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                OutlinedTextField(
                     value = mobile,
                     onValueChange = { mobile = it },
-                    onConfirm = {
-                        keyboardController?.hide()
-                        viewModelSettings.cambiarMobile(token, mobile)
-                    },
-                    onDismiss = { if (!isLoading) dialogTipo = null },
-                    confirmEnabled = true,
-                    accionPeligrosa = false,
-                    keyboardType = KeyboardType.Phone,
-                    isLoading = isLoading
+                    label = { Text("Número de contacto") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-
-            "telephone" -> {
-                MostrarDialog(
-                    "Cambiar telefono",
-                    "Introduce el nuevo telefono",
+                OutlinedTextField(
                     value = tel,
                     onValueChange = { tel = it },
-                    onConfirm = {
+                    label = { Text("Teléfono") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Boton_Componente(
+                    texto = "Guardar cambios",
+                    onClick = {
                         keyboardController?.hide()
-                        viewModelSettings.cambiarTelephone(token, tel)
+                        viewModelSettings.editarPerfil(token, email, passwdActual, passwdNueva, mobile, tel)
                     },
-                    onDismiss = { if (!isLoading) dialogTipo = null },
-                    confirmEnabled = true,
-                    accionPeligrosa = false,
-                    keyboardType = KeyboardType.Phone,
-                    isLoading = isLoading
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading && (
+                        email.isNotBlank() ||
+                        (passwdNueva.isNotBlank() && passwdActual.isNotBlank()) ||
+                        mobile.isNotBlank() ||
+                        tel.isNotBlank()
+                    )
                 )
             }
-
-            "cerrarSesion" -> {
-                MostrarDialog(
-                    "Cerrar sesión",
-                    "Está a punto de cerrar sesión",
-                    onConfirm = {
-                        prefs.edit { putString("token", "") }
-                        dialogTipo = null
-
-                        scope.launch {
-
-                            delay(1000)
-
-                        }
-
-                        Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
-                        navController.navigate(ROUTES.LOGIN)
-                    },
-                    onDismiss = {
-                        dialogTipo = null
-                    },
-                    confirmEnabled = true,
-                    accionPeligrosa = true,
-                    value = null,
-                    onValueChange = null,
-                    keyboardType = null,
-                    isLoading = isLoading
-                )
-            }
-
         }
+    }
 
-        if (mostrarDialogConfirmacion) {
+    // ── Dialogs ───────────────────────────────────────────────────────
+    when (dialogTipo) {
+        "cerrarSesion" -> {
             MostrarDialog(
-                "¡Atención!",
-                "La cuenta está a punto de ser eliminada.\n" +
-                        "Introduce el siguiente texto para confirmar esta acción:\n\n$textoConfirmacion",
-                inputConfirmacion,
-                { inputConfirmacion = it },
+                "Cerrar sesión",
+                "Está a punto de cerrar sesión",
                 onConfirm = {
-                    viewModelSettings.borrarCuenta(token)
                     prefs.edit { putString("token", "") }
-                    Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
+                    dialogTipo = null
+                    Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                     navController.navigate(ROUTES.LOGIN)
                 },
-                onDismiss = {mostrarDialogConfirmacion = false},
-                confirmEnabled = (inputConfirmacion == textoConfirmacion),
+                onDismiss = { dialogTipo = null },
+                confirmEnabled = true,
                 accionPeligrosa = true,
-                KeyboardType.Text,
+                value = null,
+                onValueChange = null,
+                keyboardType = null,
                 isLoading = isLoading
             )
         }
+    }
 
-        LaunchedEffect(state) {
-            when (state) {
-                is SettingsUiState.Loading -> {
-                    Toast.makeText(context, "Cargando...", Toast.LENGTH_SHORT).show()
-                }
-                is SettingsUiState.Success -> {
-                    Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
-                    dialogTipo = null
-                    mostrarDialogConfirmacion = false
-                }
-                is SettingsUiState.Error -> {
-                    Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
-                }
-                else -> {}
-            }
+    if (mostrarDialogConfirmacion) {
+        MostrarDialog(
+            "¡Atención!",
+            "La cuenta está a punto de ser eliminada.\n" +
+                    "Introduce el siguiente texto para confirmar esta acción:\n\n$textoConfirmacion",
+            inputConfirmacion,
+            { inputConfirmacion = it },
+            onConfirm = {
+                viewModelSettings.borrarCuenta(token)
+                prefs.edit { putString("token", "") }
+                Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
+                navController.navigate(ROUTES.LOGIN)
+            },
+            onDismiss = { mostrarDialogConfirmacion = false },
+            confirmEnabled = (inputConfirmacion == textoConfirmacion),
+            accionPeligrosa = true,
+            KeyboardType.Text,
+            isLoading = isLoading
+        )
+    }
 
-            if (state is SettingsUiState.Success) {
+    LaunchedEffect(state) {
+        when (state) {
+            is SettingsUiState.Success -> {
+                if (mostrarEditarPerfil) {
+                    mostrarEditarPerfil = false
+                    passwdActual = ""
+                    passwdNueva = ""
+                    viewModelSettings.cargarDatosUsuario(token)
+                }
+                Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
                 dialogTipo = null
+                mostrarDialogConfirmacion = false
             }
-        }
-
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
-                    .clickable(enabled = false) {},
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    shape = MaterialTheme.shapes.medium,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                        Spacer(modifier = Modifier.size(16.dp))
-                        Text("Cargando...", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
+            is SettingsUiState.Error -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
             }
+            else -> {}
         }
-
     }
 }
 
 @Composable
-fun SettingItem(text: String, textColor: Color = MaterialTheme.colorScheme.onSurface, backgroundColor: Color = Color.Transparent, onClick: () -> Unit) {
+fun SectionTitle(text: String, color: Color = Color.Unspecified) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = if (color != Color.Unspecified) color else MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(start = 4.dp)
+    )
+}
 
-    Row(Modifier.fillMaxWidth().background(backgroundColor).clickable{onClick()}.padding(16.dp)) {
-
-        Text(
-            text = text,
-            color = textColor,
-            style = MaterialTheme.typography.bodyLarge
-        )
-
+@Composable
+fun SettingItem(
+    text: String,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = Color.Transparent,
+    onClick: () -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        Text(text = text, color = textColor, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
@@ -447,12 +434,8 @@ fun MostrarDialog(
     isLoading: Boolean
 ) {
     AlertDialog(
-        onDismissRequest = {
-            if (!isLoading) onDismiss()
-        },
-        title = {
-            if (!isLoading) Text(title)
-        },
+        onDismissRequest = { if (!isLoading) onDismiss() },
+        title = { if (!isLoading) Text(title) },
         text = {
             Column(
                 modifier = Modifier
@@ -478,9 +461,7 @@ fun MostrarDialog(
                                 onValueChange = { onValueChange(it) },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = keyboardType
-                                ),
+                                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                                 visualTransformation = visualTransformation
                             )
                         }
@@ -490,39 +471,27 @@ fun MostrarDialog(
         },
         confirmButton = {
             if (!isLoading) {
-                Button(
-                    onClick = onConfirm,
-                    enabled = confirmEnabled
-                ) {
+                Button(onClick = onConfirm, enabled = confirmEnabled) {
                     Text(if (accionPeligrosa) "Confirmar" else "Guardar")
                 }
             }
         },
         dismissButton = {
             if (!isLoading) {
-                Button(onClick = onDismiss) {
-                    Text("Cancelar")
-                }
+                Button(onClick = onDismiss) { Text("Cancelar") }
             }
         }
     )
 }
 
-fun generarTextoConfirmacion() : String {
+fun generarTextoConfirmacion(): String {
     val caracteres = (
-            ('a' .. 'z') +
-                    ('A' .. 'Z') +
-                    (0 .. 9) +
+            ('a'..'z') +
+                    ('A'..'Z') +
+                    (0..9) +
                     listOf('!', '@', '#', '$', '%', '&', '*', '+', '-', '_')
             )
-
-    val longitud = 12
-
-    val randomString = (1..longitud)
-        .map { caracteres.random() }
-        .joinToString("")
-
-    return randomString
+    return (1..12).map { caracteres.random() }.joinToString("")
 }
 
 @Preview(showBackground = true)

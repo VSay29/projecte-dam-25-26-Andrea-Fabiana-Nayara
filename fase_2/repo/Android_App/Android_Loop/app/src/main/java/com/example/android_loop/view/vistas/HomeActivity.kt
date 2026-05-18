@@ -30,10 +30,12 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Busqueda_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
@@ -196,29 +198,11 @@ fun Home(navController: NavHostController) {
             // SECCION: Barra de búsqueda
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            Busqueda_Componente(
                 value = buscador,
                 onValueChange = { buscador = it },
-                placeholder = { Text("Buscar productos...") },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.lupa),
-                        contentDescription = "Buscar",
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(30.dp)),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFF0F4F8),
-                    unfocusedContainerColor = Color(0xFFF0F4F8),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                )
+                placeholder = "Buscar productos...",
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(12.dp))
