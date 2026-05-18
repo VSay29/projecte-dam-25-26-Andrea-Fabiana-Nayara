@@ -198,11 +198,29 @@ fun Home(navController: NavHostController) {
             // SECCION: Barra de búsqueda
             Spacer(modifier = Modifier.height(12.dp))
 
-            Busqueda_Componente(
+            TextField(
                 value = buscador,
                 onValueChange = { buscador = it },
-                placeholder = "Buscar productos...",
-                modifier = Modifier.padding(horizontal = 16.dp)
+                placeholder = { Text("Buscar productos...") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.lupa),
+                        contentDescription = "Buscar",
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(30.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF0F4F8),
+                    unfocusedContainerColor = Color(0xFFF0F4F8),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))

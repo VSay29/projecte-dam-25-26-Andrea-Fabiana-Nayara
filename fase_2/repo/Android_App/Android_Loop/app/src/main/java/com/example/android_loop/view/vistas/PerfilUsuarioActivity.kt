@@ -378,10 +378,28 @@ fun PerfilUsuario(navController: NavHostController) {
 
                     when (selectedTab) {
                         0 -> {
-                            Busqueda_Componente(
+                            TextField(
                                 value = filtro,
                                 onValueChange = { filtro = it },
-                                placeholder = "Buscar producto"
+                                placeholder = { Text("Buscar producto") },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.lupa),
+                                        contentDescription = "Buscar",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                singleLine = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(30.dp)),
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color(0xFFF0F4F8),
+                                    unfocusedContainerColor = Color(0xFFF0F4F8),
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent
+                                )
                             )
 
                             // MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
