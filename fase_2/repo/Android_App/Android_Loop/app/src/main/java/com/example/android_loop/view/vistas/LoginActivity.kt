@@ -1,5 +1,6 @@
 package com.example.android_loop.view.vistas
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import com.example.android_loop.view.componentes.Loading_Componente
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -46,8 +47,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.encriptacionConfig.encriptarToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.LoginUiState
@@ -226,10 +229,15 @@ fun Loggeo(navController: NavHostController) {
         LaunchedEffect(loginState) {
             when (loginState) {
                 is LoginUiState.Success -> {
-                    val token = loginState.token
-                    setToken(context, token)
-                    kotlinx.coroutines.delay(1000)
-                    navController.navigate(ROUTES.HOME)
+                    val tokenOriginal = loginState.token
+
+                    setToken(context, tokenOriginal)
+
+                    if (tokenValido(tokenOriginal)) {
+                        navController.navigate(ROUTES.HOME) {
+                            popUpTo(ROUTES.LOGIN) { inclusive = true }
+                        }
+                    }
                 }
                 is LoginUiState.Error -> {
                     Toast.makeText(context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
@@ -238,7 +246,16 @@ fun Loggeo(navController: NavHostController) {
             }
         }
 
-        Loading_Componente(visible = loginState is LoginUiState.Loading || loginState is LoginUiState.Success)
+        if (loginState is LoginUiState.Loading || loginState is LoginUiState.Success) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFF003459))
+            }
+        }
     }
 }
 

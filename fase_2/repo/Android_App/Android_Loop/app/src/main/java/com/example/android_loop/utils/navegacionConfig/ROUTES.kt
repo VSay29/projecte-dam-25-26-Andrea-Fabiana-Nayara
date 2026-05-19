@@ -9,6 +9,7 @@ object ROUTES {
     const val REGISTRO = "registro"
     const val PERFIL_USUARIO = "perfil_Usuario"
     const val FAVORITOS = "favoritos"
+    const val DENUNCIAS = "denuncias"
     const val COMPRA = "compra"
     const val CARRITO = "carrito"
     const val CREAR_PRODUCTO = "crear_producto"

@@ -1,19 +1,21 @@
 package com.example.android_loop.view.vistas
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.example.android_loop.view.componentes.Busqueda_Componente
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +30,13 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Busqueda_Componente
+import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
@@ -36,6 +45,7 @@ import com.example.android_loop.viewModel.ProductoHomeUiState
 import com.tuapp.ui.theme.OnPrimary
 import com.tuapp.ui.theme.Primary
 import com.example.android_loop.view.componentes.Header_Componente
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,10 +53,6 @@ fun Home(navController: NavHostController) {
 
     // SECCION: CONTEXT
     val context = LocalContext.current
-
-    // SECCION: TOKEN
-
-    val token = getToken(context)
 
     // SECCION: CARGA DE VIEWMODELS
 
@@ -61,6 +67,23 @@ fun Home(navController: NavHostController) {
 
     val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
 
+    // SECCION: TOKEN
+
+    var token by remember { mutableStateOf(getToken(context)) }
+
+    LaunchedEffect(Unit) {
+        token = getToken(context)
+
+        if (token.isEmpty()) {
+            delay(100)
+            token = getToken(context)
+        }
+
+        if (!tokenValido(token)) {
+            Log.d("DEBUG_HOME", "Token no válido en Home: '$token'")
+        }
+    }
+
     // SECCION: VARIABLES
 
     val productos = (productoHomeState as? ProductoHomeUiState.SuccessCargarProductos)?.resp ?: emptyList()
@@ -70,9 +93,8 @@ fun Home(navController: NavHostController) {
 
     // SECCION: CARGA DE DATOS DE PRODUCTOS Y CATEGORIAS
 
-    // Se recarga el carrito para que se cargue el carrito correspondiente al usuario que inició sesión
     LaunchedEffect(token) {
-        carritoViewModel.reloadCart()
+        carritoViewModel.cargarCarrito(token)
         homeViewModel.cargarProductos(token)
         homeViewModel.cargarCategorias(token)
     }
@@ -124,7 +146,6 @@ fun Home(navController: NavHostController) {
 
         is ProductoHomeUiState.Error -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Log.d("DEBUG_HOME_PRODUCTOHOMESTATE", productoHomeState.message)
                 Text(productoHomeState.message)
             }
             return
@@ -177,11 +198,29 @@ fun Home(navController: NavHostController) {
             // SECCION: Barra de búsqueda
             Spacer(modifier = Modifier.height(12.dp))
 
-            Busqueda_Componente(
+            TextField(
                 value = buscador,
                 onValueChange = { buscador = it },
-                placeholder = "Buscar productos...",
-                modifier = Modifier.padding(horizontal = 16.dp)
+                placeholder = { Text("Buscar productos...") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.lupa),
+                        contentDescription = "Buscar",
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(30.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF0F4F8),
+                    unfocusedContainerColor = Color(0xFFF0F4F8),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -261,7 +300,7 @@ fun Home(navController: NavHostController) {
                                         ProductCardSquare(
                                             product = product,
                                             onClick = { navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${product.id}") },
-                                            onAddToCart = { carritoViewModel.addToCart(product) },
+                                            onAddToCart = { carritoViewModel.addToCart(token, product) },
                                             isFavorite = favoritoViewModel.favoritoIds.contains(product.id),
                                             onToggleFavorite = { favoritoViewModel.agregarOquitarfavorito(token, product.id) }
                                         )

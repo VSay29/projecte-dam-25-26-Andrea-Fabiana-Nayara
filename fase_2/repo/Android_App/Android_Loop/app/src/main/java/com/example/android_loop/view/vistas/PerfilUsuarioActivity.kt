@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
@@ -36,7 +37,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import com.example.android_loop.view.componentes.Busqueda_Componente
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -71,14 +73,22 @@ import com.example.android_loop.R
 import com.example.android_loop.utils.base64ToImage
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.toBase64
+import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.tuapp.ui.theme.OnPrimary
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
+import com.example.android_loop.view.componentes.Busqueda_Componente
 import com.example.android_loop.viewModel.ComentarioUiState
 import com.example.android_loop.viewModel.ComentariosViewModel
+import com.example.android_loop.viewModel.DenunciaUiState
+import com.example.android_loop.viewModel.DenunciaViewModel
 import com.example.android_loop.viewModel.PerfilUiState
 import com.example.android_loop.viewModel.PerfilViewModel
 import kotlinx.coroutines.Dispatchers
@@ -91,6 +101,25 @@ fun PerfilUsuario(navController: NavHostController) {
 
     val context = LocalContext.current
     val token = getToken(context)
+
+    LaunchedEffect(Unit) {
+        if (!tokenValido(token)) {
+
+            setToken(context, "")
+
+            Toast.makeText(
+                context,
+                "La sesión ha caducado",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            navController.navigate(ROUTES.LOGIN) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
+        }
+    }
+
     val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
 
     val perfilViewModel: PerfilViewModel = viewModel()
@@ -98,6 +127,11 @@ fun PerfilUsuario(navController: NavHostController) {
 
     val comentariosViewModel: ComentariosViewModel = viewModel()
     val comentarioUiState = comentariosViewModel.comentarioUiState
+
+    val denunciaViewModel: DenunciaViewModel = viewModel()
+    var showDenunciaDialog by remember { mutableStateOf(false) }
+    var motivoDenuncia by remember { mutableStateOf("") }
+    var comentarioADenunciar by remember { mutableStateOf<Int?>(null) }
 
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -156,6 +190,16 @@ fun PerfilUsuario(navController: NavHostController) {
 
 
 
+    LaunchedEffect(denunciaViewModel.emitirDenunciaState) {
+        when (denunciaViewModel.emitirDenunciaState) {
+            is DenunciaUiState.SuccessEmitirDenunciaComentario ->
+                Toast.makeText(context, "Denuncia enviada correctamente", Toast.LENGTH_SHORT).show()
+            is DenunciaUiState.Error ->
+                Toast.makeText(context, "Error al enviar la denuncia", Toast.LENGTH_SHORT).show()
+            else -> {}
+        }
+    }
+
     Box(
         Modifier
             .fillMaxSize()
@@ -181,6 +225,14 @@ fun PerfilUsuario(navController: NavHostController) {
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
+                    IconButton(onClick = { navController.navigate(ROUTES.DENUNCIAS) }) {
+                        Icon(
+                            imageVector = Icons.Default.Flag,
+                            contentDescription = "Mis denuncias",
+                            tint = OnPrimary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                     IconButton(onClick = { navController.navigate(ROUTES.AJUSTES) }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -326,10 +378,28 @@ fun PerfilUsuario(navController: NavHostController) {
 
                     when (selectedTab) {
                         0 -> {
-                            Busqueda_Componente(
+                            TextField(
                                 value = filtro,
                                 onValueChange = { filtro = it },
-                                placeholder = "Buscar producto"
+                                placeholder = { Text("Buscar producto") },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.lupa),
+                                        contentDescription = "Buscar",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                singleLine = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(30.dp)),
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color(0xFFF0F4F8),
+                                    unfocusedContainerColor = Color(0xFFF0F4F8),
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent
+                                )
                             )
 
                             // MOSTRAR LISTA DE PRODUCTOS DEL USUARIO
@@ -430,12 +500,17 @@ fun PerfilUsuario(navController: NavHostController) {
                                     } else {
                                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                             comentarios.forEach { comentario ->
+                                                val esMioEsteComentario = comentario.comentador == comentariosViewModel.currentUserName
                                                 ComentarioBurbuja(
                                                     comentario = comentario,
-                                                    esMio = comentario.comentador == comentariosViewModel.currentUserName,
+                                                    esMio = esMioEsteComentario,
                                                     onPerfilClick = { id, nombre ->
                                                         navController.navigate("${ROUTES.PERFIL_VENDEDOR}/$id/${Uri.encode(nombre)}")
                                                     },
+                                                    onReport = if (!esMioEsteComentario) {{
+                                                        comentarioADenunciar = comentario.id
+                                                        showDenunciaDialog = true
+                                                    }} else null
                                                 )
                                             }
                                         }
@@ -454,6 +529,44 @@ fun PerfilUsuario(navController: NavHostController) {
                 }
             }
         }
+    }
+
+    if (showDenunciaDialog) {
+        AlertDialog(
+            onDismissRequest = { showDenunciaDialog = false; motivoDenuncia = "" },
+            title = { Text("Denunciar reseña") },
+            text = {
+                Column {
+                    Text("Describe el motivo de la denuncia:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = motivoDenuncia,
+                        onValueChange = { motivoDenuncia = it },
+                        placeholder = { Text("Motivo...") },
+                        maxLines = 4,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        comentarioADenunciar?.let { id ->
+                            denunciaViewModel.emitirDenunciaComentario(token, id, motivoDenuncia)
+                        }
+                        showDenunciaDialog = false
+                        motivoDenuncia = ""
+                        comentarioADenunciar = null
+                    },
+                    enabled = motivoDenuncia.isNotBlank()
+                ) { Text("Denunciar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDenunciaDialog = false; motivoDenuncia = "" }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }
 

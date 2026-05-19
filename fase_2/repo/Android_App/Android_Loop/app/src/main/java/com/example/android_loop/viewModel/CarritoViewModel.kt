@@ -1,74 +1,59 @@
 package com.example.android_loop.viewModel
 
-import android.app.Application
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android_loop.data.model_dataClass.carritoResult.ProductoCarrito
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
-import com.example.android_loop.utils.getUserIdFromToken
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.example.android_loop.data.repository.CarritoApiRepository
+import kotlinx.coroutines.launch
 
-private val cartJson = Json { ignoreUnknownKeys = true }
-private const val PREFS_NAME = "loop_prefs"
+class CarritoViewModel(private val repo: CarritoApiRepository = CarritoApiRepository()) : ViewModel() {
 
-class CarritoViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-    private var cartKey: String = ""
-
-    val cartItems = mutableStateListOf<Producto>()
-    val selectedItems = mutableStateListOf<Producto>()
+    val cartItems = mutableStateListOf<ProductoCarrito>()
+    val selectedItems = mutableStateListOf<ProductoCarrito>()
 
     val total: Double
         get() = selectedItems.sumOf { it.precio }
 
-    init {
-        loadCartFromPrefs()
-    }
-
-    private fun computeCartKey(): String {
-        val token = prefs.getString("token", null) ?: ""
-        val userId = getUserIdFromToken(token)?.toString() ?: "guest"
-        return "carrito_items_$userId"
-    }
-
-    private fun loadCartFromPrefs() {
-        cartKey = computeCartKey()
-        cartItems.clear()
-        selectedItems.clear()
-        val saved = prefs.getString(cartKey, null)
-        if (saved != null) {
-            try {
-                cartItems.addAll(cartJson.decodeFromString<List<Producto>>(saved))
-            } catch (_: Exception) {}
+    fun cargarCarrito(token: String) {
+        viewModelScope.launch {
+            repo.getCarrito(token).onSuccess { result ->
+                cartItems.clear()
+                selectedItems.clear()
+                cartItems.addAll(result.productos)
+            }
         }
     }
 
-    fun reloadCart() {
-        val newKey = computeCartKey()
-        if (newKey != cartKey) loadCartFromPrefs()
-    }
-
-    private fun saveCart() {
-        prefs.edit().putString(cartKey, cartJson.encodeToString(cartItems.toList())).apply()
-    }
-
-    fun addToCart(product: Producto) {
-        if (cartItems.none { it.id == product.id }) {
-            cartItems.add(product)
-            saveCart()
+    fun addToCart(token: String, product: Producto) {
+        if (cartItems.any { it.id == product.id }) return
+        viewModelScope.launch {
+            repo.addCarrito(token, product.id).onSuccess {
+                cartItems.add(
+                    ProductoCarrito(
+                        id = product.id,
+                        nombre = product.nombre,
+                        descripcion = product.descripcion,
+                        precio = product.precio,
+                        ubicacion = product.ubicacion,
+                        imagenes = emptyList()
+                    )
+                )
+            }
         }
     }
 
-    fun removeFromCart(product: Producto) {
-        cartItems.removeAll { it.id == product.id }
-        selectedItems.removeAll { it.id == product.id }
-        saveCart()
+    fun removeFromCart(token: String, product: ProductoCarrito) {
+        viewModelScope.launch {
+            repo.removeCarrito(token, product.id).onSuccess {
+                cartItems.removeAll { it.id == product.id }
+                selectedItems.removeAll { it.id == product.id }
+            }
+        }
     }
 
-    fun toggleSeleccion(product: Producto, selected: Boolean) {
+    fun toggleSeleccion(product: ProductoCarrito, selected: Boolean) {
         if (selected) {
             if (selectedItems.none { it.id == product.id }) selectedItems.add(product)
         } else selectedItems.removeAll { it.id == product.id }

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.model_dataClass.usuarioResult.GetUserDataResult
 import com.example.android_loop.data.repository.UsuarioRepository
-import com.example.android_loop.utils.encriptarPasswd
 import kotlinx.coroutines.launch
 
 class AjustesViewModel(private val repository: UsuarioRepository = UsuarioRepository()) : ViewModel() {
@@ -65,7 +64,7 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
             if (correo.isNotBlank() && errorMsg == null)
                 repository.cambiarCorreo(token, correo).onFailure { errorMsg = it.message ?: "Operación fallida" }
             if (passwdNueva.isNotBlank() && errorMsg == null)
-                repository.cambiarPasswd(token, encriptarPasswd(passwdNueva)).onFailure { errorMsg = it.message ?: "Operación fallida" }
+                repository.cambiarPasswd(token, passwdNueva).onFailure { errorMsg = it.message ?: "Operación fallida" }
             if (mobile.isNotBlank() && errorMsg == null)
                 repository.cambiarMobile(token, mobile).onFailure { errorMsg = it.message ?: "Operación fallida" }
             if (tel.isNotBlank() && errorMsg == null)

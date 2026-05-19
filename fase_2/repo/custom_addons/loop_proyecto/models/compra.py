@@ -23,7 +23,8 @@ class Compra(models.Model):
     producto_id = fields.Many2one(
         'loop_proyecto.producto',
         string="Producto",
-        required=True
+        required=False,
+        ondelete='set null'
     )
 
     comprador_id = fields.Many2one(
