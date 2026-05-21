@@ -26,6 +26,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Share
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.tuapp.ui.theme.Primary
+import com.tuapp.ui.theme.Secondary
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -260,7 +261,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.ArrowBackIosNew,
                         contentDescription = "Volver",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = Color.White,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable { navController.popBackStack() }
@@ -269,7 +270,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.Share,
                         contentDescription = "Compartir",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = Color.White,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
@@ -318,7 +319,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                             Icon(
                                 Icons.Default.LocationOn,
                                 contentDescription = "Ver en el mapa",
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = Secondary,
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {
