@@ -39,9 +39,11 @@ import java.util.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.navegacionConfig.ROUTES
@@ -55,10 +57,19 @@ import kotlin.collections.emptyList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun CrearProducto(navController: NavController) {
+fun CrearProducto(navController: NavController, productoId: Int?) {
 
     val context = LocalContext.current
     val token = getToken(context)
+
+    // SECCION: Declaración de los viewmodels
+
+    val crearProductoVM: CrearProductoViewModel = viewModel()
+    val crearProductoState = crearProductoVM.crearProductoUiState
+    val etiquetasState = crearProductoVM.cargarEtiquetaUiState
+    val categoriasState = crearProductoVM.cargarCategoriasUiState
+    val cargarProductoState = crearProductoVM.cargarProductoIDUiState
+
 
     LaunchedEffect(Unit) {
         if (!tokenValido(token)) {
@@ -76,16 +87,10 @@ fun CrearProducto(navController: NavController) {
                 launchSingleTop = true
             }
         }
+
     }
 
     val scrollState = rememberScrollState()
-
-    // SECCION: Declaración de los viewmodels
-
-    val crearProductoVM: CrearProductoViewModel = viewModel()
-    val crearProductoState = crearProductoVM.crearProductoUiState
-    val etiquetasState = crearProductoVM.cargarEtiquetaUiState
-    val categoriasState = crearProductoVM.cargarCategoriasUiState
 
     // SECCION: VARIABLES PARA LA REQUEST DE CREAR PRODUCTO
 
@@ -102,6 +107,7 @@ fun CrearProducto(navController: NavController) {
     var estado by rememberSaveable { mutableStateOf(estados[0]) }
     var categoriaId by rememberSaveable { mutableIntStateOf(0) }
     val imageUris = remember { mutableStateListOf<Uri>() }
+    var productoModificar by rememberSaveable { mutableStateOf<Producto?>(null) }
 
 
     // Formato para la fecha de antiguedad
@@ -123,9 +129,7 @@ fun CrearProducto(navController: NavController) {
 
     val launcherGaleria = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) { uris ->
         if (uris.isNotEmpty() && uris.size <= 10) imageUris.addAll(uris)
-        else {
-            // TODO: Abrir un dialogo para informar de que deben elegirse mínimo 1 imagen, y máximo 10
-        }
+        else Toast.makeText(context, "Debe haber al menos una imagen", Toast.LENGTH_SHORT).show()
     }
 
     // SECCION: CARGAR LAUNCHEDEFFECT
@@ -135,7 +139,33 @@ fun CrearProducto(navController: NavController) {
         crearProductoVM.cargarCategorias(token)
     }
 
-    // TODO: AL CREAR UN PRODUCTO CON ÉXITO LIMPIAREMOS LOS CAMPOS Y MOSTRAREMOS UN DIALOGO
+    // CARGAR PRODUCTO SI ESTÁ EN MODO EDICIÓN
+
+    LaunchedEffect(productoId) {
+        if (productoId != null) crearProductoVM.cargarProducto(token, productoId)
+    }
+
+    // MODO EDICIÓN SÓLO: OBTENER DATOS DEL PRODUCTO CARGADO Y CARGAR IMAGENES DEL MISMO
+
+    LaunchedEffect(cargarProductoState) {
+        if(cargarProductoState is CrearProductoUiState.SuccessCargarProductoID) {
+            val p = cargarProductoState.resp
+
+            nombre = p.nombre
+            descripcion = p.descripcion
+            precio = p.precio.toString()
+            estado = p.estado
+            categoriaId = p.categoria!!.id
+
+            selectedEtiquetas.clear()
+            selectedEtiquetas.addAll(p.etiquetas.map { it.id })
+
+            imageUris.clear()
+            // TODO: CARGAR IMAGENES DEL PRODUCTO
+            //crearProductoVM.cargarImagenes(token, productoId)
+
+        }
+    }
 
     LaunchedEffect(crearProductoState) {
         when (crearProductoState) {
@@ -152,18 +182,13 @@ fun CrearProducto(navController: NavController) {
         }
     }
 
-    // Column exterior: ocupa toda la pantalla pero NO tiene scroll
-    // El scroll solo está en el contenido, no en el botón
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        // Header a tope con los bordes, fuera del scroll
         // TODO: Agregar un botón para volver a la pantalla ROUTES.HOME
         Header_Componente(titulo = "Crear Producto")
 
-        // Column interior: weight(1f) = ocupa el espacio disponible excepto el botón de abajo
-        // El scroll está aquí para que solo el contenido se desplace, no el botón
         Column(modifier = Modifier
                 .weight(1f)
                 .verticalScroll(scrollState)
@@ -288,9 +313,6 @@ fun CrearProducto(navController: NavController) {
             isError = precio.isEmpty() || (precio.toDoubleOrNull()?.let { it < 0 } ?: true),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-
-        /* URGENTE: Vamos a quitar este campo y en su lugar se hará una configuración
-           URGENTE: para que recoja los param de ubicación automáticamente (lon, lat)*/
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -524,7 +546,7 @@ private fun clearAllInputs() {
 
 }
 
-private fun todoCorrecto(nombre: String, desc: String, precio: Double, estado: String, ubicacion: String, categoria: Int, imageUris: List<Uri>): Boolean {
+private fun todoCorrecto(nombre: String, desc: String, precio: Double, estado: String, ubicacion: String, categoria: Int, imageUris: SnapshotStateList<Uri>): Boolean {
 
     val noVacio = (nombre.isNotEmpty() && desc.isNotEmpty() && estado.isNotEmpty() && ubicacion.isNotBlank() && categoria > 0 && imageUris.isNotEmpty())
     val datosCorrectos = (precio >= 0) && (imageUris.size in 1..10)

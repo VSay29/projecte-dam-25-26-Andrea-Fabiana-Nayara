@@ -24,8 +24,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
@@ -82,6 +84,8 @@ import com.example.android_loop.view.theme.Android_LoopTheme
 import com.tuapp.ui.theme.OnPrimary
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
 import com.example.android_loop.view.componentes.Busqueda_Componente
@@ -404,6 +408,7 @@ fun PerfilUsuario(navController: NavHostController) {
                                         Spacer(Modifier.height(10.dp))
                                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                             productosFiltrados.forEach { producto ->
+                                                var menuExpandido by remember { mutableStateOf(false) }
                                                 Card(
                                                     modifier = Modifier.fillMaxWidth(),
                                                     shape = RoundedCornerShape(16.dp),
@@ -444,6 +449,43 @@ fun PerfilUsuario(navController: NavHostController) {
                                                             color = Color(0xFF003459),
                                                             fontSize = 15.sp
                                                         )
+
+                                                        Box {
+                                                            IconButton(onClick = { menuExpandido = true }) {
+                                                                Icon(
+                                                                    imageVector = Icons.Default.MoreVert,
+                                                                    contentDescription = "Opciones",
+                                                                    tint = Color.Gray
+                                                                )
+                                                            }
+
+                                                            DropdownMenu(
+                                                                expanded = menuExpandido,
+                                                                onDismissRequest = { menuExpandido = false }
+                                                            ) {
+                                                                DropdownMenuItem(
+                                                                    text = { Text("Editar") },
+                                                                    leadingIcon = {
+                                                                        Icon(Icons.Default.Edit, contentDescription = null)
+                                                                    },
+                                                                    onClick = {
+                                                                        menuExpandido = false
+                                                                        navController.navigate("${ROUTES.CREAR_PRODUCTO}/${producto.id}")
+                                                                    }
+                                                                )
+                                                                DropdownMenuItem(
+                                                                    text = { Text("Eliminar", color = Color.Red) },
+                                                                    leadingIcon = {
+                                                                        Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
+                                                                    },
+                                                                    onClick = {
+                                                                        menuExpandido = false
+                                                                        perfilViewModel.eliminarProducto(token, producto.id)
+                                                                    }
+                                                                )
+                                                            }
+                                                        }
+
                                                     }
                                                 }
                                             }

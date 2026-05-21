@@ -8,14 +8,19 @@ import com.example.android_loop.data.model_dataClass.categoriaResult.CategoriasR
 import com.example.android_loop.data.model_dataClass.productoResult.CreateProductRequest
 import com.example.android_loop.data.model_dataClass.productoResult.CreateProductResponse
 import com.example.android_loop.data.model_dataClass.productoResult.CreateProductRpcResponse
+import com.example.android_loop.data.model_dataClass.productoResult.DeleteProductResponse
 import com.example.android_loop.data.model_dataClass.productoResult.ImagenDetalle
 import com.example.android_loop.data.model_dataClass.productoResult.ImagenesProductoResponse
+import com.example.android_loop.data.model_dataClass.productoResult.UpdateProductRequest
+import com.example.android_loop.data.model_dataClass.productoResult.UpdateProductResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -45,10 +50,7 @@ class ProductoRepository (private val cliente: HttpClient = HttpClientProvider.c
 
     // CREATE PRODUCTOS
 
-    suspend fun createProduct(
-        token: String,
-        request: CreateProductRequest
-    ): Result<CreateProductResponse> {
+    suspend fun createProduct(token: String, request: CreateProductRequest): Result<CreateProductResponse> {
 
         return try {
 
@@ -72,13 +74,6 @@ class ProductoRepository (private val cliente: HttpClient = HttpClientProvider.c
         }
     }
 
-    /* TODO: CREAR RESPUESTA PARA OBTENER LAS IMAGENES, YA QUE ESTA NOS PUEDE SERVIR PARA ABRIR LA GALERIA QUE
-       TODO: PODREMOS ABRIR DE DETALLE PRODUCTO PARA VER MEJOR LAS IMAGENES
-
-    // GET PRODUCTOS IMAGES
-
-    */
-
     suspend fun getProductImages(token: String, productId: Int): Result<List<ImagenDetalle>> {
         return try {
 
@@ -94,6 +89,45 @@ class ProductoRepository (private val cliente: HttpClient = HttpClientProvider.c
         }
     }
 
+
+    // MODIFICAR PRODUCTO
+
+    suspend fun modificarProducto(token: String, productoId: Int, request: UpdateProductRequest): Result<UpdateProductResponse> {
+
+        return try {
+
+            val response: UpdateProductResponse = cliente.put("${Servidor.BASE_URL}/api/products/$productoId") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }.body()
+
+            Result.success(response)
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+
+    }
+
+
+    // ELIMINAR PRODUCTO
+
+    suspend fun eliminarProducto(token: String, productoId: Int): Result<Boolean> {
+
+        return try {
+
+            val response: DeleteProductResponse = cliente.delete("${Servidor.BASE_URL}/api/products/$productoId") {
+                header("Authorization", "Bearer $token")
+                accept(ContentType.Application.Json)
+            }.body()
+
+            val result = response.ok
+            Result.success(result)
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+
+    }
 
 
     // GET CATEGORIAS PRODUCTOS
