@@ -12,7 +12,6 @@ object ROUTES {
     const val DENUNCIAS = "denuncias"
     const val COMPRA = "compra"
     const val CARRITO = "carrito"
-    const val CREAR_PRODUCTO = "crear_producto"
     const val AJUSTES = "ajustes"
 
     // Rutas parametrizadas
@@ -21,4 +20,8 @@ object ROUTES {
     const val DETALLE_PRODUCTO_ID = "$DETALLE_PRODUCTO/{productId}"
     const val PERFIL_VENDEDOR = "perfil_Vendedor"
     const val PERFIL_VENDEDOR_PARAMS = "$PERFIL_VENDEDOR/{vendedorId}/{vendedorNombre}"
+
+    const val CREAR_PRODUCTO = "crear_producto"
+
+    const val CREAR_PRODUCTO_PARAM = "$CREAR_PRODUCTO/{productoId}"
 }

@@ -14,3 +14,5 @@ local.properties
 # OS
 .DS_Store
 Thumbs.db
+/fase_2/repo/Android_App/Android_Loop/local.properties
+/fase_2/repo/Android_App/Android_Loop/app/src/main/java/com/example/android_loop/data/net/Servidor.kt

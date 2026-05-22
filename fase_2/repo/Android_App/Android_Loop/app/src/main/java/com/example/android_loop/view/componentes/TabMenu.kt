@@ -150,7 +150,7 @@ fun TabMenu(navController: NavHostController) {
                     CircleShape
                 )
                 .clickable {
-                    navController.navigate(ROUTES.CREAR_PRODUCTO)
+                    navController.navigate("${ROUTES.CREAR_PRODUCTO}/${0}")
                 },
             contentAlignment = Alignment.Center
         ) {

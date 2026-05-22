@@ -6,46 +6,49 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.model_dataClass.categoriaResult.Categoria
 import com.example.android_loop.data.model_dataClass.etiquetaResult.CreateEtiquetaRequest
 import com.example.android_loop.data.model_dataClass.etiquetaResult.Etiqueta
 import com.example.android_loop.data.model_dataClass.productoResult.CreateProductRequest
-import com.example.android_loop.data.model_dataClass.productoResult.ImageRequest
+import com.example.android_loop.data.model_dataClass.productoResult.ImagenDetalle
+import com.example.android_loop.data.model_dataClass.productoResult.Producto
+import com.example.android_loop.data.model_dataClass.productoResult.UpdateProductRequest
 import com.example.android_loop.data.repository.EtiquetaRepository
 import com.example.android_loop.data.repository.ProductoRepository
-import com.example.android_loop.utils.toBase64
+import com.example.android_loop.utils.convertirListImgToListB64
 import kotlinx.coroutines.launch
 
 class CrearProductoViewModel(private val productoRepo: ProductoRepository = ProductoRepository(), private val etiquetaRepo: EtiquetaRepository = EtiquetaRepository()): ViewModel() {
 
     var crearProductoUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
+    var modificarProductoUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
+    var cargarProductoIDUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
     var crearEtiquetaUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
     var cargarEtiquetaUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
     var obtenerEtiquetaPorIdUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
 
     var cargarCategoriasUiState by mutableStateOf<CrearProductoUiState>(CrearProductoUiState.Idle)
 
+    var imagenesUiState by mutableStateOf<List<ImagenDetalle>>(emptyList())
 
-    fun crearProducto(
-        token: String,
-        context: Context,
-        nombre: String,
-        descripcion: String,
-        precio: Double,
-        estado: String,
-        ubicacion: String,
-        antiguedad: String,
-        categoriaId: Int,
-        etiquetaIds: List<Int>,
-        imageUris: List<Uri>) {
+    fun cargarImagenes(token: String, productoId: Int?) {
+
+        viewModelScope.launch {
+            productoRepo.getProductImages(token, productoId!!)
+                .onSuccess { imagenesUiState = it }
+        }
+
+    }
+
+
+    fun crearProducto(token: String, context: Context, nombre: String, descripcion: String, precio: Double, estado: String, ubicacion: String, antiguedad: String, categoriaId: Int, etiquetaIds: List<Int>, imageUris: SnapshotStateList<Uri>) {
 
         viewModelScope.launch {
 
             crearProductoUiState = CrearProductoUiState.Loading
-            Log.d("DEBUG_CREARPRODUCTO", "CREANDO PRODUCTO")
-            Log.d("DEBUG_CREARPRODUCTO", "etiqueta_ids enviados: $etiquetaIds")
             val listaImagenes = convertirListImgToListB64(imageUris, context)
 
             val result = productoRepo.createProduct(token, CreateProductRequest(nombre, descripcion, precio, estado, ubicacion, antiguedad, categoriaId, etiquetaIds.toList(), listaImagenes))
@@ -58,6 +61,38 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
             )
 
             Log.d("DEBUG_CREARPRODUCTO", "$result")
+
+        }
+
+    }
+
+    fun modificarProducto(token: String, context: Context, id: Int, nombre: String?, descripcion: String?, precio: Double?, estado: String?, categoriaId: Int?, etiquetas: List<Int>?, imageUris: SnapshotStateList<Uri>?) {
+        viewModelScope.launch {
+
+            modificarProductoUiState = CrearProductoUiState.Loading
+            val listaImagenes = convertirListImgToListB64(imageUris, context)
+
+            val result = productoRepo.modificarProducto(token, id, UpdateProductRequest(nombre, descripcion, precio, estado, categoriaId, etiquetas, listaImagenes))
+
+            modificarProductoUiState = result.fold(
+                onSuccess = { CrearProductoUiState.SuccessModificarProducto("Producto modificado con éxito") },
+                onFailure = { CrearProductoUiState.Error("El producto no se pudo modificar") }
+            )
+
+        }
+    }
+
+    fun cargarProducto(token: String, productoId: Int) {
+
+        viewModelScope.launch {
+
+            cargarProductoIDUiState = CrearProductoUiState.Loading
+            val result = productoRepo.getProductos(token)
+
+            cargarProductoIDUiState = result.fold(
+                onSuccess = { it -> CrearProductoUiState.SuccessCargarProductoID(it.products.filter { it.id == productoId }[0]) },
+                onFailure = { CrearProductoUiState.Error(it.message ?: "El producto no está disponible en estos momentos") }
+            )
 
         }
 
@@ -143,6 +178,10 @@ sealed class CrearProductoUiState {
 
     data class SuccessCrearProducto(val resp: Boolean): CrearProductoUiState()
 
+    data class SuccessModificarProducto(val resp: String): CrearProductoUiState()
+
+    data class SuccessCargarProductoID(val resp: Producto): CrearProductoUiState()
+
     data class SuccessCrearEtiqueta(val resp: Int): CrearProductoUiState()
 
     data class SuccessCargarEtiquetas(val resp: List<Etiqueta>): CrearProductoUiState()
@@ -152,27 +191,5 @@ sealed class CrearProductoUiState {
     data class SuccessCargarCategorias(val resp: List<Categoria>): CrearProductoUiState()
 
     data class Error(val message: String): CrearProductoUiState()
-
-}
-
-private fun convertirListImgToListB64(imageUris: List<Uri>, context: Context): List<ImageRequest> {
-
-    val imageRequest = mutableListOf<ImageRequest>()
-
-    imageUris.forEachIndexed { index, uri ->
-
-        val base64Image = toBase64(context, uri)
-
-        imageRequest.add(
-            ImageRequest(
-                imagen = base64Image,
-                is_principal = index == 0,
-                sequence = index + 1
-            )
-        )
-
-    }
-
-    return imageRequest
 
 }
