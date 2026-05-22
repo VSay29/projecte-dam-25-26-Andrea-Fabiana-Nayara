@@ -66,13 +66,13 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
 
     }
 
-    /*fun modificarProducto(token: String, context: Context, p: Producto) {
+    fun modificarProducto(token: String, context: Context, id: Int, nombre: String?, descripcion: String?, precio: Double?, estado: String?, categoriaId: Int?, etiquetas: List<Int>?, imageUris: SnapshotStateList<Uri>?) {
         viewModelScope.launch {
 
             modificarProductoUiState = CrearProductoUiState.Loading
-            val listaImagenes = convertirListImgToListB64(p.imagenes, context)
+            val listaImagenes = convertirListImgToListB64(imageUris, context)
 
-            val result = productoRepo.modificarProducto(token, p.id, UpdateProductRequest(p.nombre, p.descripcion, p.precio, p.estado, p.categoria!!.id, p.etiquetas, listaImagenes))
+            val result = productoRepo.modificarProducto(token, id, UpdateProductRequest(nombre, descripcion, precio, estado, categoriaId, etiquetas, listaImagenes))
 
             modificarProductoUiState = result.fold(
                 onSuccess = { CrearProductoUiState.SuccessModificarProducto("Producto modificado con éxito") },
@@ -80,7 +80,7 @@ class CrearProductoViewModel(private val productoRepo: ProductoRepository = Prod
             )
 
         }
-    }*/
+    }
 
     fun cargarProducto(token: String, productoId: Int) {
 

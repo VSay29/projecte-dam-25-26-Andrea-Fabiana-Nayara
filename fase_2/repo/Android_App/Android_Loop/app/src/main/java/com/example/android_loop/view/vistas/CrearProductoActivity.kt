@@ -43,7 +43,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.navegacionConfig.ROUTES
@@ -53,6 +52,8 @@ import com.example.android_loop.viewModel.CrearProductoUiState
 import com.example.android_loop.viewModel.CrearProductoViewModel
 import com.tuapp.ui.theme.OnPrimary
 import kotlin.collections.emptyList
+import androidx.compose.ui.platform.LocalLocale
+import com.example.android_loop.utils.convertirListB64ToUri
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -66,9 +67,11 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
 
     val crearProductoVM: CrearProductoViewModel = viewModel()
     val crearProductoState = crearProductoVM.crearProductoUiState
+    val modificarProductoState = crearProductoVM.modificarProductoUiState
     val etiquetasState = crearProductoVM.cargarEtiquetaUiState
     val categoriasState = crearProductoVM.cargarCategoriasUiState
     val cargarProductoState = crearProductoVM.cargarProductoIDUiState
+    val cargarImagenesProductoState = crearProductoVM.imagenesUiState
 
 
     LaunchedEffect(Unit) {
@@ -107,11 +110,10 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
     var estado by rememberSaveable { mutableStateOf(estados[0]) }
     var categoriaId by rememberSaveable { mutableIntStateOf(0) }
     val imageUris = remember { mutableStateListOf<Uri>() }
-    var productoModificar by rememberSaveable { mutableStateOf<Producto?>(null) }
 
 
     // Formato para la fecha de antiguedad
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy-MM-dd", LocalLocale.current.platformLocale)
 
     // Lista de etiquetas ya creadas y cargadas
     val etiquetasCargadas = when (etiquetasState) {
@@ -142,28 +144,36 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
     // CARGAR PRODUCTO SI ESTÁ EN MODO EDICIÓN
 
     LaunchedEffect(productoId) {
-        if (productoId != null) crearProductoVM.cargarProducto(token, productoId)
+        if (productoId != null && productoId > 0) crearProductoVM.cargarProducto(token, productoId)
     }
 
     // MODO EDICIÓN SÓLO: OBTENER DATOS DEL PRODUCTO CARGADO Y CARGAR IMAGENES DEL MISMO
-
+    // TODO: PASO 1. CARGAR  PRODUCTO A MODIFICAR
     LaunchedEffect(cargarProductoState) {
-        if(cargarProductoState is CrearProductoUiState.SuccessCargarProductoID) {
-            val p = cargarProductoState.resp
+        if (productoId != null && productoId > 0) {
+            if (cargarProductoState is CrearProductoUiState.SuccessCargarProductoID) {
+                val producto = cargarProductoState.resp
 
-            nombre = p.nombre
-            descripcion = p.descripcion
-            precio = p.precio.toString()
-            estado = p.estado
-            categoriaId = p.categoria!!.id
+                nombre = producto.nombre
+                descripcion = producto.descripcion
+                precio = producto.precio.toString()
+                estado = producto.estado
+                categoriaId = producto.categoria?.id ?: 0
 
-            selectedEtiquetas.clear()
-            selectedEtiquetas.addAll(p.etiquetas.map { it.id })
+                selectedEtiquetas.clear()
+                selectedEtiquetas.addAll(producto.etiquetas.map { it.id })
+
+                crearProductoVM.cargarImagenes(token, productoId)
+            }
+        }
+    }
+
+    LaunchedEffect(cargarImagenesProductoState) {
+        if (productoId != null && productoId > 0 && cargarImagenesProductoState.isNotEmpty()) {
+            val urisTemporales = convertirListB64ToUri(cargarImagenesProductoState, context)
 
             imageUris.clear()
-            // TODO: CARGAR IMAGENES DEL PRODUCTO
-            //crearProductoVM.cargarImagenes(token, productoId)
-
+            imageUris.addAll(urisTemporales)
         }
     }
 
@@ -179,6 +189,24 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
                 Toast.makeText(context, "Error: ${crearProductoState.message}", Toast.LENGTH_LONG).show()
             }
             else -> {}
+        }
+    }
+
+    LaunchedEffect(modificarProductoState) {
+        if (productoId != null && productoId > 0) {
+            when(modificarProductoState) {
+                is CrearProductoUiState.SuccessModificarProducto -> {
+                    Toast.makeText(context, "Producto modificado", Toast.LENGTH_SHORT).show()
+                    navController.navigate(ROUTES.PERFIL_USUARIO) {
+                        popUpTo(ROUTES.CREAR_PRODUCTO) { inclusive = true }
+                    }
+                }
+                is CrearProductoUiState.Error -> {
+                    Toast.makeText(context, "Hubo un error al modificar el producto", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -512,23 +540,10 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onClick = {
 
-                /* TODO: Para controlar que se crea el producto sin errores se hará lo siguiente:
-                   TODO: Deshabilitar el botón de guardar botón hasta que los datos cumplan los requisitos
-                */
+                // DOC: Si el producto ID tiene algo, se modificará el producto, sino, se creará
 
-                crearProductoVM.crearProducto(
-                    token = token,
-                    context = context,
-                    nombre = nombre,
-                    descripcion = descripcion,
-                    precio = precio.toDoubleOrNull() ?: 0.0,
-                    estado = estado,
-                    ubicacion = ubicacion,
-                    antiguedad = formatter.format(Date()),
-                    categoriaId = categoriaId,
-                    etiquetaIds = selectedEtiquetas,
-                    imageUris = imageUris
-                )
+                if (productoId != null && productoId > 0) crearProductoVM.modificarProducto(token, context, productoId, nombre, descripcion, precio.toDouble(), estado, categoriaId, selectedEtiquetas, imageUris)
+                else crearProductoVM.crearProducto(token = token, context = context, nombre = nombre, descripcion = descripcion, precio = precio.toDoubleOrNull() ?: 0.0, estado = estado, ubicacion = ubicacion, antiguedad = formatter.format(Date()), categoriaId = categoriaId, etiquetaIds = selectedEtiquetas, imageUris = imageUris)
             },
             enabled = todoCorrecto(nombre, descripcion, precio.toDoubleOrNull() ?: -1.0, estado, ubicacion, categoriaId, imageUris)
         )
@@ -537,14 +552,6 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
 }
 
 // SECCION: OTRAS FUNCIONES
-
-// TODO: LIMPIAR TODOS LOS INPUTS AL CREAR PRODUCTO
-
-private fun clearAllInputs() {
-
-
-
-}
 
 private fun todoCorrecto(nombre: String, desc: String, precio: Double, estado: String, ubicacion: String, categoria: Int, imageUris: SnapshotStateList<Uri>): Boolean {
 

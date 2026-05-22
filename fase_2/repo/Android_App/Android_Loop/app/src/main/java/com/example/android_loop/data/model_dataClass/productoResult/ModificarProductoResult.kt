@@ -1,6 +1,5 @@
 package com.example.android_loop.data.model_dataClass.productoResult
 
-import com.example.android_loop.data.model_dataClass.etiquetaResult.Etiqueta
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,6 +17,6 @@ data class UpdateProductRequest(
     val precio: Double?,
     val estado: String?,
     val categoria_id: Int?,
-    val etiquetas: List<Etiqueta>?,
+    val etiquetas: List<Int>?,
     val imagenes: List<ImageRequest>?
 )
