@@ -44,9 +44,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Compra(navController: NavController, productos: HashMap<Integer, Integer>) {
+fun Compra(navController: NavController) {
 
-    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val compraViewModel: CompraViewModel = viewModel()
 
     val realizarCompraState = compraViewModel.comprarState
@@ -185,7 +185,7 @@ fun Compra(navController: NavController, productos: HashMap<Integer, Integer>) {
                                 fontSize = 16.sp
                             )
                             Text(
-                                text = "%.2f €".format(viewModel.total),
+                                text = "%.2f €".format(carritoViewModel.total),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp,
                                 color = Color(0xFF003459)
@@ -224,9 +224,21 @@ fun Compra(navController: NavController, productos: HashMap<Integer, Integer>) {
                         scope.launch {
                             delay(1000)
                             isLoading = false
-                            productos.forEach {
-                                compraViewModel.realizarCompra(token, it.key, it.value)
+
+                            val productosAComprar = carritoViewModel.selectedItems.toList()
+
+                            productosAComprar.forEach { p ->
+                                {
+                                    try {
+                                        compraViewModel.realizarCompra(token, p.id, p.propietario.id)
+                                        carritoViewModel.selectedItems.remove(p)
+                                        carritoViewModel.removeFromCart(token, p)
+                                    } catch (_: Exception) {
+                                        Toast.makeText(context, "Hubo un problema con el proceso de compra", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             }
+
                             Toast.makeText(context, "¡Pago realizado!", Toast.LENGTH_SHORT).show()
                             navController.navigate(ROUTES.HOME) {
                                 popUpTo(ROUTES.HOME) { inclusive = true }

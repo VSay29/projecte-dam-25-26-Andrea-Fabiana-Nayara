@@ -37,7 +37,8 @@ class CarritoViewModel(private val repo: CarritoApiRepository = CarritoApiReposi
                         descripcion = product.descripcion,
                         precio = product.precio,
                         ubicacion = product.ubicacion,
-                        imagenes = emptyList()
+                        imagenes = emptyList(),
+                        propietario = product.propietario!!
                     )
                 )
             }

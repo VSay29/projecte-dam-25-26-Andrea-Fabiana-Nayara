@@ -33,6 +33,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.utils.getUserIdFromToken
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Busqueda_Componente
@@ -101,8 +102,10 @@ fun Home(navController: NavHostController) {
 
     // SECCION: FILTRADO Y AGRUPACIÓN DE PRODUCTOS Y CATEGORIAS
 
-    val productosFiltrados = remember(productos, buscador) {
-        filtrarProductos(productos, buscador)
+    val id = remember(token) { getUserIdFromToken(token) }
+
+    val productosFiltrados = remember(productos, buscador, id) {
+        filtrarProductos(productos, buscador, id)
     }
 
     val categoriasCargadas = remember(productosFiltrados) {
@@ -320,10 +323,17 @@ fun Home(navController: NavHostController) {
  * DOC: DEVUELVE LA LISTA DE PRODUCTOS FILTRADOS
  */
 
-fun filtrarProductos(productos: List<Producto>, buscador: String): List<Producto> {
-    if(buscador.isEmpty()) return productos
+fun filtrarProductos(productos: List<Producto>, buscador: String, id: Int?): List<Producto> {
 
-    return productos.filter {
+    val productosSinLosMios = if (id != null) {
+        productos.filter { it.propietario?.id != id }
+    } else {
+        productos
+    }
+
+    if(buscador.isEmpty()) return productosSinLosMios
+
+    return productosSinLosMios.filter {
         textoNormalizado(it.nombre).contains(textoNormalizado(buscador))
     }
 }

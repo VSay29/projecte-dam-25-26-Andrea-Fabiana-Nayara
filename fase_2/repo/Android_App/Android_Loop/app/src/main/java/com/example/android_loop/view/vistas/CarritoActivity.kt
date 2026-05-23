@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -18,11 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,11 +34,7 @@ import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Header_Componente
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.remember
-import java.util.Hashtable
 import com.example.android_loop.viewModel.CarritoViewModel
 
 @Composable
@@ -64,8 +57,6 @@ fun Carrito(navController: NavController) {
     val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val items = viewModel.cartItems
     val total = viewModel.total
-
-    val productosAComprar = remember { HashMap<Int, Int>() }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -101,7 +92,7 @@ fun Carrito(navController: NavController) {
                             try {
                                 val bytes = Base64.decode(it, Base64.DEFAULT)
                                 BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
-                            } catch (e: Exception) { null }
+                            } catch (_: Exception) { null }
                         }
                     }
 
@@ -182,9 +173,9 @@ fun Carrito(navController: NavController) {
                                 checked = checked,
                                 onCheckedChange = { isChecked ->
                                         viewModel.toggleSeleccion(product, isChecked)
-                                        if(isChecked) productosAComprar[product.id] = product.propietario.id
-                                        else productosAComprar.remove(product.id)
-                                    }
+                                        if(isChecked) viewModel.selectedItems.add(product)
+                                        else viewModel.selectedItems.remove(product)
+                                    },
                                 modifier = Modifier.padding(end = 8.dp)
                             )
                         }
