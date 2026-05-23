@@ -96,7 +96,7 @@
             <xpath expr="//sheet/group[1]" position="after">
                 <group string="Datos de Usuario">
                     <field name="username"/>
-                    <field name="password" widget="password"/>
+                    <field name="password" password="1"/>
                     <field name="active"/>
                     <field name="rol"/>
                     <field name="idioma"/>
