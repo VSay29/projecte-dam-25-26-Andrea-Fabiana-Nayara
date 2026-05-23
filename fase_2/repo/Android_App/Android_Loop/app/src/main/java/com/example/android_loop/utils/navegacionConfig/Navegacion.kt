@@ -46,13 +46,15 @@ fun AppNavGraph(navController: NavHostController) {
         ROUTES.LOGIN,
         ROUTES.REGISTRO,
         ROUTES.CREAR_PRODUCTO,
+        ROUTES.CREAR_PRODUCTO_PARAM,
         ROUTES.PERFIL_VENDEDOR,
         ROUTES.DETALLE_PRODUCTO_ID,
         ROUTES.AJUSTES,
         ROUTES.CARRITO,
         ROUTES.DENUNCIAS,
         ROUTES.PERFIL_USUARIO,
-        ROUTES.COMPRA
+        ROUTES.COMPRA,
+        ROUTES.PERFIL_VENDEDOR_PARAMS,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -77,7 +79,6 @@ fun AppNavGraph(navController: NavHostController) {
             composable(ROUTES.DENUNCIAS) { Denuncias(navController) }
             composable(ROUTES.COMPRA) { Compra(navController) }
             composable(ROUTES.CARRITO) { Carrito(navController) }
-            composable(ROUTES.CREAR_PRODUCTO) { CrearProducto(navController) }
             composable(ROUTES.HOME) { Home(navController) }
             composable(ROUTES.AJUSTES) { Ajustes(navController) }
 
@@ -100,6 +101,17 @@ fun AppNavGraph(navController: NavHostController) {
                 val vendedorNombre = backStackEntry.arguments!!.getString("vendedorNombre")
                 PerfilVendedor(vendedorId, vendedorNombre!!, navController)
             }
+
+            composable(ROUTES.CREAR_PRODUCTO_PARAM,
+                listOf(
+                    navArgument("productoId") { type = NavType.IntType }
+                )
+            ) {
+                backStackEntry ->
+                val productoId = backStackEntry.arguments?.getInt("productoId")
+                CrearProducto(navController, productoId)
+            }
+
 
         }
 

@@ -14,30 +14,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,12 +58,9 @@ import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.view.theme.isDarkTheme
 import com.example.android_loop.viewModel.AjustesViewModel
 import com.example.android_loop.viewModel.SettingsUiState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.componentes.Loading_Componente
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ModalBottomSheet
@@ -358,8 +346,8 @@ fun Ajustes(navController: NavHostController) {
             { inputConfirmacion = it },
             onConfirm = {
                 viewModelSettings.borrarCuenta(token)
-                prefs.edit { putString("token", "") }
                 Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
+                prefs.edit { putString("token", "") }
                 navController.navigate(ROUTES.LOGIN)
             },
             onDismiss = { mostrarDialogConfirmacion = false },

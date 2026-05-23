@@ -1,6 +1,8 @@
 package com.example.android_loop.view.vistas
 
 import android.content.Context.MODE_PRIVATE
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,19 +15,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
@@ -82,6 +89,8 @@ import com.example.android_loop.view.theme.Android_LoopTheme
 import com.tuapp.ui.theme.OnPrimary
 import com.example.android_loop.view.vistas.En_Proceso_De_Revisar.ComentarioBurbuja
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
 import com.example.android_loop.view.componentes.Busqueda_Componente
@@ -132,6 +141,7 @@ fun PerfilUsuario(navController: NavHostController) {
     var showDenunciaDialog by remember { mutableStateOf(false) }
     var motivoDenuncia by remember { mutableStateOf("") }
     var comentarioADenunciar by remember { mutableStateOf<Int?>(null) }
+    var productoAEliminar by remember { mutableStateOf<Int?>(null) }
 
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -325,8 +335,8 @@ fun PerfilUsuario(navController: NavHostController) {
             Spacer(Modifier.height(30.dp))
 
             Card(
-                modifier = Modifier.fillMaxSize(),
-                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column(
@@ -422,24 +432,62 @@ fun PerfilUsuario(navController: NavHostController) {
                                         Spacer(Modifier.height(10.dp))
                                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                             productosFiltrados.forEach { producto ->
+                                                val bitmap = remember(producto.thumbnail) {
+                                                    producto.thumbnail?.let {
+                                                        try {
+                                                            val bytes = Base64.decode(it, Base64.DEFAULT)
+                                                            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                                                        } catch (e: Exception) { null }
+                                                    }
+                                                }
+                                                var menuExpandido by remember { mutableStateOf(false) }
                                                 Card(
                                                     modifier = Modifier.fillMaxWidth(),
                                                     shape = RoundedCornerShape(16.dp),
-                                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
-                                                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                                                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                                 ) {
                                                     Row(
                                                         modifier = Modifier
                                                             .fillMaxWidth()
-                                                            .padding(14.dp),
-                                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                                            .height(90.dp),
                                                         verticalAlignment = Alignment.CenterVertically
                                                     ) {
-                                                        Column(Modifier.weight(1f)) {
+                                                        if (bitmap != null) {
+                                                            Image(
+                                                                bitmap = bitmap,
+                                                                contentDescription = null,
+                                                                contentScale = ContentScale.Crop,
+                                                                modifier = Modifier
+                                                                    .width(90.dp)
+                                                                    .fillMaxHeight()
+                                                                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                                                            )
+                                                        } else {
+                                                            Box(
+                                                                modifier = Modifier
+                                                                    .width(90.dp)
+                                                                    .fillMaxHeight()
+                                                                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                                                                    .background(Color(0xFFE8EEF4)),
+                                                                contentAlignment = Alignment.Center
+                                                            ) {
+                                                                Text("Sin imagen", color = Color(0xFF8FA3B1), fontSize = 10.sp)
+                                                            }
+                                                        }
+
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .weight(1f)
+                                                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                                            verticalArrangement = Arrangement.SpaceBetween
+                                                        ) {
                                                             Text(
                                                                 text = producto.nombre,
                                                                 fontWeight = FontWeight.SemiBold,
-                                                                fontSize = 15.sp
+                                                                fontSize = 15.sp,
+                                                                maxLines = 1,
+                                                                overflow = TextOverflow.Ellipsis
                                                             )
                                                             Text(
                                                                 text = producto.descripcion,
@@ -452,16 +500,54 @@ fun PerfilUsuario(navController: NavHostController) {
                                                                 Text(
                                                                     text = producto.ubicacion,
                                                                     fontSize = 12.sp,
-                                                                    color = Color.Gray
+                                                                    color = Color.Gray,
+                                                                    maxLines = 1,
+                                                                    overflow = TextOverflow.Ellipsis
                                                                 )
                                                             }
                                                         }
+
                                                         Text(
-                                                            text = "${producto.precio} €",
+                                                            text = "%.2f €".format(producto.precio),
                                                             fontWeight = FontWeight.Bold,
                                                             color = Color(0xFF003459),
                                                             fontSize = 15.sp
                                                         )
+
+                                                        Box {
+                                                            IconButton(onClick = { menuExpandido = true }) {
+                                                                Icon(
+                                                                    imageVector = Icons.Default.MoreVert,
+                                                                    contentDescription = "Opciones",
+                                                                    tint = Color.Gray
+                                                                )
+                                                            }
+                                                            DropdownMenu(
+                                                                expanded = menuExpandido,
+                                                                onDismissRequest = { menuExpandido = false }
+                                                            ) {
+                                                                DropdownMenuItem(
+                                                                    text = { Text("Editar") },
+                                                                    leadingIcon = {
+                                                                        Icon(Icons.Default.Edit, contentDescription = null)
+                                                                    },
+                                                                    onClick = {
+                                                                        menuExpandido = false
+                                                                        navController.navigate("${ROUTES.CREAR_PRODUCTO}/${producto.id}")
+                                                                    }
+                                                                )
+                                                                DropdownMenuItem(
+                                                                    text = { Text("Eliminar", color = Color.Red) },
+                                                                    leadingIcon = {
+                                                                        Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
+                                                                    },
+                                                                    onClick = {
+                                                                        menuExpandido = false
+                                                                        productoAEliminar = producto.id
+                                                                    }
+                                                                )
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -529,6 +615,27 @@ fun PerfilUsuario(navController: NavHostController) {
                 }
             }
         }
+    }
+
+    if (productoAEliminar != null) {
+        AlertDialog(
+            onDismissRequest = { productoAEliminar = null },
+            title = { Text("Eliminar producto") },
+            text = { Text("¿Estás segura de que quieres eliminar este producto? Esta acción no se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    perfilViewModel.eliminarProducto(token, productoAEliminar!!)
+                    productoAEliminar = null
+                }) {
+                    Text("Eliminar", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { productoAEliminar = null }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 
     if (showDenunciaDialog) {

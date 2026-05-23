@@ -5,8 +5,8 @@ import json
 from odoo import http
 from odoo.http import request
 from .controladorToken import get_current_user_from_token
-
-
+import logging
+_logger = logging.getLogger(__name__)
 
 
 # ======================================================
@@ -194,15 +194,28 @@ class ProductoController(http.Controller):
             )
 
         data = json.loads(request.httprequest.data or '{}')
+        _logger.info("DATA RECIBIDA: %s", data)
 
-        allowed_fields = ['nombre', 'descripcion', 'precio', 'estado', 'ubicacion', 'categoria_id', 'antiguedad']
-        vals = {k: v for k, v in data.items() if k in allowed_fields}
+        imagenes = data.pop('imagenes', None)
+        if imagenes:
+            request.env['loop_proyecto.producto_imagen'].sudo().search([
+                ('producto_id', '=', product.id)
+            ]).unlink()
+
+            for img in imagenes:
+                request.env['loop_proyecto.producto_imagen'].sudo().create({
+                    'producto_id': product.id,
+                    'imagen': img['imagen'],
+                    'is_principal': img.get('is_principal', False),
+                    'sequence': img.get('sequence', 10),
+                })
 
         if 'etiquetas' in data:
-            vals['etiqueta_ids'] = [(6, 0, data['etiquetas'])]
+            etiquetas_entrantes = data.pop('etiquetas')
+            data['etiqueta_ids'] = [(6, 0, etiquetas_entrantes)]
 
-        if vals:
-            product.write(vals)
+        if data:
+            product.write(data)
 
         return request.make_response(
             json.dumps({'ok': True}),
