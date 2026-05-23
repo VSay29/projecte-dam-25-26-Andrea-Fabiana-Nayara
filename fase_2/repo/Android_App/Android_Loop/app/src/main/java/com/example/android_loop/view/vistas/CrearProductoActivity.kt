@@ -52,7 +52,6 @@ import com.example.android_loop.viewModel.CrearProductoUiState
 import com.example.android_loop.viewModel.CrearProductoViewModel
 import com.tuapp.ui.theme.OnPrimary
 import kotlin.collections.emptyList
-import androidx.compose.ui.platform.LocalLocale
 import com.example.android_loop.utils.convertirListB64ToUri
 
 
@@ -113,7 +112,7 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
 
 
     // Formato para la fecha de antiguedad
-    val formatter = SimpleDateFormat("yyyy-MM-dd", LocalLocale.current.platformLocale)
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     // Lista de etiquetas ya creadas y cargadas
     val etiquetasCargadas = when (etiquetasState) {
