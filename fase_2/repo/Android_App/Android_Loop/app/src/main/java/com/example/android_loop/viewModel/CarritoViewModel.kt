@@ -27,9 +27,16 @@ class CarritoViewModel(private val repo: CarritoApiRepository = CarritoApiReposi
     }
 
     fun addToCart(token: String, product: Producto) {
-        if (cartItems.any { it.id == product.id }) return
+        android.util.Log.d("DEBUG_VM_CARRITO", "Intentando agregar al VM: ${product.nombre} (ID: ${product.id})")
+
+        if (cartItems.any { it.id == product.id }) {
+            android.util.Log.w("DEBUG_VM_CARRITO", "¡Bloqueado! El producto ${product.id} ya existe en la lista local.")
+            return
+        }
+
         viewModelScope.launch {
             repo.addCarrito(token, product.id).onSuccess {
+                android.util.Log.d("DEBUG_VM_CARRITO", "¡Odoo respondió OK! Agregando a la lista reactiva.")
                 cartItems.add(
                     ProductoCarrito(
                         id = product.id,
@@ -41,6 +48,8 @@ class CarritoViewModel(private val repo: CarritoApiRepository = CarritoApiReposi
                         propietario = product.propietario!!
                     )
                 )
+            }.onFailure { error ->
+                android.util.Log.e("DEBUG_VM_CARRITO", "Error en la petición a Odoo: ${error.message}")
             }
         }
     }

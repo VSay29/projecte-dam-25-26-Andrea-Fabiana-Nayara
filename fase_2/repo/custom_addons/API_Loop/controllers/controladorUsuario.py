@@ -250,7 +250,8 @@ class CRUD_User_Controller(http.Controller):
                 'descripcion': p.descripcion,
                 'precio': p.precio,
                 'ubicacion': p.ubicacion,
-                'imagenes': imagenes
+                'imagenes': imagenes,
+                'propietario': p.propietario
             })
 
         return {'productos': productos}

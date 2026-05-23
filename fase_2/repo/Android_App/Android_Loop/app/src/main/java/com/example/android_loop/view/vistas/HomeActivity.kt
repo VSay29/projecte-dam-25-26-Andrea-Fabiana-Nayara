@@ -1,7 +1,6 @@
 package com.example.android_loop.view.vistas
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,13 +30,8 @@ import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.utils.getUserIdFromToken
-import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
-import com.example.android_loop.view.componentes.Busqueda_Componente
-import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState

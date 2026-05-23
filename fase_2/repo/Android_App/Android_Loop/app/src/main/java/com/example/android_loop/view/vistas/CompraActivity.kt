@@ -34,6 +34,7 @@ import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.componentes.Loading_Componente
 import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.getUserIdFromToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
@@ -74,10 +75,6 @@ fun Compra(navController: NavController) {
 
     LaunchedEffect(realizarCompraState) {
         when(realizarCompraState) {
-            is ComprasUiState.SuccessRealizarCompra -> {
-                Toast.makeText(context, "La compra se ha realizado con éxito", Toast.LENGTH_SHORT).show()
-                navController.popBackStack(ROUTES.HOME, inclusive = true)
-            }
             is ComprasUiState.Error -> {
                 Toast.makeText(context, "No se pudo realizar la compra", Toast.LENGTH_SHORT).show()
             }
@@ -222,26 +219,34 @@ fun Compra(navController: NavController) {
                     onClick = {
                         isLoading = true
                         scope.launch {
-                            delay(1000)
-                            isLoading = false
-
                             val productosAComprar = carritoViewModel.selectedItems.toList()
+                            var algunaCompraFallida = false
 
                             productosAComprar.forEach { p ->
-                                {
-                                    try {
-                                        compraViewModel.realizarCompra(token, p.id, p.propietario.id)
+                                try {
+                                    val propietarioId = p.propietario.id
+
+                                    val exito = compraViewModel.realizarCompra(token, p.id, propietarioId, getUserIdFromToken(token)!!)
+
+                                    if (exito) {
                                         carritoViewModel.selectedItems.remove(p)
                                         carritoViewModel.removeFromCart(token, p)
-                                    } catch (_: Exception) {
-                                        Toast.makeText(context, "Hubo un problema con el proceso de compra", Toast.LENGTH_SHORT).show()
-                                    }
+                                    } else algunaCompraFallida = true
+
+                                } catch (_: Exception) {
+                                    Toast.makeText(context, "Hubo problemas con el proceso de compra", Toast.LENGTH_LONG).show()
                                 }
                             }
 
-                            Toast.makeText(context, "¡Pago realizado!", Toast.LENGTH_SHORT).show()
-                            navController.navigate(ROUTES.HOME) {
-                                popUpTo(ROUTES.HOME) { inclusive = true }
+                            delay(500)
+                            carritoViewModel.cargarCarrito(token)
+
+                            isLoading = false
+
+                            if (algunaCompraFallida) Toast.makeText(context, "Algunos productos no se pudieron procesar", Toast.LENGTH_LONG).show()
+                            else {
+                                Toast.makeText(context, "La compra se ha realizado con éxito", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack()
                             }
                         }
                     },

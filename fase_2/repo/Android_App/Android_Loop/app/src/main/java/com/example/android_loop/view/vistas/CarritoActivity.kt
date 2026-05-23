@@ -171,11 +171,7 @@ fun Carrito(navController: NavController) {
 
                             Checkbox(
                                 checked = checked,
-                                onCheckedChange = { isChecked ->
-                                        viewModel.toggleSeleccion(product, isChecked)
-                                        if(isChecked) viewModel.selectedItems.add(product)
-                                        else viewModel.selectedItems.remove(product)
-                                    },
+                                onCheckedChange = { viewModel.toggleSeleccion(product, it) },
                                 modifier = Modifier.padding(end = 8.dp)
                             )
                         }
