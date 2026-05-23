@@ -34,17 +34,24 @@ import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.componentes.Loading_Componente
 import com.example.android_loop.utils.getToken
+import com.example.android_loop.utils.getUserIdFromToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.viewModel.CompraViewModel
+import com.example.android_loop.viewModel.ComprasUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun Compra(navController: NavController) {
 
-    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val carritoViewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val compraViewModel: CompraViewModel = viewModel()
+
+    val realizarCompraState = compraViewModel.comprarState
+
     val context = LocalContext.current
     val token = getToken(context)
 
@@ -63,6 +70,15 @@ fun Compra(navController: NavController) {
                 popUpTo(0)
                 launchSingleTop = true
             }
+        }
+    }
+
+    LaunchedEffect(realizarCompraState) {
+        when(realizarCompraState) {
+            is ComprasUiState.Error -> {
+                Toast.makeText(context, "No se pudo realizar la compra", Toast.LENGTH_SHORT).show()
+            }
+            else -> {}
         }
     }
 
@@ -166,7 +182,7 @@ fun Compra(navController: NavController) {
                                 fontSize = 16.sp
                             )
                             Text(
-                                text = "%.2f €".format(viewModel.total),
+                                text = "%.2f €".format(carritoViewModel.total),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp,
                                 color = Color(0xFF003459)
@@ -203,11 +219,34 @@ fun Compra(navController: NavController) {
                     onClick = {
                         isLoading = true
                         scope.launch {
-                            delay(1000)
+                            val productosAComprar = carritoViewModel.selectedItems.toList()
+                            var algunaCompraFallida = false
+
+                            productosAComprar.forEach { p ->
+                                try {
+                                    val propietarioId = p.propietario.id
+
+                                    val exito = compraViewModel.realizarCompra(token, p.id, propietarioId, getUserIdFromToken(token)!!)
+
+                                    if (exito) {
+                                        carritoViewModel.selectedItems.remove(p)
+                                        carritoViewModel.removeFromCart(token, p)
+                                    } else algunaCompraFallida = true
+
+                                } catch (_: Exception) {
+                                    Toast.makeText(context, "Hubo problemas con el proceso de compra", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                            delay(500)
+                            carritoViewModel.cargarCarrito(token)
+
                             isLoading = false
-                            Toast.makeText(context, "¡Pago realizado!", Toast.LENGTH_SHORT).show()
-                            navController.navigate(ROUTES.HOME) {
-                                popUpTo(ROUTES.HOME) { inclusive = true }
+
+                            if (algunaCompraFallida) Toast.makeText(context, "Algunos productos no se pudieron procesar", Toast.LENGTH_LONG).show()
+                            else {
+                                Toast.makeText(context, "La compra se ha realizado con éxito", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack()
                             }
                         }
                     },

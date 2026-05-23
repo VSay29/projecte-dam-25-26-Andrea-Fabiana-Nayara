@@ -95,6 +95,7 @@ class UsuarioRepository(private val cliente: HttpClient = HttpClientProvider.cli
                         }
                     )
                 }.body()
+
             Result.success(response.result)
         } catch (ex: Exception) {
             Result.failure(ex)

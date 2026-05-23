@@ -142,6 +142,15 @@ fun Registro(navController: NavHostController) {
                             )
                         }
 
+                        if (errorName) {
+                            Text(
+                                text = "El nombre no puede estar vacío",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
                         Spacer(Modifier.height(12.dp))
 
                         // Usuario
@@ -166,6 +175,15 @@ fun Registro(navController: NavHostController) {
                             )
                         }
 
+                        if (errorUsername) {
+                            Text(
+                                text = "El nombre de usuario no puede estar vacío",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
                         Spacer(Modifier.height(12.dp))
 
                         // Email
@@ -179,7 +197,7 @@ fun Registro(navController: NavHostController) {
                             )
                             OutlinedTextField(
                                 value = email,
-                                onValueChange = { email = it; errorEmail = email.isEmpty() },
+                                onValueChange = { email = it; errorEmail = email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(4.dp, if (errorEmail) Color(0xFFE57373) else Color(0xFFF5F5F5), RoundedCornerShape(50.dp)),
@@ -188,6 +206,15 @@ fun Registro(navController: NavHostController) {
                                 shape = RoundedCornerShape(50.dp),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                 colors = inputColors
+                            )
+                        }
+
+                        if (errorEmail) {
+                            Text(
+                                text = if (email.isEmpty()) "El email no puede estar vacío" else "Formato de email inválido",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                             )
                         }
 
@@ -217,6 +244,15 @@ fun Registro(navController: NavHostController) {
                             )
                         }
 
+                        if (errorPasswd) {
+                            Text(
+                                text = "La contraseña no puede estar vacía",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
                         Spacer(Modifier.height(22.dp))
 
                         Boton_Componente(
@@ -225,13 +261,12 @@ fun Registro(navController: NavHostController) {
                                 errorName = name.isEmpty()
                                 errorUsername = username.isEmpty()
                                 errorPasswd = passwd.isEmpty()
-                                errorEmail = email.isEmpty()
-                                if (!errorName && !errorUsername && !errorEmail && !errorPasswd) {
-                                    viewModelRegistro.registro(name, username, email, passwd)
-                                }
+                                errorEmail = email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                                if (!errorName && !errorUsername && !errorEmail && !errorPasswd) viewModelRegistro.registro(name, username, email, passwd)
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            enabled = name.isNotEmpty() && username.isNotEmpty() && email.isNotEmpty() && passwd.isNotEmpty()
+                            enabled = name.isNotEmpty() && username.isNotEmpty() && email.isNotEmpty() && passwd.isNotEmpty() &&
+                                    !errorName && !errorUsername && !errorEmail && !errorPasswd
                         )
 
                         Spacer(Modifier.height(16.dp))
