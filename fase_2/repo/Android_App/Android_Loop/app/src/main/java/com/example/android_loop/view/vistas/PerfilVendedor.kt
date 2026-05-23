@@ -11,17 +11,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
+import kotlin.math.roundToInt
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -115,9 +119,7 @@ fun PerfilVendedor(
     val comentariosViewModel: ComentariosViewModel = viewModel()
     val viewmodelProducto: PerfilViewModel = viewModel()
 
-    val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
-
-    val profileBitmap: ImageBitmap = remember {
+    val profileBitmap: ImageBitmap? = remember {
         val cached = NavigationCache.profileImage
         NavigationCache.profileImage = null
         cached
@@ -127,7 +129,7 @@ fun PerfilVendedor(
                     val bytes = Base64.decode(it, Base64.DEFAULT)
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
                 } catch (e: Exception) { null }
-            } ?: defaultAvatar
+            }
     }
 
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -190,7 +192,7 @@ fun PerfilVendedor(
     ) {
         Column(Modifier.fillMaxSize()) {
 
-            // Contenido desplazable
+
             Column(
                 Modifier
                     .weight(1f)
@@ -204,24 +206,64 @@ fun PerfilVendedor(
                     onBack = { navController.popBackStack() }
                 )
 
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 32.dp),
-                    contentAlignment = Alignment.Center
+                        .padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        bitmap = profileBitmap,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(130.dp)
-                            .clip(CircleShape)
-                            .border(3.dp, Color(0xFFDDDDDD), CircleShape)
-                    )
+                    if (profileBitmap != null) {
+                        Image(
+                            bitmap = profileBitmap,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(130.dp)
+                                .clip(CircleShape)
+                                .border(3.dp, Color(0xFFDDDDDD), CircleShape)
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(130.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFE8EEF4))
+                                .border(3.dp, Color(0xFFDDDDDD), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = Color(0xFF9E9E9E),
+                                modifier = Modifier.size(76.dp)
+                            )
+                        }
+                    }
+
+                    val valoraciones = comentarios.mapNotNull { it.valoracion }
+                    if (valoraciones.isNotEmpty()) {
+                        val promedio = valoraciones.average()
+                        Spacer(Modifier.height(10.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                            (1..5).forEach { star ->
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = if (star <= promedio.roundToInt()) Color(0xFFFFB800)
+                                    else Color(0xFFDDDDDD)
+                                )
+                            }
+                        }
+                        Text(
+                            text = "%.1f".format(promedio),
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
 
-                Spacer(Modifier.height(30.dp))
+                Spacer(Modifier.height(14.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -291,24 +333,70 @@ fun PerfilVendedor(
                                     Spacer(Modifier.height(10.dp))
                                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                         productosFiltrados.forEach { producto ->
+                                            val bitmap = remember(producto.thumbnail) {
+                                                producto.thumbnail?.let {
+                                                    try {
+                                                        val bytes = Base64.decode(it, Base64.DEFAULT)
+                                                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                                                    } catch (e: Exception) { null }
+                                                }
+                                            }
+
                                             Card(
-                                                modifier = Modifier.fillMaxWidth(),
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clickable {
+                                                        navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${producto.id}")
+                                                    },
                                                 shape = RoundedCornerShape(16.dp),
-                                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F9FA)),
-                                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                                             ) {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .padding(14.dp),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                        .height(90.dp),
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Column(Modifier.weight(1f)) {
+                                                    if (bitmap != null) {
+                                                        Image(
+                                                            bitmap = bitmap,
+                                                            contentDescription = null,
+                                                            contentScale = ContentScale.Crop,
+                                                            modifier = Modifier
+                                                                .width(90.dp)
+                                                                .fillMaxHeight()
+                                                                .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                                                        )
+                                                    } else {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .width(90.dp)
+                                                                .fillMaxHeight()
+                                                                .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                                                                .background(Color(0xFFE8EEF4)),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            Text(
+                                                                "Sin imagen",
+                                                                color = Color(0xFF8FA3B1),
+                                                                fontSize = 10.sp
+                                                            )
+                                                        }
+                                                    }
+
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .weight(1f)
+                                                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                                                        verticalArrangement = Arrangement.SpaceBetween
+                                                    ) {
                                                         Text(
                                                             text = producto.nombre,
                                                             fontWeight = FontWeight.SemiBold,
-                                                            fontSize = 15.sp
+                                                            fontSize = 15.sp,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis
                                                         )
                                                         Text(
                                                             text = producto.descripcion,
@@ -321,15 +409,19 @@ fun PerfilVendedor(
                                                             Text(
                                                                 text = producto.ubicacion,
                                                                 fontSize = 12.sp,
-                                                                color = Color.Gray
+                                                                color = Color.Gray,
+                                                                maxLines = 1,
+                                                                overflow = TextOverflow.Ellipsis
                                                             )
                                                         }
                                                     }
+
                                                     Text(
-                                                        text = "${producto.precio} €",
+                                                        text = "%.2f €".format(producto.precio),
                                                         fontWeight = FontWeight.Bold,
                                                         color = Color(0xFF003459),
-                                                        fontSize = 15.sp
+                                                        fontSize = 15.sp,
+                                                        modifier = Modifier.padding(end = 14.dp)
                                                     )
                                                 }
                                             }
@@ -425,17 +517,22 @@ fun PerfilVendedor(
                             )
                         }
                         // Selector de estrellas
-                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            (1..5).forEach { star ->
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = "$star estrellas",
-                                    modifier = Modifier
-                                        .size(28.dp)
-                                        .clickable { estrellasSeleccionadas = star },
-                                    tint = if (star <= estrellasSeleccionadas) Color(0xFFFFB800)
-                                    else Color.LightGray
-                                )
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                (1..5).forEach { star ->
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "$star estrellas",
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clickable { estrellasSeleccionadas = star },
+                                        tint = if (star <= estrellasSeleccionadas) Color(0xFFFFB800)
+                                        else Color.LightGray
+                                    )
+                                }
                             }
                         }
                         // Campo de texto + botón enviar
@@ -449,7 +546,8 @@ fun PerfilVendedor(
                                 onValueChange = { textoResena = it },
                                 placeholder = { Text("Escribe una reseña...") },
                                 modifier = Modifier.weight(1f),
-                                maxLines = 3,
+                                minLines = 3,
+                                maxLines = 5,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             IconButton(

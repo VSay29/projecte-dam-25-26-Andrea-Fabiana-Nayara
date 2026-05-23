@@ -3,13 +3,10 @@ package com.example.android_loop.view.vistas.En_Proceso_De_Revisar
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.IconButton
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,18 +18,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.android_loop.R
+import androidx.compose.ui.unit.sp
 import com.example.android_loop.data.model_dataClass.comentarioResult.Comentario
 import com.example.android_loop.utils.NavigationCache
 
@@ -45,10 +52,6 @@ fun ComentarioBurbuja(
     onEdit: (() -> Unit)? = null,
     onReport: (() -> Unit)? = null
 ) {
-    val cardColor = Color(0xFFEEEEEE)
-    val textColor = Color.Black
-    val defaultAvatar = ImageBitmap.imageResource(R.drawable.no_avatar)
-
     val avatarBitmap = remember(comentario.imagen_comentador) {
         comentario.imagen_comentador
             ?.takeIf { it.isNotBlank() && it != "false" }
@@ -58,7 +61,7 @@ fun ComentarioBurbuja(
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
                 } catch (e: Exception) { null }
             }
-    } ?: defaultAvatar
+    }
 
     val clickableModifier: Modifier = if (onPerfilClick != null && comentario.comentador_partner_id != null)
         Modifier.clickable {
@@ -68,109 +71,136 @@ fun ComentarioBurbuja(
     else Modifier
 
     Card(
-        shape = RoundedCornerShape(4.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-            // Cabecera: foto + nombre a la izquierda, botones de acción a la derecha
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+
+            // Cabecera
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        bitmap = avatarBitmap,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(36.dp).clip(CircleShape).then(clickableModifier)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = comentario.comentador,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = textColor.copy(alpha = 0.7f),
-                        modifier = clickableModifier
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    // Avatar + estrellas
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        if (avatarBitmap != null) {
+                            Image(
+                                bitmap = avatarBitmap,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                                    .then(clickableModifier)
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE8EEF4))
+                                    .then(clickableModifier),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = Color(0xFF9E9E9E),
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
+                        }
+
+                        if (comentario.valoracion != null) {
+                            Spacer(Modifier.height(5.dp))
+                            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
+                                (1..5).forEach { star ->
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(13.dp),
+                                        tint = if (star <= comentario.valoracion) Color(0xFFFFB800)
+                                        else Color(0xFFDDDDDD)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(Modifier.width(12.dp))
+
+                    // Nombre + fecha
+                    Column {
+                        Text(
+                            text = comentario.comentador.replaceFirstChar { it.uppercase() },
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1A1A2E),
+                            modifier = clickableModifier
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            text = comentario.fecha_creacion.take(10),
+                            fontSize = 12.sp,
+                            color = Color(0xFF9E9E9E)
+                        )
+                    }
                 }
+
+                // Botones de acción
                 Row {
                     if (esMio) {
                         IconButton(
-                            onClick = { onDelete?.invoke() },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Eliminar reseña",
-                                modifier = Modifier.size(16.dp),
-                                tint = Color.Gray
-                            )
-                        }
-                        IconButton(
                             onClick = { onEdit?.invoke() },
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(34.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Editar reseña",
-                                modifier = Modifier.size(16.dp),
-                                tint = Color.Gray
+                                modifier = Modifier.size(18.dp),
+                                tint = Color(0xFF007EA7)
+                            )
+                        }
+                        IconButton(
+                            onClick = { onDelete?.invoke() },
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Eliminar reseña",
+                                modifier = Modifier.size(18.dp),
+                                tint = Color(0xFFE63946)
                             )
                         }
                     } else {
                         IconButton(
                             onClick = { onReport?.invoke() },
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(34.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Flag,
                                 contentDescription = "Denunciar",
-                                modifier = Modifier.size(16.dp),
-                                tint = Color.Gray
+                                modifier = Modifier.size(18.dp),
+                                tint = Color(0xFFBDBDBD)
                             )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = comentario.contenido,
-                color = textColor,
-                style = MaterialTheme.typography.bodyMedium
+                fontSize = 15.sp,
+                color = Color(0xFF333333),
+                lineHeight = 23.sp
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Pie: fecha (izquierda) + estrellas (derecha)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = comentario.fecha_creacion.take(10),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = textColor.copy(alpha = 0.5f)
-                )
-                if (comentario.valoracion != null) {
-                    Row {
-                        (1..5).forEach { star ->
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp),
-                                tint = if (star <= comentario.valoracion) Color(0xFFFFB800)
-                                else textColor.copy(alpha = 0.2f)
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
