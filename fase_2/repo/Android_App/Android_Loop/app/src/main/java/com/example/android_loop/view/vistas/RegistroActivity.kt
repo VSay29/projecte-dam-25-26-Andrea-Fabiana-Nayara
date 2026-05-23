@@ -300,13 +300,23 @@ fun Registro(navController: NavHostController) {
         }
 
         LaunchedEffect(registroState) {
-            if (registroState is RegistroUiState.Success) {
-                Toast.makeText(context, "Registro realizado correctamente", Toast.LENGTH_SHORT).show()
-                navController.navigate(ROUTES.LOGIN)
-            }
-            if (registroState is RegistroUiState.Error) {
-                Log.d("DEBUG_REGISTRO", registroState.message)
-                Toast.makeText(context, registroState.message, Toast.LENGTH_SHORT).show()
+
+            when (registroState) {
+
+                is RegistroUiState.Success -> {
+                    Toast.makeText(context, "Registro realizado correctamente", Toast.LENGTH_SHORT)
+                        .show()
+                    navController.navigate(ROUTES.LOGIN) {
+                        popUpTo(ROUTES.REGISTRO) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                is RegistroUiState.Error -> { Toast.makeText(context, registroState.message, Toast.LENGTH_SHORT).show() }
+
+                else -> {}
+
             }
         }
 
