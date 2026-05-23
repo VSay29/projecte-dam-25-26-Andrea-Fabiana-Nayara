@@ -433,7 +433,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
         }
 
-        showImageViewer = MostrarCarrousel(showImageViewer, listaImagenes)
+        MostrarCarrousel(showImageViewer, listaImagenes, onDismiss = { showImageViewer = false })
 
         if (showMap && locationState != null) mostrarMapa(true, onDismiss = { showMap = false },
             locationState!!, context)
@@ -479,22 +479,21 @@ fun VerProducto(productoId: Int, navController: NavController) {
 }
 
 @Composable
-private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<ImagenDetalle>, ): Boolean {
-    var showImageViewer1 = showImageViewer
-    if (showImageViewer1) {
+private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<ImagenDetalle>, onDismiss: () -> Unit) {
+    if (showImageViewer) {
         Dialog(
-            onDismissRequest = { showImageViewer1 = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
-            Box(Modifier
-                .fillMaxSize()
-                .background(Color.Black)) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+            ) {
                 MostrarImagenes(listaImagenes)
 
                 IconButton(
-                    onClick = { showImageViewer1 = false },
+                    onClick = onDismiss,
                     Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
@@ -506,7 +505,6 @@ private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<Image
             }
         }
     }
-    return showImageViewer1
 }
 
 @OptIn(ExperimentalFoundationApi::class)
