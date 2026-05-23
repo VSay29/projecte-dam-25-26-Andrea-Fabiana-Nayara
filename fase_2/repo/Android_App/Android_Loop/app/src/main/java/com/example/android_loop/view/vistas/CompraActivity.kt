@@ -38,13 +38,19 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.viewModel.CarritoViewModel
+import com.example.android_loop.viewModel.CompraViewModel
+import com.example.android_loop.viewModel.ComprasUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Compra(navController: NavController) {
+fun Compra(navController: NavController, productos: HashMap<Integer, Integer>) {
 
     val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val compraViewModel: CompraViewModel = viewModel()
+
+    val realizarCompraState = compraViewModel.comprarState
+
     val context = LocalContext.current
     val token = getToken(context)
 
@@ -63,6 +69,19 @@ fun Compra(navController: NavController) {
                 popUpTo(0)
                 launchSingleTop = true
             }
+        }
+    }
+
+    LaunchedEffect(realizarCompraState) {
+        when(realizarCompraState) {
+            is ComprasUiState.SuccessRealizarCompra -> {
+                Toast.makeText(context, "La compra se ha realizado con éxito", Toast.LENGTH_SHORT).show()
+                navController.popBackStack(ROUTES.HOME, inclusive = true)
+            }
+            is ComprasUiState.Error -> {
+                Toast.makeText(context, "No se pudo realizar la compra", Toast.LENGTH_SHORT).show()
+            }
+            else -> {}
         }
     }
 
@@ -205,6 +224,9 @@ fun Compra(navController: NavController) {
                         scope.launch {
                             delay(1000)
                             isLoading = false
+                            productos.forEach {
+                                compraViewModel.realizarCompra(token, it.key, it.value)
+                            }
                             Toast.makeText(context, "¡Pago realizado!", Toast.LENGTH_SHORT).show()
                             navController.navigate(ROUTES.HOME) {
                                 popUpTo(ROUTES.HOME) { inclusive = true }

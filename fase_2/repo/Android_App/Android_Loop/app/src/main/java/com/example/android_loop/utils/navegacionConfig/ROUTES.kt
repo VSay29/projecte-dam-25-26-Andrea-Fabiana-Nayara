@@ -10,7 +10,6 @@ object ROUTES {
     const val PERFIL_USUARIO = "perfil_Usuario"
     const val FAVORITOS = "favoritos"
     const val DENUNCIAS = "denuncias"
-    const val COMPRA = "compra"
     const val CARRITO = "carrito"
     const val AJUSTES = "ajustes"
 
@@ -24,4 +23,8 @@ object ROUTES {
     const val CREAR_PRODUCTO = "crear_producto"
 
     const val CREAR_PRODUCTO_PARAM = "$CREAR_PRODUCTO/{productoId}"
+
+    const val COMPRA = "compra"
+
+    const val COMPRA_PARAM = "$COMPRA/{productos}"
 }

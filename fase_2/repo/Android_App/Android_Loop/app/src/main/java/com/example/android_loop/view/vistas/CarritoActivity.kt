@@ -35,6 +35,13 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.view.componentes.Header_Componente
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.remember
+import java.util.Hashtable
 import com.example.android_loop.viewModel.CarritoViewModel
 
 @Composable
@@ -57,6 +64,8 @@ fun Carrito(navController: NavController) {
     val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
     val items = viewModel.cartItems
     val total = viewModel.total
+
+    val productosAComprar = remember { HashMap<Int, Int>() }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -171,7 +180,11 @@ fun Carrito(navController: NavController) {
 
                             Checkbox(
                                 checked = checked,
-                                onCheckedChange = { viewModel.toggleSeleccion(product, it) },
+                                onCheckedChange = { isChecked ->
+                                        viewModel.toggleSeleccion(product, isChecked)
+                                        if(isChecked) productosAComprar[product.id] = product.propietario.id
+                                        else productosAComprar.remove(product.id)
+                                    }
                                 modifier = Modifier.padding(end = 8.dp)
                             )
                         }
