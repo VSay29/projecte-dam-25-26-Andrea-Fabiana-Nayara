@@ -46,13 +46,15 @@ fun AppNavGraph(navController: NavHostController) {
         ROUTES.LOGIN,
         ROUTES.REGISTRO,
         ROUTES.CREAR_PRODUCTO,
+        ROUTES.CREAR_PRODUCTO_PARAM,
         ROUTES.PERFIL_VENDEDOR,
         ROUTES.DETALLE_PRODUCTO_ID,
         ROUTES.AJUSTES,
         ROUTES.CARRITO,
         ROUTES.DENUNCIAS,
         ROUTES.PERFIL_USUARIO,
-        ROUTES.COMPRA
+        ROUTES.COMPRA,
+        ROUTES.PERFIL_VENDEDOR_PARAMS,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

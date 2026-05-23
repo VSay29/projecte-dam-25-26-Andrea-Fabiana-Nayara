@@ -26,6 +26,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Share
 import com.example.android_loop.view.componentes.Boton_Componente
 import com.tuapp.ui.theme.Primary
+import com.tuapp.ui.theme.Secondary
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -260,7 +261,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.ArrowBackIosNew,
                         contentDescription = "Volver",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = Color.White,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable { navController.popBackStack() }
@@ -269,7 +270,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                     Icon(
                         Icons.Default.Share,
                         contentDescription = "Compartir",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = Color.White,
                         modifier = Modifier
                             .size(30.dp)
                             .clickable {
@@ -318,7 +319,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                             Icon(
                                 Icons.Default.LocationOn,
                                 contentDescription = "Ver en el mapa",
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = Secondary,
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {
@@ -432,7 +433,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
 
         }
 
-        showImageViewer = MostrarCarrousel(showImageViewer, listaImagenes)
+        MostrarCarrousel(showImageViewer, listaImagenes, onDismiss = { showImageViewer = false })
 
         if (showMap && locationState != null) mostrarMapa(true, onDismiss = { showMap = false },
             locationState!!, context)
@@ -478,22 +479,21 @@ fun VerProducto(productoId: Int, navController: NavController) {
 }
 
 @Composable
-private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<ImagenDetalle>, ): Boolean {
-    var showImageViewer1 = showImageViewer
-    if (showImageViewer1) {
+private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<ImagenDetalle>, onDismiss: () -> Unit) {
+    if (showImageViewer) {
         Dialog(
-            onDismissRequest = { showImageViewer1 = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
-            Box(Modifier
-                .fillMaxSize()
-                .background(Color.Black)) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+            ) {
                 MostrarImagenes(listaImagenes)
 
                 IconButton(
-                    onClick = { showImageViewer1 = false },
+                    onClick = onDismiss,
                     Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
@@ -505,7 +505,6 @@ private fun MostrarCarrousel(showImageViewer: Boolean, listaImagenes: List<Image
             }
         }
     }
-    return showImageViewer1
 }
 
 @OptIn(ExperimentalFoundationApi::class)

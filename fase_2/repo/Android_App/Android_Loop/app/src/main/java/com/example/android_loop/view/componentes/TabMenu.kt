@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -93,20 +92,9 @@ fun TabMenu(navController: NavHostController) {
 
             NavItem(
                 selected = currentRoute == ROUTES.FAVORITOS,
-                icon = Icons.Default.FavoriteBorder
+                icon = Icons.Default.FavoriteBorder,
+                selectedColor = Color.Red
             ) { navController.navigate(ROUTES.FAVORITOS){
-                {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            } }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            NavItem(
-                selected = currentRoute == ROUTES.HOME,
-                icon = Icons.Default.Email
-            ) { navController.navigate(ROUTES.HOME){
                 {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
@@ -122,11 +110,15 @@ fun TabMenu(navController: NavHostController) {
                     launchSingleTop = true
                 }
             } }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
 
-        // FAB CENTRAL
+        // FAB DERECHA
         Box(
             modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 28.dp)
                 .offset(y = (-38).dp)
                 .size(72.dp)
                 .graphicsLayer {
@@ -168,6 +160,7 @@ fun TabMenu(navController: NavHostController) {
 fun RowScope.NavItem(
     selected: Boolean,
     icon: ImageVector,
+    selectedColor: Color = Color(0xFF38BDF8),
     onClick: () -> Unit
 ) {
     NavigationBarItem(
@@ -181,7 +174,7 @@ fun RowScope.NavItem(
             )
         },
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = Color(0xFF38BDF8),
+            selectedIconColor = selectedColor,
             unselectedIconColor = Color.White.copy(0.5f),
             indicatorColor = Color.Transparent
         )
