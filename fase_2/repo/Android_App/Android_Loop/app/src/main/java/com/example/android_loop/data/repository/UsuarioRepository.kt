@@ -7,9 +7,11 @@ import com.example.android_loop.data.model_dataClass.usuarioResult.GetUserDataRe
 import com.example.android_loop.data.model_dataClass.usuarioResult.GenerarSesionResult
 import com.example.android_loop.data.model_dataClass.usuarioResult.ModificarUsuarioResult
 import com.example.android_loop.data.model_dataClass.usuarioResult.RegistroResult
+import com.example.android_loop.data.model_dataClass.usuarioResult.UsuarioPublicoResult
 import com.example.android_loop.data.model_dataClass.RpcResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.accept
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -96,6 +98,19 @@ class UsuarioRepository(private val cliente: HttpClient = HttpClientProvider.cli
                     )
                 }.body()
             Result.success(response.result)
+        } catch (ex: Exception) {
+            Result.failure(ex)
+        }
+    }
+
+    suspend fun getUsuarioPublico(token: String, partnerId: Int): Result<UsuarioPublicoResult> {
+        return try {
+            val response: UsuarioPublicoResult =
+                cliente.get("${Servidor.BASE_URL}/api/v1/loop/users/$partnerId") {
+                    header("Authorization", "Bearer $token")
+                    accept(ContentType.Application.Json)
+                }.body()
+            Result.success(response)
         } catch (ex: Exception) {
             Result.failure(ex)
         }
