@@ -88,21 +88,30 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("MissingPermission")
     fun getLastLocation() {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                locationState.value = doubleArrayOf(it.latitude, it.longitude)
-                guardarUbiSP(this, it.latitude, it.longitude)
+        // Solicitar fix fresco de alta precisión (1 sola actualización)
+        val freshRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 0)
+            .setMaxUpdates(1)
+            .build()
+        fusedLocationClient.requestLocationUpdates(freshRequest, object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                result.lastLocation?.let { loc ->
+                    locationState.value = doubleArrayOf(loc.latitude, loc.longitude)
+                    guardarUbiSP(this@MainActivity, loc.latitude, loc.longitude)
+                }
+                fusedLocationClient.removeLocationUpdates(this)
             }
-        }
+        }, Looper.getMainLooper())
     }
 
     // SECCION: Configuración ciclos de vida
 
-    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback, Looper.getMainLooper())
+        val fineGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (fineGranted) {
+            @SuppressLint("MissingPermission")
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        }
     }
 
     override fun onPause() {
@@ -113,23 +122,11 @@ class MainActivity : ComponentActivity() {
     // SECCION: Petición de permisos
 
     fun requestPermissions() {
-        if(ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+        val fineGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        when {
+            fineGranted -> getLastLocation()
+            else -> requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        )
-
-            requestPermissionLauncher.launch(
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
     }
 
 }
