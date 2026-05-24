@@ -496,15 +496,6 @@ fun PerfilUsuario(navController: NavHostController) {
                                                                 maxLines = 1,
                                                                 overflow = TextOverflow.Ellipsis
                                                             )
-                                                            if (producto.ubicacion.isNotBlank()) {
-                                                                Text(
-                                                                    text = producto.ubicacion,
-                                                                    fontSize = 12.sp,
-                                                                    color = Color.Gray,
-                                                                    maxLines = 1,
-                                                                    overflow = TextOverflow.Ellipsis
-                                                                )
-                                                            }
                                                         }
 
                                                         Text(
