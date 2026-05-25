@@ -5,6 +5,7 @@ import android.util.Base64
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,6 +45,10 @@ fun Carrito(navController: NavController) {
     val context = LocalContext.current
     val token = getToken(context)
 
+    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
+    val items = viewModel.cartItems
+    val total = viewModel.total
+
     LaunchedEffect(Unit) {
         if (!tokenValido(token)) {
             setToken(context, "")
@@ -52,12 +57,10 @@ fun Carrito(navController: NavController) {
                 popUpTo(0)
                 launchSingleTop = true
             }
+        } else {
+            viewModel.cargarCarrito(token!!)
         }
     }
-
-    val viewModel: CarritoViewModel = viewModel(viewModelStoreOwner = LocalActivity.current as ComponentActivity)
-    val items = viewModel.cartItems
-    val total = viewModel.total
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -100,7 +103,9 @@ fun Carrito(navController: NavController) {
                     val checked = viewModel.selectedItems.any { it.id == product.id }
 
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("${ROUTES.DETALLE_PRODUCTO}/${product.id}") },
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -108,7 +113,7 @@ fun Carrito(navController: NavController) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(90.dp),
+                                .height(115.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             if (bitmap != null) {
@@ -137,8 +142,8 @@ fun Carrito(navController: NavController) {
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                                verticalArrangement = Arrangement.SpaceBetween
+                                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
                                     text = product.nombre,
