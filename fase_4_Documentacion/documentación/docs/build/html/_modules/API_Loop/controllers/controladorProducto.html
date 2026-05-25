@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API_Loop.controllers.controladorProducto &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4936afed"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">API_Loop.controllers.controladorProducto</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para API_Loop.controllers.controladorProducto</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo</span><span class="w"> </span><span class="kn">import</span> <span class="n">http</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">odoo.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.controladorToken</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_current_user_from_token</span>
+
+
+<span class="c1"># ======================================================</span>
+<span class="c1"># FUNCIONES AUXILIARES</span>
+<span class="c1"># ======================================================</span>
+<div class="viewcode-block" id="unauthorized">
+<a class="viewcode-back" href="../../../API_Loop.controllers.html#API_Loop.controllers.controladorProducto.unauthorized">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unauthorized</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}),</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+        <span class="n">status</span><span class="o">=</span><span class="mi">401</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ProductoController">
+<a class="viewcode-back" href="../../../API_Loop.controllers.html#API_Loop.controllers.controladorProducto.ProductoController">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProductoController</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">Controller</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Controlador API para gestión de productos en Odoo.</span>
+
+<span class="sd">    Endpoints disponibles:</span>
+
+<span class="sd">    1. GET /api/products</span>
+<span class="sd">       - Lista todos los productos disponibles.</span>
+<span class="sd">       - Requiere token JWT válido.</span>
+<span class="sd">       - Respuesta:</span>
+<span class="sd">         {</span>
+<span class="sd">             &quot;ok&quot;: True,</span>
+<span class="sd">             &quot;count&quot;: &lt;número de productos&gt;,</span>
+<span class="sd">             &quot;products&quot;: [</span>
+<span class="sd">                 {</span>
+<span class="sd">                     &quot;id&quot;: int,</span>
+<span class="sd">                     &quot;nombre&quot;: str,</span>
+<span class="sd">                     &quot;descripcion&quot;: str,</span>
+<span class="sd">                     &quot;precio&quot;: float,</span>
+<span class="sd">                     &quot;estado&quot;: str,</span>
+<span class="sd">                     &quot;ubicacion&quot;: str,</span>
+<span class="sd">                     &quot;antiguedad&quot;: str | None,</span>
+<span class="sd">                     &quot;categoria&quot;: {&quot;id&quot;: int, &quot;nombre&quot;: str},</span>
+<span class="sd">                     &quot;propietario&quot;: {&quot;id&quot;: int, &quot;nombre&quot;: str},</span>
+<span class="sd">                     &quot;etiquetas&quot;: [{&quot;id&quot;: int, &quot;nombre&quot;: str}, ...],</span>
+<span class="sd">                     &quot;imagenes&quot;: [{&quot;id&quot;: int, &quot;principal&quot;: bool, &quot;orden&quot;: int}, ...]</span>
+<span class="sd">                 }, ...</span>
+<span class="sd">             ]</span>
+<span class="sd">         }</span>
+
+<span class="sd">    2. GET /api/products/&lt;int:product_id&gt;</span>
+<span class="sd">       - Obtiene los detalles de un producto específico por su ID.</span>
+<span class="sd">       - Requiere token JWT válido.</span>
+<span class="sd">       - Respuesta:</span>
+<span class="sd">         {</span>
+<span class="sd">             &quot;id&quot;: int,</span>
+<span class="sd">             &quot;nombre&quot;: str,</span>
+<span class="sd">             &quot;descripcion&quot;: str,</span>
+<span class="sd">             &quot;precio&quot;: float,</span>
+<span class="sd">             &quot;estado&quot;: str,</span>
+<span class="sd">             &quot;ubicacion&quot;: str,</span>
+<span class="sd">             &quot;categoria&quot;: {&quot;id&quot;: int, &quot;nombre&quot;: str}</span>
+<span class="sd">         }</span>
+
+<span class="sd">    3. POST /api/productos</span>
+<span class="sd">       - Crea un nuevo producto.</span>
+<span class="sd">       - Requiere token JWT válido.</span>
+<span class="sd">       - Campos obligatorios: nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria_id, imagenes</span>
+<span class="sd">       - Respuesta:</span>
+<span class="sd">         {&quot;ok&quot;: True, &quot;product_id&quot;: int}</span>
+
+<span class="sd">    4. PUT /api/products/&lt;int:product_id&gt;</span>
+<span class="sd">       - Actualiza los datos de un producto existente. Solo puede actualizarlo el propietario.</span>
+<span class="sd">       - Requiere token JWT válido.</span>
+<span class="sd">       - Campos permitidos: nombre, descripcion, precio, estado, ubicacion, categoria_id, antiguedad</span>
+<span class="sd">       - Respuesta:</span>
+<span class="sd">         {&quot;ok&quot;: True}</span>
+
+<span class="sd">    5. DELETE /api/products/&lt;int:product_id&gt;</span>
+<span class="sd">       - Elimina un producto existente. Solo puede eliminarlo el propietario.</span>
+<span class="sd">       - Requiere token JWT válido.</span>
+<span class="sd">       - Respuesta:</span>
+<span class="sd">         {&quot;ok&quot;: True}</span>
+
+<span class="sd">    Notas:</span>
+<span class="sd">    - Todos los endpoints requieren autenticación mediante token JWT.</span>
+<span class="sd">    - Las respuestas de error utilizan códigos HTTP adecuados:</span>
+<span class="sd">        - 401 Unauthorized: Token no válido o no proporcionado.</span>
+<span class="sd">        - 403 Forbidden: Usuario no es propietario del recurso.</span>
+<span class="sd">        - 404 Not Found: Producto no encontrado.</span>
+<span class="sd">    - El endpoint de creación de producto espera al menos una imagen en base64.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># ======================================================</span>
+    <span class="c1"># LISTAR PRODUCTOS</span>
+    <span class="c1"># ======================================================</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/products&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unauthorized</span><span class="p">()</span>
+
+        <span class="n">products</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">([])</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span>
+                <span class="s1">&#39;descripcion&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">descripcion</span><span class="p">,</span>
+                <span class="s1">&#39;precio&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">precio</span><span class="p">,</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">estado</span><span class="p">,</span>
+                <span class="s1">&#39;ubicacion&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">ubicacion</span><span class="p">,</span>
+                <span class="s1">&#39;antiguedad&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">antiguedad</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">antiguedad</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;categoria&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">categoria_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">categoria_id</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;propietario&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">propietario_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">propietario_id</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;etiquetas&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">}</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">etiqueta_ids</span>
+                <span class="p">],</span>
+                <span class="s1">&#39;imagenes&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;principal&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">is_principal</span><span class="p">,</span> <span class="s1">&#39;orden&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">sequence</span><span class="p">}</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">imagen_ids</span>
+                <span class="p">],</span>
+            <span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                <span class="s1">&#39;ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span>
+                <span class="s1">&#39;products&#39;</span><span class="p">:</span> <span class="n">result</span>
+            <span class="p">}),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+            <span class="n">status</span><span class="o">=</span><span class="mi">200</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ======================================================</span>
+    <span class="c1"># CONSULTAR PRODUCTO POR ID</span>
+    <span class="c1"># ======================================================</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/products/&lt;int:product_id&gt;&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unauthorized</span><span class="p">()</span>
+
+        <span class="n">product</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">product</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Product not found&#39;</span><span class="p">}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+                <span class="n">status</span><span class="o">=</span><span class="mi">404</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span>
+                <span class="s1">&#39;descripcion&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">descripcion</span><span class="p">,</span>
+                <span class="s1">&#39;precio&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">precio</span><span class="p">,</span>
+                <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">estado</span><span class="p">,</span>
+                <span class="s1">&#39;ubicacion&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">ubicacion</span><span class="p">,</span>
+                <span class="s1">&#39;categoria&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">categoria_id</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">categoria_id</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">}),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+            <span class="n">status</span><span class="o">=</span><span class="mi">200</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ======================================================</span>
+    <span class="c1"># CREAR PRODUCTO</span>
+    <span class="c1"># ======================================================</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/productos&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">params</span>  <span class="c1"># usar params directamente</span>
+
+        <span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;nombre&#39;</span><span class="p">,</span> <span class="s1">&#39;descripcion&#39;</span><span class="p">,</span> <span class="s1">&#39;precio&#39;</span><span class="p">,</span> <span class="s1">&#39;estado&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ubicacion&#39;</span><span class="p">,</span> <span class="s1">&#39;antiguedad&#39;</span><span class="p">,</span> <span class="s1">&#39;categoria_id&#39;</span><span class="p">,</span> <span class="s1">&#39;imagenes&#39;</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Missing field: </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;imagenes&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;At least one image is required&#39;</span><span class="p">}</span>
+
+        <span class="n">product</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+            <span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;descripcion&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;descripcion&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;precio&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;precio&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;estado&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;estado&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;ubicacion&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ubicacion&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;antiguedad&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;antiguedad&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;categoria_id&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;categoria_id&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;propietario_id&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="p">})</span>
+
+        <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;imagenes&#39;</span><span class="p">]:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto_imagen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+                <span class="s1">&#39;producto_id&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s1">&#39;imagen&#39;</span><span class="p">:</span> <span class="n">img</span><span class="p">[</span><span class="s1">&#39;imagen&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;is_principal&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_principal&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sequence&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="p">})</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;product_id&#39;</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+
+    <span class="c1"># ======================================================</span>
+    <span class="c1"># ACTUALIZAR PRODUCTO</span>
+    <span class="c1"># ======================================================</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/products/&lt;int:product_id&gt;&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PUT&#39;</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unauthorized</span><span class="p">()</span>
+
+        <span class="n">product</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">product</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Product not found&#39;</span><span class="p">}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+                <span class="n">status</span><span class="o">=</span><span class="mi">404</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">propietario_id</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Forbidden&#39;</span><span class="p">}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+                <span class="n">status</span><span class="o">=</span><span class="mi">403</span>
+            <span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">httprequest</span><span class="o">.</span><span class="n">data</span> <span class="ow">or</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">allowed_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">,</span> <span class="s1">&#39;descripcion&#39;</span><span class="p">,</span> <span class="s1">&#39;precio&#39;</span><span class="p">,</span> <span class="s1">&#39;estado&#39;</span><span class="p">,</span> <span class="s1">&#39;ubicacion&#39;</span><span class="p">,</span> <span class="s1">&#39;categoria_id&#39;</span><span class="p">,</span> <span class="s1">&#39;antiguedad&#39;</span><span class="p">]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">allowed_fields</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="n">product</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+            <span class="n">status</span><span class="o">=</span><span class="mi">200</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ======================================================</span>
+    <span class="c1"># ELIMINAR PRODUCTO</span>
+    <span class="c1"># ======================================================</span>
+    <span class="nd">@http</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/products/&lt;int:product_id&gt;&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">csrf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cors</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_current_user_from_token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unauthorized</span><span class="p">()</span>
+
+        <span class="n">product</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="p">[</span><span class="s1">&#39;loop_proyecto.producto&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sudo</span><span class="p">()</span><span class="o">.</span><span class="n">browse</span><span class="p">(</span><span class="n">product_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">product</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Product not found&#39;</span><span class="p">}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+                <span class="n">status</span><span class="o">=</span><span class="mi">404</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">propietario_id</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Forbidden&#39;</span><span class="p">}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+                <span class="n">status</span><span class="o">=</span><span class="mi">403</span>
+            <span class="p">)</span>
+
+        <span class="n">product</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">make_response</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)],</span>
+            <span class="n">status</span><span class="o">=</span><span class="mi">200</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

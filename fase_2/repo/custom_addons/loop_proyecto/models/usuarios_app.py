@@ -3,13 +3,30 @@
 from odoo import models, fields, api
 
 class UsuariosApp(models.Model):
+
+    """Modelo que representa usuarios de la aplicación.
+
+    Extiende `res.partner` añadiendo campos específicos de la App.
+
+    Atributos:
+        username (str): Nombre único para iniciar sesión en la aplicación.
+        password (str): Contraseña del usuario.
+        date_joined (datetime): Fecha de registro del usuario.
+        active (bool): Indica si el usuario está activo.
+        rol (str): Rol del usuario ('cliente', 'empleado', 'admin').
+        idioma (str): Idioma preferido del usuario ('Español', 'Inglés', 'Catalán').
+        favorito_ids (loop_proyecto.producto): Productos favoritos del usuario.
+        valoracion_ids (loop_proyecto.valoracion): Valoraciones recibidas por el usuario.
+        valoracion_media (float): Valoración media calculada.
+    """
+
     _inherit = 'res.partner'
     _description = 'Usuarios de la App'
     _order= 'date_joined desc'
 
-    username = fields.Char(string='Nombre de Usuario', required=True, index=True, help='Nombre único para iniciar sesión en la aplicación.')
+    username = fields.Char(string='Nombre de Usuario', index=True, help='Nombre único para iniciar sesión en la aplicación.')
 
-    password = fields.Char(string='Password', groups="base.group_system")
+    password = fields.Char(string='Contraseña', groups="base.group_system", help="Contraseña cifrada o credencial de la app")
 
     date_joined = fields.Datetime(string='Fecha de Registro', default=fields.Datetime.now, readonly=True, help='Fecha y hora en que el usuario se registró en la aplicación.')
 
@@ -17,7 +34,23 @@ class UsuariosApp(models.Model):
 
     rol = fields.Selection([('cliente', 'Cliente'), ('empleado', 'Empleado'), ('admin', 'Administrador')], string='Rol', default='cliente', required=True, help='Rol del usuario en la aplicación.')
 
-    idioma = fields.Selection([('es', 'Español'), ('en', 'Inglés'), ('ca', 'Catalán')], string='Idioma Preferido', default='es', help='Idioma preferido del usuario para la interfaz de la aplicación.')
+    idioma = fields.Selection([('es', 'Español'), ('en', 'English'), ('ca', 'Catalán')], string='Idioma Preferido', default='es', help='Idioma preferido del usuario para la interfaz de la aplicación.')
+
+    favorito_ids = fields.Many2many(
+        'loop_proyecto.producto',
+        'loop_favorito_rel',
+        'usuario_id',
+        'producto_id',
+        string='Favoritos'
+    )
+    
+    carrito_ids = fields.Many2many(
+        'loop_proyecto.producto',
+        'loop_carrito_rel',
+        'usuario_id',
+        'producto_id',
+        string='Carrito'
+    )
 
     valoracion_ids = fields.One2many(
         'loop_proyecto.valoracion',

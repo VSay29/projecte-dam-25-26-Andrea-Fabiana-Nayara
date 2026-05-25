@@ -1,0 +1,1160 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API_Loop.controllers package &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4936afed"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=f85f4cfb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">API_Loop.controllers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorCategoria">API_Loop.controllers.controladorCategoria module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCategoria.controladorCategoria"><code class="docutils literal notranslate"><span class="pre">controladorCategoria</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCategoria.controladorCategoria.list_categorias"><code class="docutils literal notranslate"><span class="pre">controladorCategoria.list_categorias()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorComentario">API_Loop.controllers.controladorComentario module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario"><code class="docutils literal notranslate"><span class="pre">controladorComentario</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario.create_comentario"><code class="docutils literal notranslate"><span class="pre">controladorComentario.create_comentario()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario.delete_comentario"><code class="docutils literal notranslate"><span class="pre">controladorComentario.delete_comentario()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario.get_comentario"><code class="docutils literal notranslate"><span class="pre">controladorComentario.get_comentario()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario.get_comentarios_usuario"><code class="docutils literal notranslate"><span class="pre">controladorComentario.get_comentarios_usuario()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorComentario.controladorComentario.update_comentario"><code class="docutils literal notranslate"><span class="pre">controladorComentario.update_comentario()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorCompras">API_Loop.controllers.controladorCompras module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller"><code class="docutils literal notranslate"><span class="pre">CRUD_Compra_Controller</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_compras"><code class="docutils literal notranslate"><span class="pre">CRUD_Compra_Controller.api_get_compras()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_ventas"><code class="docutils literal notranslate"><span class="pre">CRUD_Compra_Controller.api_get_ventas()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_realizar"><code class="docutils literal notranslate"><span class="pre">CRUD_Compra_Controller.api_realizar()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_updateState"><code class="docutils literal notranslate"><span class="pre">CRUD_Compra_Controller.api_updateState()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorDenuncias">API_Loop.controllers.controladorDenuncias module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller"><code class="docutils literal notranslate"><span class="pre">CRUD_Denuncias_Controller</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_denuncias"><code class="docutils literal notranslate"><span class="pre">CRUD_Denuncias_Controller.api_denuncias()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_get_denuncias"><code class="docutils literal notranslate"><span class="pre">CRUD_Denuncias_Controller.api_get_denuncias()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_patch_denuncia"><code class="docutils literal notranslate"><span class="pre">CRUD_Denuncias_Controller.api_patch_denuncia()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorEtiqueta">API_Loop.controllers.controladorEtiqueta module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.create_etiqueta"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta.create_etiqueta()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.delete_etiqueta"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta.delete_etiqueta()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.get_etiqueta"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta.get_etiqueta()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.list_etiquetas"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta.list_etiquetas()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.update_etiqueta"><code class="docutils literal notranslate"><span class="pre">controladorEtiqueta.update_etiqueta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorImagenProducto">API_Loop.controllers.controladorImagenProducto module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto"><code class="docutils literal notranslate"><span class="pre">ControladorImagenProducto</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto.get_imagenes_producto"><code class="docutils literal notranslate"><span class="pre">ControladorImagenProducto.get_imagenes_producto()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorProducto">API_Loop.controllers.controladorProducto module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController"><code class="docutils literal notranslate"><span class="pre">ProductoController</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController.create_product"><code class="docutils literal notranslate"><span class="pre">ProductoController.create_product()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController.delete_product"><code class="docutils literal notranslate"><span class="pre">ProductoController.delete_product()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController.get_product"><code class="docutils literal notranslate"><span class="pre">ProductoController.get_product()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController.get_products"><code class="docutils literal notranslate"><span class="pre">ProductoController.get_products()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.ProductoController.update_product"><code class="docutils literal notranslate"><span class="pre">ProductoController.update_product()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorProducto.unauthorized"><code class="docutils literal notranslate"><span class="pre">unauthorized()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorToken">API_Loop.controllers.controladorToken module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorToken.JWTAuthController"><code class="docutils literal notranslate"><span class="pre">JWTAuthController</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorToken.JWTAuthController.authenticate"><code class="docutils literal notranslate"><span class="pre">JWTAuthController.authenticate()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorToken.JWTAuthController.get_user_data"><code class="docutils literal notranslate"><span class="pre">JWTAuthController.get_user_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorToken.get_current_user_from_token"><code class="docutils literal notranslate"><span class="pre">get_current_user_from_token()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers.controladorUsuario">API_Loop.controllers.controladorUsuario module</a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller</span></code></a><ul>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.add_favorito"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.add_favorito()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_delete_me"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.api_delete_me()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_get_user"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.api_get_user()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_patch_me"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.api_patch_me()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_register"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.api_register()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.get_favoritos"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.get_favoritos()</span></code></a></li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.remove_favorito"><code class="docutils literal notranslate"><span class="pre">CRUD_User_Controller.remove_favorito()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#API_Loop.controllers.controladorUsuario.img_a_base64"><code class="docutils literal notranslate"><span class="pre">img_a_base64()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-API_Loop.controllers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API_Loop.controllers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/API_Loop.controllers.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-loop-controllers-package">
+<h1>API_Loop.controllers package<a class="headerlink" href="#api-loop-controllers-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-API_Loop.controllers.controladorCategoria">
+<span id="api-loop-controllers-controladorcategoria-module"></span><h2>API_Loop.controllers.controladorCategoria module<a class="headerlink" href="#module-API_Loop.controllers.controladorCategoria" title="Link to this heading"></a></h2>
+<p>Controladores de categorías para la API Loop.</p>
+<p>Incluye rutas para listar categorías y otras operaciones relacionadas
+con el modelo <cite>loop_proyecto.categoria</cite>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCategoria.controladorCategoria">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorCategoria.</span></span><span class="sig-name descname"><span class="pre">controladorCategoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorCategoria.html#controladorCategoria"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorCategoria.controladorCategoria" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para operaciones sobre categorías.</p>
+<p>Rutas protegidas mediante token de usuario.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCategoria.controladorCategoria.list_categorias">
+<span class="sig-name descname"><span class="pre">list_categorias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorCategoria.controladorCategoria.list_categorias" title="Link to this definition"></a></dt>
+<dd><p>Lista todas las categorías disponibles en la aplicación.</p>
+<p>Requiere token válido en el encabezado de autorización.
+Devuelve JSON con todas las categorías: <cite>id</cite> y <cite>nombre</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON con <cite>success</cite> y lista de categorías.</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+<dt class="field-odd">Muestra<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>401 Unauthorized</strong> – Si el token no es válido o el usuario no existe.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorComentario">
+<span id="api-loop-controllers-controladorcomentario-module"></span><h2>API_Loop.controllers.controladorComentario module<a class="headerlink" href="#module-API_Loop.controllers.controladorComentario" title="Link to this heading"></a></h2>
+<p>Controlador API REST para comentarios en Loop Proyecto.</p>
+<p>Proporciona operaciones CRUD sobre el modelo <cite>loop_proyecto.comentario</cite>,
+permitiendo crear, modificar, consultar y eliminar comentarios, así como
+obtener comentarios de un usuario específico.</p>
+<p>Autor: Andrea, Fabiana y Nayara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorComentario.</span></span><span class="sig-name descname"><span class="pre">controladorComentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorComentario.html#controladorComentario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para la gestión de comentarios de usuarios.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario.create_comentario">
+<span class="sig-name descname"><span class="pre">create_comentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario.create_comentario" title="Link to this definition"></a></dt>
+<dd><p>Crea un nuevo comentario asociado a un usuario.</p>
+<p>Requiere token válido. Opcionalmente puede crear o actualizar
+la valoración asociada al usuario valorado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <p>Diccionario con los datos enviados por POST. Debe incluir:
+data: {</p>
+<blockquote>
+<div><p>”partner_id”: ID del usuario valorado,
+“contenido”: Texto del comentario,
+“estado”: (opcional) Estado del comentario,
+“valoracion”: (opcional) Valoración de 0 a 5</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Resultado con <cite>success</cite> y <cite>comentario_id</cite> si se creó correctamente,</dt><dd><p>o <cite>error</cite> si ocurrió un problema.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario.delete_comentario">
+<span class="sig-name descname"><span class="pre">delete_comentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comentario_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario.delete_comentario" title="Link to this definition"></a></dt>
+<dd><p>Elimina un comentario específico por ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>comentario_id</strong> – ID del comentario a eliminar.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>success</cite> si se eliminó correctamente o <cite>error</cite> en caso de fallo.</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario.get_comentario">
+<span class="sig-name descname"><span class="pre">get_comentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comentario_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario.get_comentario" title="Link to this definition"></a></dt>
+<dd><p>Obtiene un comentario específico por ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>comentario_id</strong> – ID del comentario a consultar.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Información detallada del comentario o error si no existe.</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario.get_comentarios_usuario">
+<span class="sig-name descname"><span class="pre">get_comentarios_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partner_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario.get_comentarios_usuario" title="Link to this definition"></a></dt>
+<dd><p>Obtiene todos los comentarios publicados de un usuario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>partner_id</strong> – ID del usuario del que se desean obtener los comentarios.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Lista de comentarios con información del comentador,</dt><dd><p>valoración, estado y fecha de moderación.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorComentario.controladorComentario.update_comentario">
+<span class="sig-name descname"><span class="pre">update_comentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comentario_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorComentario.controladorComentario.update_comentario" title="Link to this definition"></a></dt>
+<dd><p>Modifica un comentario existente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comentario_id</strong> – ID del comentario a modificar.</p></li>
+<li><p><strong>params</strong> – Diccionario con los datos a actualizar. Debe incluir <cite>contenido</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resultado con <cite>success</cite> y <cite>comentario_id</cite>, o <cite>error</cite>.</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si no se envían datos o falta <cite>contenido</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorCompras">
+<span id="api-loop-controllers-controladorcompras-module"></span><h2>API_Loop.controllers.controladorCompras module<a class="headerlink" href="#module-API_Loop.controllers.controladorCompras" title="Link to this heading"></a></h2>
+<p>Controlador API REST para operaciones de compras y ventas en Loop Proyecto.</p>
+<p>Permite a los usuarios realizar compras, consultar su carrito y ventas en proceso,
+y actualizar el estado de una compra.</p>
+<p>Autor: Andrea, Fabiana y Nayara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCompras.CRUD_Compra_Controller">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorCompras.</span></span><span class="sig-name descname"><span class="pre">CRUD_Compra_Controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorCompras.html#CRUD_Compra_Controller"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para la gestión de compras y ventas.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_compras">
+<span class="sig-name descname"><span class="pre">api_get_compras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_compras" title="Link to this definition"></a></dt>
+<dd><p>Obtiene todas las compras de un usuario (carrito).</p>
+<p>Requiere token válido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – Diccionario de parámetros (no se requieren campos específicos).</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Lista de compras con campos:</dt><dd><ul class="simple">
+<li><p>id: ID de la compra</p></li>
+<li><p>producto_id: ID del producto</p></li>
+<li><p>state: Estado de la compra</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_ventas">
+<span class="sig-name descname"><span class="pre">api_get_ventas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_get_ventas" title="Link to this definition"></a></dt>
+<dd><p>Obtiene todas las ventas en proceso de un usuario.</p>
+<p>Requiere token válido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – Diccionario de parámetros (no se requieren campos específicos).</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Lista de ventas con campos:</dt><dd><ul class="simple">
+<li><p>id: ID de la venta</p></li>
+<li><p>producto_id: ID del producto</p></li>
+<li><p>state: Estado de la venta</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_realizar">
+<span class="sig-name descname"><span class="pre">api_realizar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_realizar" title="Link to this definition"></a></dt>
+<dd><p>Crea una nueva compra de un producto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <p>Diccionario que debe contener:
+data: {</p>
+<blockquote>
+<div><p>”producto_id”: ID del producto,
+“vendedor_id”: ID del vendedor,
+“comprador_id”: ID del comprador,
+“state”: Estado inicial de la compra</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: True, “compra_id”: &lt;ID&gt;} si se creó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Si faltan datos obligatorios o hay error al crear la compra.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_updateState">
+<span class="sig-name descname"><span class="pre">api_updateState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorCompras.CRUD_Compra_Controller.api_updateState" title="Link to this definition"></a></dt>
+<dd><p>Modifica el estado de una compra (por ejemplo, marcar como vendida).</p>
+<p>Requiere token válido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – Diccionario que debe contener:
+- compra_id: ID de la compra a modificar
+- state: Nuevo estado de la compra</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>{“ok”: True} si se actualizó correctamente, {“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si faltan parámetros o la compra no existe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorDenuncias">
+<span id="api-loop-controllers-controladordenuncias-module"></span><h2>API_Loop.controllers.controladorDenuncias module<a class="headerlink" href="#module-API_Loop.controllers.controladorDenuncias" title="Link to this heading"></a></h2>
+<p>Controlador API REST para la gestión de denuncias en Loop Proyecto.</p>
+<p>Permite a los usuarios registrar denuncias sobre productos o comentarios,
+consultar las denuncias realizadas y retirar denuncias si es necesario.</p>
+<p>Autor: Andrea, Fabiana y Nayara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorDenuncias.</span></span><span class="sig-name descname"><span class="pre">CRUD_Denuncias_Controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorDenuncias.html#CRUD_Denuncias_Controller"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para la gestión de denuncias de usuarios.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_denuncias">
+<span class="sig-name descname"><span class="pre">api_denuncias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_denuncias" title="Link to this definition"></a></dt>
+<dd><p>Registra una denuncia sobre un producto o comentario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <p>Diccionario que debe contener:
+data: {</p>
+<blockquote>
+<div><p>”motivo_denuncia”: Texto con el motivo,
+“producto_id”: Opcional, ID del producto denunciado,
+“comentario_id”: Opcional, ID del comentario denunciado</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: “OK”, “id”: &lt;ID&gt;} si se creó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si faltan campos obligatorios o no se encuentra el producto/comentario.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_get_denuncias">
+<span class="sig-name descname"><span class="pre">api_get_denuncias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_get_denuncias" title="Link to this definition"></a></dt>
+<dd><p>Obtiene todas las denuncias registradas por el usuario.</p>
+<p>Requiere token válido. Para GET con type json se debe enviar un cuerpo aunque esté vacío.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – Diccionario de parámetros (body JSON vacío aceptado).</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>“denuncias”: Lista de denuncias con campos:</dt><dd><ul>
+<li><p>id</p></li>
+<li><p>motivo_denuncia</p></li>
+<li><p>producto_id (si aplica)</p></li>
+<li><p>comentario_id (si aplica)</p></li>
+<li><p>usuario_denunciado_id</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>’empty”: Mensaje si no hay denuncias</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_patch_denuncia">
+<span class="sig-name descname"><span class="pre">api_patch_denuncia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorDenuncias.CRUD_Denuncias_Controller.api_patch_denuncia" title="Link to this definition"></a></dt>
+<dd><p>Permite al usuario retirar una denuncia previamente realizada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <p>Diccionario que debe contener:
+data: {</p>
+<blockquote>
+<div><p>”denuncia_id”: ID de la denuncia a retirar</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: “OK”} si se actualizó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si faltan parámetros o la denuncia no existe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorEtiqueta">
+<span id="api-loop-controllers-controladoretiqueta-module"></span><h2>API_Loop.controllers.controladorEtiqueta module<a class="headerlink" href="#module-API_Loop.controllers.controladorEtiqueta" title="Link to this heading"></a></h2>
+<p>Controlador API REST para la gestión de etiquetas de productos en Loop Proyecto.</p>
+<p>Permite a los usuarios crear, consultar, modificar, listar y eliminar etiquetas.</p>
+<p>Autor: Andrea, Fabiana y Nayara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorEtiqueta.</span></span><span class="sig-name descname"><span class="pre">controladorEtiqueta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorEtiqueta.html#controladorEtiqueta"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para la gestión de etiquetas de productos.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.create_etiqueta">
+<span class="sig-name descname"><span class="pre">create_etiqueta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.create_etiqueta" title="Link to this definition"></a></dt>
+<dd><p>Crea una nueva etiqueta de producto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <p>Diccionario que debe contener:
+data: {</p>
+<blockquote>
+<div><p>”name”: Nombre de la etiqueta (requerido),
+“active”: Opcional, indica si está activa (por defecto True)</p>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: True, “etiqueta_id”: &lt;ID&gt;} si se creó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si falta el campo “name” o hay otro error en la creación.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.delete_etiqueta">
+<span class="sig-name descname"><span class="pre">delete_etiqueta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etiqueta_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.delete_etiqueta" title="Link to this definition"></a></dt>
+<dd><p>Elimina una etiqueta de producto por ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>etiqueta_id</strong> – ID de la etiqueta a eliminar.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: True} si se eliminó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} si no existe o falla.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.get_etiqueta">
+<span class="sig-name descname"><span class="pre">get_etiqueta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etiqueta_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.get_etiqueta" title="Link to this definition"></a></dt>
+<dd><p>Obtiene los datos de una etiqueta por ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>etiqueta_id</strong> – ID de la etiqueta a consultar.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: True, “etiqueta”: {…}} si se encuentra,</dt><dd><p>{“error”: &lt;mensaje&gt;} si no existe o falla.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.list_etiquetas">
+<span class="sig-name descname"><span class="pre">list_etiquetas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.list_etiquetas" title="Link to this definition"></a></dt>
+<dd><p>Lista todas las etiquetas de productos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Response HTTP con JSON que contiene todas las etiquetas.</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.update_etiqueta">
+<span class="sig-name descname"><span class="pre">update_etiqueta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etiqueta_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorEtiqueta.controladorEtiqueta.update_etiqueta" title="Link to this definition"></a></dt>
+<dd><p>Modifica una etiqueta existente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>etiqueta_id</strong> – ID de la etiqueta a modificar.</p></li>
+<li><p><strong>params</strong> – <p>Diccionario que debe contener:
+data: {</p>
+<blockquote>
+<div><p>”name”: Nuevo nombre de la etiqueta (requerido),
+“active”: Opcional, nuevo estado activo</p>
+</div></blockquote>
+<p>}</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{“success”: True, “name”: &lt;nombre&gt;, “active”: &lt;estado&gt;} si se actualizó correctamente,</dt><dd><p>{“error”: &lt;mensaje&gt;} en caso de fallo.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>401 Unauthorized</strong> – Si el token no es válido.</p></li>
+<li><p><strong>ValueError</strong> – Si falta el campo “name” o la etiqueta no existe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorImagenProducto">
+<span id="api-loop-controllers-controladorimagenproducto-module"></span><h2>API_Loop.controllers.controladorImagenProducto module<a class="headerlink" href="#module-API_Loop.controllers.controladorImagenProducto" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorImagenProducto.</span></span><span class="sig-name descname"><span class="pre">ControladorImagenProducto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorImagenProducto.html#ControladorImagenProducto"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador HTTP para gestionar las imágenes de productos en Loop Proyecto.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto.get_imagenes_producto">
+<span class="sig-name descname"><span class="pre">get_imagenes_producto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorImagenProducto.ControladorImagenProducto.get_imagenes_producto" title="Link to this definition"></a></dt>
+<dd><p>Obtiene todas las imágenes de un producto dado su ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>int</em>) – ID del producto del que se quieren obtener las imágenes.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><dl>
+<dt>En caso de éxito (200):</dt><dd><dl>
+<dt>{</dt><dd><p>“ok”: True,
+“imagenes”: [</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“id”: &lt;id_imagen&gt;,
+“imagen”: &lt;base64&gt;,
+“is_principal”: &lt;bool&gt;,
+“sequence”: &lt;int&gt;</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>En caso de error:</dt><dd><ul class="simple">
+<li><p>401 Unauthorized: {“error”: “Unauthorized”}</p></li>
+<li><p>404 Not Found: {“error”: “Producto no encontrado”}</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Response HTTP con JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorProducto">
+<span id="api-loop-controllers-controladorproducto-module"></span><h2>API_Loop.controllers.controladorProducto module<a class="headerlink" href="#module-API_Loop.controllers.controladorProducto" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorProducto.</span></span><span class="sig-name descname"><span class="pre">ProductoController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorProducto.html#ProductoController"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador API para gestión de productos en Odoo.</p>
+<p>Endpoints disponibles:</p>
+<ol class="arabic">
+<li><p>GET /api/products
+- Lista todos los productos disponibles.
+- Requiere token JWT válido.
+- Respuesta:</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>«ok»: True,
+«count»: &lt;número de productos&gt;,
+«products»: [</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>«id»: int,
+«nombre»: str,
+«descripcion»: str,
+«precio»: float,
+«estado»: str,
+«ubicacion»: str,
+«antiguedad»: str | None,
+«categoria»: {«id»: int, «nombre»: str},
+«propietario»: {«id»: int, «nombre»: str},
+«etiquetas»: [{«id»: int, «nombre»: str}, …],
+«imagenes»: [{«id»: int, «principal»: bool, «orden»: int}, …]</p>
+</dd>
+</dl>
+<p>}, …</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+<li><p>GET /api/products/&lt;int:product_id&gt;
+- Obtiene los detalles de un producto específico por su ID.
+- Requiere token JWT válido.
+- Respuesta:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>«id»: int,
+«nombre»: str,
+«descripcion»: str,
+«precio»: float,
+«estado»: str,
+«ubicacion»: str,
+«categoria»: {«id»: int, «nombre»: str}</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</li>
+<li><p>POST /api/productos
+- Crea un nuevo producto.
+- Requiere token JWT válido.
+- Campos obligatorios: nombre, descripcion, precio, estado, ubicacion, antiguedad, categoria_id, imagenes
+- Respuesta:</p>
+<blockquote>
+<div><p>{«ok»: True, «product_id»: int}</p>
+</div></blockquote>
+</li>
+<li><p>PUT /api/products/&lt;int:product_id&gt;
+- Actualiza los datos de un producto existente. Solo puede actualizarlo el propietario.
+- Requiere token JWT válido.
+- Campos permitidos: nombre, descripcion, precio, estado, ubicacion, categoria_id, antiguedad
+- Respuesta:</p>
+<blockquote>
+<div><p>{«ok»: True}</p>
+</div></blockquote>
+</li>
+<li><p>DELETE /api/products/&lt;int:product_id&gt;
+- Elimina un producto existente. Solo puede eliminarlo el propietario.
+- Requiere token JWT válido.
+- Respuesta:</p>
+<blockquote>
+<div><p>{«ok»: True}</p>
+</div></blockquote>
+</li>
+</ol>
+<p>Notas:
+- Todos los endpoints requieren autenticación mediante token JWT.
+- Las respuestas de error utilizan códigos HTTP adecuados:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>401 Unauthorized: Token no válido o no proporcionado.</p></li>
+<li><p>403 Forbidden: Usuario no es propietario del recurso.</p></li>
+<li><p>404 Not Found: Producto no encontrado.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>El endpoint de creación de producto espera al menos una imagen en base64.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController.create_product">
+<span class="sig-name descname"><span class="pre">create_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController.create_product" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController.delete_product">
+<span class="sig-name descname"><span class="pre">delete_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController.delete_product" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController.get_product">
+<span class="sig-name descname"><span class="pre">get_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController.get_product" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController.get_products">
+<span class="sig-name descname"><span class="pre">get_products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController.get_products" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.ProductoController.update_product">
+<span class="sig-name descname"><span class="pre">update_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorProducto.ProductoController.update_product" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorProducto.unauthorized">
+<span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorProducto.</span></span><span class="sig-name descname"><span class="pre">unauthorized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorProducto.html#unauthorized"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorProducto.unauthorized" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorToken">
+<span id="api-loop-controllers-controladortoken-module"></span><h2>API_Loop.controllers.controladorToken module<a class="headerlink" href="#module-API_Loop.controllers.controladorToken" title="Link to this heading"></a></h2>
+<p>Controlador de autenticación JWT para Odoo.</p>
+<p>Este módulo permite:
+1. Autenticar usuarios mediante username/password.
+2. Generar y devolver tokens JWT válidos.
+3. Obtener información del usuario actual usando el token JWT.</p>
+<p>Endpoints disponibles:
+- POST /api/v1/loop/auth</p>
+<blockquote>
+<div><p>Autentica al usuario y devuelve un token JWT.
+Request: {«params»: {«username»: «&lt;str&gt;», «password»: «&lt;str&gt;»}}
+Response: {«ok»: True, «token»: «&lt;JWT&gt;»} o {«ok»: False, «error»: «&lt;mensaje&gt;»}</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>POST /api/v1/loop/me/data</dt><dd><p>Devuelve información del usuario autenticado con el token JWT.
+Headers: Authorization: Bearer &lt;token&gt;
+Response: {«ok»: True, «username»: «&lt;str&gt;»} o {«ok»: False, «error»: «Unauthorized»}</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Notas de seguridad:
+- La clave secreta se obtiene desde parámetros de configuración de Odoo.
+- Los tokens tienen un tiempo de expiración de 1 hora.
+- Es recomendable no usar credenciales planas en producción (usar res.users y check_password).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorToken.JWTAuthController">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorToken.</span></span><span class="sig-name descname"><span class="pre">JWTAuthController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorToken.html#JWTAuthController"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorToken.JWTAuthController" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<p>Controlador para autenticación y manejo de usuarios con JWT.</p>
+<p>Métodos:
+- authenticate: autentica usuario y devuelve token JWT.
+- get_user_data: retorna datos básicos del usuario autenticado.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorToken.JWTAuthController.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorToken.JWTAuthController.authenticate" title="Link to this definition"></a></dt>
+<dd><p>Autentica a un usuario y devuelve un token JWT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kw</strong> (<em>dict</em>) – Diccionario que puede contener “params” con “username” y “password”.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>{“ok”: True, “token”: &lt;JWT&gt;} si éxito
+{“ok”: False, “error”: &lt;mensaje&gt;} si falla autenticación</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorToken.JWTAuthController.get_user_data">
+<span class="sig-name descname"><span class="pre">get_user_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorToken.JWTAuthController.get_user_data" title="Link to this definition"></a></dt>
+<dd><p>Retorna los datos básicos del usuario autenticado vía token JWT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>{“ok”: True, “username”: &lt;str&gt;} si token válido</dt><dd><p>{“ok”: False, “error”: “Unauthorized”} si token inválido o expirado</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorToken.get_current_user_from_token">
+<span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorToken.</span></span><span class="sig-name descname"><span class="pre">get_current_user_from_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorToken.html#get_current_user_from_token"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorToken.get_current_user_from_token" title="Link to this definition"></a></dt>
+<dd><p>Decodifica el token JWT y retorna el usuario correspondiente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Registro del usuario si el token es válido y no expiró,</dt><dd><p>None en caso de token inválido o expirado.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>res.partner | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers.controladorUsuario">
+<span id="api-loop-controllers-controladorusuario-module"></span><h2>API_Loop.controllers.controladorUsuario module<a class="headerlink" href="#module-API_Loop.controllers.controladorUsuario" title="Link to this heading"></a></h2>
+<p>Controlador CRUD de usuarios y gestión de favoritos para la API Loop.</p>
+<p>Endpoints de usuario:
+- POST /api/v1/loop/register</p>
+<blockquote>
+<div><p>Registra un nuevo usuario.
+Request: {«data»: {«name»: str, «username»: str, «password»: str, «email»: str}}
+Response: {«success»: True} o {«error»: str}</p>
+</div></blockquote>
+<ul>
+<li><dl>
+<dt>GET /api/v1/loop/me</dt><dd><p>Obtiene la información del usuario autenticado mediante token JWT.
+Response: {«id»: int, «name»: str, «username»: str, «email»: str, «phone»: str,</p>
+<blockquote>
+<div><p>«mobile»: str, «idioma»: str, «image_1920»: str} o {«error»: «Unauthorized»}</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>PATCH /api/v1/loop/me</dt><dd><p>Modifica los datos del usuario autenticado.
+Request: {«data»: {…campos permitidos…}}
+Response: {«success»: True} o {«error»: str}</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DELETE /api/v1/loop/me</dt><dd><p>Elimina al usuario autenticado.
+Response: {«success»: True} o {«error»: «Unauthorized»}</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Endpoints de favoritos:
+- POST /api/v1/loop/favoritos/add</p>
+<blockquote>
+<div><p>Agrega un producto a los favoritos del usuario.
+Request: {«data»: {«product_id»: int}}
+Response: {«success»: True} o {«error»: str}</p>
+</div></blockquote>
+<ul>
+<li><dl class="simple">
+<dt>POST /api/v1/loop/favoritos/remove</dt><dd><p>Elimina un producto de los favoritos del usuario.
+Request: {«data»: {«producto_id»: int}}
+Response: {«success»: True} o {«error»: str}</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>GET /api/v1/loop/favoritos</dt><dd><p>Obtiene la lista de productos favoritos del usuario.
+Response: {«result»: [{«id»: int, «nombre»: str, «descripcion»: str,</p>
+<blockquote>
+<div><p>«precio»: float, «ubicacion»: str, «imagenes»: [str]}]}</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorUsuario.</span></span><span class="sig-name descname"><span class="pre">CRUD_User_Controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorUsuario.html#CRUD_User_Controller"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Controller</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.add_favorito">
+<span class="sig-name descname"><span class="pre">add_favorito</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.add_favorito" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_delete_me">
+<span class="sig-name descname"><span class="pre">api_delete_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_delete_me" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_get_user">
+<span class="sig-name descname"><span class="pre">api_get_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_get_user" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_patch_me">
+<span class="sig-name descname"><span class="pre">api_patch_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_patch_me" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_register">
+<span class="sig-name descname"><span class="pre">api_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.api_register" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.get_favoritos">
+<span class="sig-name descname"><span class="pre">get_favoritos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.get_favoritos" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.CRUD_User_Controller.remove_favorito">
+<span class="sig-name descname"><span class="pre">remove_favorito</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.CRUD_User_Controller.remove_favorito" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="API_Loop.controllers.controladorUsuario.img_a_base64">
+<span class="sig-prename descclassname"><span class="pre">API_Loop.controllers.controladorUsuario.</span></span><span class="sig-name descname"><span class="pre">img_a_base64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ruta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/API_Loop/controllers/controladorUsuario.html#img_a_base64"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#API_Loop.controllers.controladorUsuario.img_a_base64" title="Link to this definition"></a></dt>
+<dd><p>Convierte una imagen de la ruta proporcionada a base64</p>
+</dd></dl>
+
+</section>
+<section id="module-API_Loop.controllers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-API_Loop.controllers" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

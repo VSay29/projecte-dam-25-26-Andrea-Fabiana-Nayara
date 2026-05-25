@@ -1,0 +1,300 @@
+package com.example.android_loop.view.vistas
+
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.R
+import com.example.android_loop.utils.navegacionConfig.ROUTES
+import com.example.android_loop.utils.setToken
+import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Boton_Componente
+import com.example.android_loop.view.theme.Android_LoopTheme
+import com.example.android_loop.viewModel.LoginUiState
+import com.example.android_loop.viewModel.LoginViewModel
+
+@Composable
+fun Loggeo(navController: NavHostController) {
+
+    val viewModelLogin: LoginViewModel = viewModel()
+    val loginState = viewModelLogin.loginState
+
+    var username by rememberSaveable { mutableStateOf("") }
+    var passwd by rememberSaveable { mutableStateOf("") }
+    var errorUsername by remember { mutableStateOf(false) }
+    var errorPasswd by remember { mutableStateOf(false) }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    Box(Modifier.fillMaxSize()) {
+
+        Image(
+            painter = painterResource(id = R.drawable.fondo_login),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.loop_logo),
+                contentDescription = null,
+                modifier = Modifier.size(150.dp).offset(y = 18.dp)
+            )
+
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 36.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = Color(0xFFD6D6D6).copy(alpha = 0.65f),
+                            shape = RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp)
+                        )
+                        .padding(top = 28.dp, start = 22.dp, end = 22.dp, bottom = 36.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+
+                        Column(Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Usuario",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color.Black,
+                                modifier = Modifier.padding(bottom = 6.dp, start = 2.dp)
+                            )
+                            OutlinedTextField(
+                                value = username,
+                                onValueChange = {
+                                    username = it
+                                    errorUsername = username.isEmpty()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(4.dp, if (errorUsername) Color(0xFFE57373) else Color(0xFFF5F5F5), RoundedCornerShape(50.dp)),
+                                isError = errorUsername,
+                                singleLine = true,
+                                shape = RoundedCornerShape(50.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White,
+                                    errorContainerColor = Color.White,
+                                    focusedBorderColor = Color(0xFF003459),
+                                    unfocusedBorderColor = Color.Transparent,
+                                    errorBorderColor = Color.Transparent,
+                                )
+                            )
+                        }
+
+                        if (errorUsername) {
+                            Text(
+                                text = "El nombre de usuario no puede estar vacío",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.height(14.dp))
+
+                        Column(Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Contraseña",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color.Black,
+                                modifier = Modifier.padding(bottom = 6.dp, start = 2.dp)
+                            )
+                            OutlinedTextField(
+                                value = passwd,
+                                onValueChange = {
+                                    passwd = it
+                                    errorPasswd = passwd.isEmpty()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(4.dp, if (errorPasswd) Color(0xFFE57373) else Color(0xFFF5F5F5), RoundedCornerShape(50.dp)),
+                                isError = errorPasswd,
+                                singleLine = true,
+                                shape = RoundedCornerShape(50.dp),
+                                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                trailingIcon = {
+                                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                        Icon(
+                                            imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                                            tint = Color(0xFF003459)
+                                        )
+                                    }
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White,
+                                    errorContainerColor = Color.White,
+                                    focusedBorderColor = Color(0xFF003459),
+                                    unfocusedBorderColor = Color.Transparent,
+                                    errorBorderColor = Color.Transparent,
+                                )
+                            )
+                        }
+
+                        if (errorPasswd) {
+                            Text(
+                                text = "La contraseña no puede estar vacía",
+                                color = Color(0xFFE57373),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.height(22.dp))
+
+                        Boton_Componente(
+                            texto = "Iniciar Sesión",
+                            onClick = {
+                                errorUsername = username.isEmpty()
+                                errorPasswd = passwd.isEmpty()
+                                if (!errorUsername && !errorPasswd) {
+                                    viewModelLogin.login(username, passwd)
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = username.isNotEmpty() && passwd.isNotEmpty() && !errorUsername && !errorPasswd
+                        )
+
+                        Spacer(Modifier.height(70.dp))
+
+                        Text(
+                            text = "¿No tienes una cuenta?",
+                            fontSize = 13.sp,
+                            color = Color(0xFF555555)
+                        )
+
+                        Spacer(Modifier.height(10.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.5.dp,
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .clickable { navController.navigate(ROUTES.REGISTRO) }
+                                .padding(horizontal = 28.dp, vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "REGÍSTRATE",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        LaunchedEffect(loginState) {
+            when (loginState) {
+                is LoginUiState.Success -> {
+                    val tokenOriginal = loginState.token
+
+                    setToken(context, tokenOriginal)
+
+                    if (tokenValido(tokenOriginal)) {
+                        navController.navigate(ROUTES.HOME) {
+                            popUpTo(ROUTES.LOGIN) { inclusive = true }
+                        }
+                    }
+                }
+                is LoginUiState.Error -> {
+                    Toast.makeText(context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+
+        if (loginState is LoginUiState.Loading || loginState is LoginUiState.Success) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFF003459))
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginPreview() {
+    Android_LoopTheme {
+        Loggeo(navController = rememberNavController())
+    }
+}
