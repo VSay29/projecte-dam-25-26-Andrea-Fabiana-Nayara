@@ -34,6 +34,7 @@ import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Boton_Componente
 import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.viewModel.CarritoViewModel
 
@@ -201,17 +202,14 @@ fun Carrito(navController: NavController) {
                 )
             }
 
-            Button(
+            Boton_Componente(
+                texto = "Continuar al pago",
                 onClick = { navController.navigate(ROUTES.COMPRA) },
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 12.dp),
-                enabled = viewModel.selectedItems.isNotEmpty(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Continuar al pago")
-            }
+                enabled = viewModel.selectedItems.isNotEmpty()
+            )
         }
     }
 }
