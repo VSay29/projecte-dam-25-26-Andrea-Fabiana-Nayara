@@ -9,6 +9,7 @@ import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.data.model_dataClass.usuarioResult.GetUserDataResult
 import com.example.android_loop.data.repository.ProductoRepository
 import com.example.android_loop.data.repository.UsuarioRepository
+import com.example.android_loop.utils.getUserIdFromToken
 import kotlinx.coroutines.launch
 
 class PerfilViewModel(private val usuarioRepo: UsuarioRepository = UsuarioRepository(), private val productoRepo: ProductoRepository = ProductoRepository()): ViewModel() {
@@ -78,16 +79,15 @@ class PerfilViewModel(private val usuarioRepo: UsuarioRepository = UsuarioReposi
             eliminarProductoUiState = result.fold(
                 onSuccess = { esExitoso ->
                     if (esExitoso) {
-                        products = products.filter { it.id != productoId }
 
-                        perfilUiState = PerfilUiState.SuccessCargarProductoUsuario(products)
+                        cargarProductosUsuario(token, getUserIdFromToken(token)!!)
 
                         PerfilUiState.SuccessEliminarProducto("Producto eliminado con éxito")
+
                     } else PerfilUiState.Error("No se pudo eliminar el producto")
                 },
                 onFailure = {
-                    eliminarProductoUiState = PerfilUiState.Error("Error al conectar con el servidor")
-                    PerfilUiState.Error("No fue posible eliminar el producto")
+                    PerfilUiState.Error("Error al conectar con el servidor")
                 }
             )
         }

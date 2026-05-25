@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
@@ -290,16 +291,25 @@ fun ProductCardSquare(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Botón + añadir al carrito
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .size(26.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(Primary)
-                            .clickable { onAddToCart() },
-                        contentAlignment = Alignment.Center
+                            .clickable { onAddToCart() }
+                            .padding(horizontal = 4.dp, vertical = 3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
+                        Text(
+                            text = "Añadir al carrito",
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = Icons.Default.AddShoppingCart,
                             contentDescription = "Añadir al carrito",
                             tint = Color.White,
                             modifier = Modifier.size(16.dp)

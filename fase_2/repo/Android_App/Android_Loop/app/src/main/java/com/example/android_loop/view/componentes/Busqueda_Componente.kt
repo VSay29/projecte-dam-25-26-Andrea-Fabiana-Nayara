@@ -3,6 +3,9 @@ package com.example.android_loop.view.componentes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -28,7 +31,7 @@ fun Busqueda_Componente(
         placeholder = { Text(placeholder) },
         leadingIcon = {
             Icon(
-                painter = painterResource(R.drawable.lupa),
+                imageVector = Icons.Default.Search,
                 contentDescription = "Buscar",
                 modifier = Modifier.size(20.dp)
             )

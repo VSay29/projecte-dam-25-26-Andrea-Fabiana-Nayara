@@ -16,12 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.android_loop.R
 import com.example.android_loop.data.Producto.ProductCardSquare
 import com.example.android_loop.data.model_dataClass.productoResult.Producto
 import com.example.android_loop.utils.getToken
@@ -30,6 +28,7 @@ import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.filled.Search
 import com.example.android_loop.utils.getUserIdFromToken
 import com.example.android_loop.utils.tokenValido
 import com.example.android_loop.viewModel.CarritoViewModel
@@ -201,7 +200,7 @@ fun Home(navController: NavHostController) {
                 placeholder = { Text("Buscar productos...") },
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(R.drawable.lupa),
+                        imageVector = Icons.Default.Search,
                         contentDescription = "Buscar",
                         modifier = Modifier.size(20.dp)
                     )

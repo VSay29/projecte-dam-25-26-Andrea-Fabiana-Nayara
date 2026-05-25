@@ -110,6 +110,8 @@ class CRUD_User_Controller(http.Controller):
         user = get_current_user_from_token()
         if not user:
             return {'error': 'Unauthorized'}
+        
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
         data = params.get('data')
         if not data:
@@ -119,7 +121,6 @@ class CRUD_User_Controller(http.Controller):
         update_vals = {k: v for k, v in data.items() if k in allowed}
 
         if 'password' in update_vals:
-            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
             update_vals['password'] = pwd_context.hash(update_vals['password'])
 
         # Validar que image_1920 sea base64 si viene

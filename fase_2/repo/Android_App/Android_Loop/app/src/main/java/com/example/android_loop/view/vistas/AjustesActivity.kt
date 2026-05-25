@@ -64,6 +64,7 @@ import com.example.android_loop.view.componentes.Loading_Componente
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,6 +105,14 @@ fun Ajustes(navController: NavHostController) {
     var passwdNueva by remember { mutableStateOf("") }
     var mobile by remember { mutableStateOf("") }
     var tel by remember { mutableStateOf("") }
+
+    // Varibles error
+
+    var errorEmail by remember { mutableStateOf(false) }
+    var errorPasswdActual by remember { mutableStateOf(false) }
+    var errorPasswdNueva by remember { mutableStateOf(false) }
+    var errorMobile by remember { mutableStateOf(false) }
+    var errorTel by remember { mutableStateOf(false) }
 
     var dialogTipo by remember { mutableStateOf<String?>(null) }
 
@@ -206,7 +215,7 @@ fun Ajustes(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // ── Botón fijo en la parte inferior ──────────────────────
+            // Botón fijo en la parte inferior
             HorizontalDivider()
             TextButton(
                 onClick = {
@@ -230,7 +239,7 @@ fun Ajustes(navController: NavHostController) {
         Loading_Componente(visible = isLoading)
     }
 
-    // ── Bottom sheet: Editar perfil ───────────────────────────────────
+    // Bottom sheet: Editar perfil
     if (mostrarEditarPerfil) {
         ModalBottomSheet(
             onDismissRequest = { if (!isLoading) mostrarEditarPerfil = false },
@@ -250,12 +259,25 @@ fun Ajustes(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = { email = it; errorEmail = !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() },
                     label = { Text("Correo") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = errorEmail
                 )
+
+                if (errorEmail) {
+                    Text(
+                        text = "Formato de email inválido",
+                        color = Color(0xFFE57373),
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(7.dp))
+
                 OutlinedTextField(
                     value = passwdNueva,
                     onValueChange = { passwdNueva = it },
@@ -280,20 +302,44 @@ fun Ajustes(navController: NavHostController) {
                 }
                 OutlinedTextField(
                     value = mobile,
-                    onValueChange = { mobile = it },
+                    onValueChange = { mobile = it; errorMobile = !android.util.Patterns.PHONE.matcher(mobile).matches() },
                     label = { Text("Número de contacto") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = errorMobile
                 )
+
+                if (errorMobile) {
+                    Text(
+                        text = "Formato de campo incorrecto",
+                        color = Color(0xFFE57373),
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(7.dp))
+
                 OutlinedTextField(
                     value = tel,
-                    onValueChange = { tel = it },
+                    onValueChange = { tel = it; errorTel = !android.util.Patterns.PHONE.matcher(tel).matches() },
                     label = { Text("Teléfono") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = errorTel
                 )
+
+                if (errorTel) {
+                    Text(
+                        text = "Formato de campo incorrecto",
+                        color = Color(0xFFE57373),
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Boton_Componente(
@@ -303,18 +349,13 @@ fun Ajustes(navController: NavHostController) {
                         viewModelSettings.editarPerfil(token, email, passwdActual, passwdNueva, mobile, tel)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoading && (
-                        email.isNotBlank() ||
-                        (passwdNueva.isNotBlank() && passwdActual.isNotBlank()) ||
-                        mobile.isNotBlank() ||
-                        tel.isNotBlank()
-                    )
+                    enabled = !isLoading && !errorEmail && !errorMobile && !errorTel && (passwdNueva.isBlank() || passwdActual.isNotBlank())
                 )
             }
         }
     }
 
-    // ── Dialogs ───────────────────────────────────────────────────────
+    // Dialogs
     when (dialogTipo) {
         "cerrarSesion" -> {
             MostrarDialog(
@@ -346,9 +387,6 @@ fun Ajustes(navController: NavHostController) {
             { inputConfirmacion = it },
             onConfirm = {
                 viewModelSettings.borrarCuenta(token)
-                Toast.makeText(context, "La cuenta ha sido eliminada", Toast.LENGTH_SHORT).show()
-                prefs.edit { putString("token", "") }
-                navController.navigate(ROUTES.LOGIN)
             },
             onDismiss = { mostrarDialogConfirmacion = false },
             confirmEnabled = (inputConfirmacion == textoConfirmacion),
@@ -361,11 +399,20 @@ fun Ajustes(navController: NavHostController) {
     LaunchedEffect(state) {
         when (state) {
             is SettingsUiState.Success -> {
-                if (mostrarEditarPerfil) {
+                if (mostrarDialogConfirmacion) {
+                    mostrarDialogConfirmacion = false
+                    dialogTipo = null
+
+                    prefs.edit { putString("token", "") }
+                    Toast.makeText(context, "La cuenta ha sido eliminada correctamente", Toast.LENGTH_LONG).show()
+                    navController.navigate(ROUTES.LOGIN) { popUpTo(0) { inclusive = true } }
+                } else if (mostrarEditarPerfil) {
                     mostrarEditarPerfil = false
                     passwdActual = ""
                     passwdNueva = ""
                     viewModelSettings.cargarDatosUsuario(token)
+                    Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
+                    dialogTipo = null
                 }
                 Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
                 dialogTipo = null

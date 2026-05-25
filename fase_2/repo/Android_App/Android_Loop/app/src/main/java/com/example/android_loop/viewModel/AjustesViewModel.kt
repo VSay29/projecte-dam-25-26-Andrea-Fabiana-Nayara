@@ -1,5 +1,6 @@
 package com.example.android_loop.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,7 +49,10 @@ class AjustesViewModel(private val repository: UsuarioRepository = UsuarioReposi
         ejecutarCambio { repository.cambiarIdioma(token, idioma.substring(0, 2).lowercase()) }
 
     fun borrarCuenta(token: String) =
-        ejecutarCambio { repository.borrarCuenta(token) }
+        ejecutarCambio {
+            Log.d("LOG_AJUSTES", "BORRANDO CUENTA")
+            repository.borrarCuenta(token)
+        }
 
     fun editarPerfil(token: String, correo: String, passwdActual: String, passwdNueva: String, mobile: String, tel: String) {
         viewModelScope.launch {

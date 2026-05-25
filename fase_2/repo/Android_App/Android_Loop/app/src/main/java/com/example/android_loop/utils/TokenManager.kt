@@ -17,7 +17,7 @@ fun getToken(context: Context): String {
 }
 
 fun setToken(context: Context, token: String) {
-    val prefs = context.getSharedPreferences("loop_prefs", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("loop_prefs", MODE_PRIVATE)
     if (token.isEmpty()) {
         prefs.edit { putString("token", "").commit() }
         return
@@ -30,8 +30,8 @@ fun setToken(context: Context, token: String) {
 fun getUserIdFromToken(token: String): Int? {
     return try {
         JWT.decode(token).getClaim("uid").asInt()
-    } catch (e: Exception) {
-        null
+    } catch (_: Exception) {
+        0
     }
 }
 
@@ -48,7 +48,7 @@ fun tokenValido(token: String): Boolean {
         val isCorrectIssuer = issuer == "AdminLoop"
 
         isNotExpired && isCorrectIssuer
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         false
     }
 }

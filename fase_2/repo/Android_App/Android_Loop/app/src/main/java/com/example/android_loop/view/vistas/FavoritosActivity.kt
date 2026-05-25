@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -216,30 +217,21 @@ fun Favoritos(navController: NavHostController) {
                                             Spacer(Modifier.height(4.dp))
 
                                             Text(
+                                                text = producto.descripcion,
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = Color(0xFF8FA3B1),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+
+                                            Spacer(Modifier.height(4.dp))
+
+                                            Text(
                                                 text = "%.2f €".format(producto.precio),
                                                 fontSize = 16.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 color = Color(0xFF003459)
                                             )
-
-                                            Spacer(Modifier.height(4.dp))
-
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(
-                                                    imageVector = Icons.Default.LocationOn,
-                                                    contentDescription = null,
-                                                    tint = Color(0xFF8FA3B1),
-                                                    modifier = Modifier.size(12.dp)
-                                                )
-                                                Spacer(Modifier.width(2.dp))
-                                                Text(
-                                                    text = producto.ubicacion,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = Color(0xFF8FA3B1),
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
                                         }
 
                                         IconButton(
@@ -249,7 +241,7 @@ fun Favoritos(navController: NavHostController) {
                                             modifier = Modifier.padding(end = 8.dp).size(40.dp)
                                         ) {
                                             Icon(
-                                                painter = painterResource(id = R.drawable.trash),
+                                                imageVector = Icons.Default.DeleteOutline,
                                                 contentDescription = "Eliminar de favoritos",
                                                 tint = Color(0xFFE63946),
                                                 modifier = Modifier.size(22.dp)

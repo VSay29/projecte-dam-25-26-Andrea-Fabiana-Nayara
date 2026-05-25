@@ -80,15 +80,28 @@ fun calcularDistancia(locationMapa: DoubleArray, locationUsuario: DoubleArray): 
 }
 
 fun traducirLatLngAUbicacion(context: Context, ubi: DoubleArray): String {
-    val geocoder = Geocoder(context, Locale.getDefault())
-    val resultado = ""
+    Log.d("GEOCODER", "${ubi[0]}, ${ubi[1]}")
     return try {
+
+        val geocoder = Geocoder(context, Locale.getDefault())
+
         val lista = geocoder.getFromLocation(ubi[0], ubi[1], 1)
+
+        Log.d("GEOCODER", lista.toString())
+
         if (!lista.isNullOrEmpty()) {
-            resultado.plus(lista[0].locality + ", " +lista[0].adminArea + ", " +lista[0].countryName)
+
+            val dir = lista[0]
+
+            listOfNotNull(dir.locality, dir.subAdminArea, dir.adminArea, dir.countryName).firstOrNull { it.isNotBlank() } ?: "No encontrado"
+
         } else "No encontrado"
-    } catch (ex: Exception) {
-        "Error: " + ex.message
+
+    } catch (e: Exception) {
+
+        Log.e("GEOCODER", e.toString())
+
+        "No encontrado"
     }
 }
 

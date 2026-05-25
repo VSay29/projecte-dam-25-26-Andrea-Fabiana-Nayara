@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Share
 import com.example.android_loop.view.componentes.Boton_Componente
@@ -133,8 +132,15 @@ fun VerProducto(productoId: Int, navController: NavController) {
     // SECCION: Cargar ubicacion traducido
 
     LaunchedEffect(location) {
-        ubicacionTexto = withContext(Dispatchers.IO) {
-            traducirLatLngAUbicacion(context, location)
+        if (location[0] == 0.0 && location[1] == 0.0) {
+            ubicacionTexto = "Cargando..."
+            return@LaunchedEffect
+        } else {
+
+            ubicacionTexto = withContext(Dispatchers.IO) {
+                traducirLatLngAUbicacion(context, location)
+            }
+
         }
     }
 
@@ -323,8 +329,12 @@ fun VerProducto(productoId: Int, navController: NavController) {
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {
-                                        locationState = normalizarLocation(ubicacion)
-                                        showMap = true
+
+                                        if (ubicacionTexto.contains("No encontrado") || ubicacionTexto.contains("Cargando...")) Toast.makeText(context, "Ubicación no disponible",Toast.LENGTH_SHORT).show()
+                                        else {
+                                            locationState = normalizarLocation(ubicacion)
+                                            showMap = true
+                                        }
                                     }
                             )
                         }

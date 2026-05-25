@@ -30,10 +30,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import android.net.Uri
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
@@ -394,7 +396,7 @@ fun PerfilUsuario(navController: NavHostController) {
                                 placeholder = { Text("Buscar producto") },
                                 leadingIcon = {
                                     Icon(
-                                        painter = painterResource(R.drawable.lupa),
+                                        imageVector = Icons.Default.Search,
                                         contentDescription = "Buscar",
                                         modifier = Modifier.size(20.dp)
                                     )
@@ -482,64 +484,83 @@ fun PerfilUsuario(navController: NavHostController) {
                                                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                                                             verticalArrangement = Arrangement.SpaceBetween
                                                         ) {
+
                                                             Text(
                                                                 text = producto.nombre,
                                                                 fontWeight = FontWeight.SemiBold,
                                                                 fontSize = 15.sp,
-                                                                maxLines = 1,
-                                                                overflow = TextOverflow.Ellipsis
+                                                                maxLines = 2,
+                                                                overflow = TextOverflow.Ellipsis,
                                                             )
+
                                                             Text(
-                                                                text = producto.descripcion,
+                                                                text = "%.2f €".format(producto.precio),
+                                                                fontWeight = FontWeight.Bold,
+                                                                color = Color(0xFF003459),
+                                                                fontSize = 15.sp
+                                                            )
+
+                                                            Text(
+                                                                text = producto.estado,
                                                                 fontSize = 12.sp,
                                                                 color = Color.Gray,
                                                                 maxLines = 1,
                                                                 overflow = TextOverflow.Ellipsis
                                                             )
-                                                            if (producto.ubicacion.isNotBlank()) {
-                                                                Text(
-                                                                    text = producto.ubicacion,
-                                                                    fontSize = 12.sp,
-                                                                    color = Color.Gray,
-                                                                    maxLines = 1,
-                                                                    overflow = TextOverflow.Ellipsis
-                                                                )
-                                                            }
+
                                                         }
 
-                                                        Text(
-                                                            text = "%.2f €".format(producto.precio),
-                                                            fontWeight = FontWeight.Bold,
-                                                            color = Color(0xFF003459),
-                                                            fontSize = 15.sp
-                                                        )
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .fillMaxHeight()
+                                                                .padding(top = 4.dp, end = 4.dp),
+                                                            contentAlignment = Alignment.TopEnd
+                                                        ) {
 
-                                                        Box {
-                                                            IconButton(onClick = { menuExpandido = true }) {
+                                                            IconButton(
+                                                                onClick = { menuExpandido = true }
+                                                            ) {
                                                                 Icon(
                                                                     imageVector = Icons.Default.MoreVert,
                                                                     contentDescription = "Opciones",
                                                                     tint = Color.Gray
                                                                 )
                                                             }
+
                                                             DropdownMenu(
                                                                 expanded = menuExpandido,
-                                                                onDismissRequest = { menuExpandido = false }
+                                                                onDismissRequest = {
+                                                                    menuExpandido = false
+                                                                }
                                                             ) {
+
                                                                 DropdownMenuItem(
                                                                     text = { Text("Editar") },
                                                                     leadingIcon = {
-                                                                        Icon(Icons.Default.Edit, contentDescription = null)
+                                                                        Icon(
+                                                                            Icons.Default.Edit,
+                                                                            contentDescription = null
+                                                                        )
                                                                     },
                                                                     onClick = {
                                                                         menuExpandido = false
                                                                         navController.navigate("${ROUTES.CREAR_PRODUCTO}/${producto.id}")
                                                                     }
                                                                 )
+
                                                                 DropdownMenuItem(
-                                                                    text = { Text("Eliminar", color = Color.Red) },
+                                                                    text = {
+                                                                        Text(
+                                                                            "Eliminar",
+                                                                            color = Color.Red
+                                                                        )
+                                                                    },
                                                                     leadingIcon = {
-                                                                        Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
+                                                                        Icon(
+                                                                            Icons.Default.Delete,
+                                                                            contentDescription = null,
+                                                                            tint = Color.Red
+                                                                        )
                                                                     },
                                                                     onClick = {
                                                                         menuExpandido = false
@@ -548,6 +569,7 @@ fun PerfilUsuario(navController: NavHostController) {
                                                                 )
                                                             }
                                                         }
+
                                                     }
                                                 }
                                             }

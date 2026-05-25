@@ -53,6 +53,8 @@ import com.example.android_loop.viewModel.CrearProductoViewModel
 import com.tuapp.ui.theme.OnPrimary
 import kotlin.collections.emptyList
 import com.example.android_loop.utils.convertirListB64ToUri
+import androidx.compose.ui.platform.LocalLocale
+import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -97,9 +99,7 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
     // SECCION: VARIABLES PARA LA REQUEST DE CREAR PRODUCTO
 
     var nombre by rememberSaveable { mutableStateOf("") }
-    var nombreTocado by rememberSaveable { mutableStateOf(false) }
     var descripcion by rememberSaveable { mutableStateOf("") }
-    var descripcionTocada by rememberSaveable { mutableStateOf(false) }
     var precio by rememberSaveable { mutableStateOf("0") }
     var ubicacion by rememberSaveable { mutableStateOf("39.324, -125.525") }
     val selectedEtiquetas = rememberSaveable { mutableStateListOf<Int>() }
@@ -110,9 +110,16 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
     var categoriaId by rememberSaveable { mutableIntStateOf(0) }
     val imageUris = remember { mutableStateListOf<Uri>() }
 
+    // Variables de error
+
+    var errorNombre by rememberSaveable { mutableStateOf(false) }
+    var errorDescripcion by rememberSaveable { mutableStateOf(false) }
+    var errorPrecio by rememberSaveable { mutableStateOf(false) }
+    var errorCategoria by rememberSaveable { mutableStateOf(false) }
+
 
     // Formato para la fecha de antiguedad
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy-MM-dd", LocalLocale.current.platformLocale)
 
     // Lista de etiquetas ya creadas y cargadas
     val etiquetasCargadas = when (etiquetasState) {
@@ -315,31 +322,62 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
 
         OutlinedTextField(
             value = nombre,
-            onValueChange = { nombre = it; nombreTocado = true },
-            label = { Text("Nombre *") },
+            onValueChange = { nombre = it; errorNombre = nombre.isEmpty() },
+            label = { Text("Nombre") },
             modifier = Modifier.fillMaxWidth(),
             colors = campoColores,
-            isError = nombreTocado && nombre.isEmpty()
+            isError = nombre.isEmpty()
         )
+
+        if (errorNombre) {
+            Text(
+                text = "El nombre no puede estar vacío",
+                color = Color(0xFFE57373),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+            )
+        }
+
+        Spacer(Modifier.height(7.dp))
 
         OutlinedTextField(
             value = descripcion,
-            onValueChange = { descripcion = it; descripcionTocada = true },
-            label = { Text("Descripción *") },
+            onValueChange = { descripcion = it; errorDescripcion = descripcion.isEmpty() },
+            label = { Text("Descripción") },
             modifier = Modifier.fillMaxWidth(),
             colors = campoColores,
-            isError = descripcionTocada && descripcion.isEmpty()
+            isError = errorDescripcion
         )
+
+        if (errorDescripcion) {
+            Text(
+                text = "La descripción no puede estar vacía",
+                color = Color(0xFFE57373),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+            )
+        }
+
+        Spacer(Modifier.height(7.dp))
 
         OutlinedTextField(
             value = precio,
-            onValueChange = { precio = it },
+            onValueChange = { precio = it; errorPrecio = precio.isEmpty() || (precio.toDoubleOrNull()?.let { it < 0 } ?: true) || !precio.matches(Regex("^\\d*([.]\\d{0,2})?$")) },
             label = { Text("Precio") },
             modifier = Modifier.fillMaxWidth(),
             colors = campoColores,
-            isError = precio.isEmpty() || (precio.toDoubleOrNull()?.let { it < 0 } ?: true),
+            isError = errorPrecio,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
+
+        if (errorPrecio) {
+            Text(
+                text = "El valor introducido no es válido",
+                color = Color(0xFFE57373),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -508,11 +546,12 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
             ) {
                 OutlinedTextField(
                     value = categoriasCargadas.find { it.id == categoriaId }?.nombre ?: "Seleccione categoría",
-                    onValueChange = {},
+                    onValueChange = { errorCategoria = categoriaId < 1 },
                     readOnly = true,
                     label = { Text("Categoría") },
                     modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = campoColores
+                    colors = campoColores,
+                    isError = errorCategoria
                 )
                 ExposedDropdownMenu(
                     expanded = expandedCategoria,
@@ -527,6 +566,14 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
                             }
                         )
                     }
+                }
+                if (errorCategoria) {
+                    Text(
+                        text = "El campo no puede estar vacío",
+                        color = Color(0xFFE57373),
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                    )
                 }
             }
 
