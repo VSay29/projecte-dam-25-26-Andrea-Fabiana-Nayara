@@ -127,14 +127,19 @@ fun VerProducto(productoId: Int, navController: NavController) {
     var location by rememberSaveable { mutableStateOf(doubleArrayOf(0.0, 0.0)) }
 
     var ubicacionTexto by remember {
-        mutableStateOf("Cargando...")
+        mutableStateOf("")
     }
 
     // SECCION: Cargar ubicacion traducido
 
-    LaunchedEffect(location) {
-        ubicacionTexto = withContext(Dispatchers.IO) {
-            traducirLatLngAUbicacion(context, location)
+    LaunchedEffect(ubicacion) {
+        if (ubicacion.isBlank()) return@LaunchedEffect
+        try {
+            val coords = normalizarLocation(ubicacion)
+            val resultado = traducirLatLngAUbicacion(context, coords)
+            ubicacionTexto = resultado.ifEmpty { ubicacion }
+        } catch (_: Exception) {
+            ubicacionTexto = ubicacion
         }
     }
 
@@ -171,7 +176,11 @@ fun VerProducto(productoId: Int, navController: NavController) {
                 precio = producto.resp.precio
                 estado = producto.resp.estado
                 ubicacion = producto.resp.ubicacion
-                location = normalizarLocation(ubicacion)
+                try {
+                    location = normalizarLocation(ubicacion)
+                } catch (_: Exception) {
+                    ubicacionTexto = ubicacion
+                }
                 antiguedad = producto.resp.antiguedad
                 categoria = producto.resp.categoria
                 propietario = producto.resp.propietario
@@ -323,8 +332,8 @@ fun VerProducto(productoId: Int, navController: NavController) {
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {
-                                        locationState = normalizarLocation(ubicacion)
-                                        showMap = true
+                                        val coords = try { normalizarLocation(ubicacion) } catch (_: Exception) { null }
+                                        if (coords != null) { locationState = coords; showMap = true }
                                     }
                             )
                         }
@@ -374,7 +383,7 @@ fun VerProducto(productoId: Int, navController: NavController) {
                             Spacer(modifier = Modifier.height(12.dp))
 
                             InfoRow("Estado", estado)
-                            InfoRow("Ubicación", ubicacionTexto)
+                            InfoRow("Ubicación", ubicacionTexto.ifEmpty { ubicacion })
                             antiguedad?.let {
                                 InfoRow("Antigüedad", it)
                             }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,14 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,8 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,10 +44,8 @@ import com.example.android_loop.utils.getToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.viewModel.DenunciaUiState
-import com.tuapp.ui.theme.OnPrimary
-import com.tuapp.ui.theme.Primary
-import com.tuapp.ui.theme.Secondary
 import com.example.android_loop.viewModel.DenunciaViewModel
 
 @Composable
@@ -102,30 +94,10 @@ fun Denuncias(navController: NavHostController) {
     ) {
         Column(Modifier.fillMaxSize()) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(Primary, Secondary)
-                        )
-                    )
-                    .padding(top = 48.dp, bottom = 16.dp, end = 20.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = OnPrimary
-                    )
-                }
-                Text(
-                    text = "Mis denuncias",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = OnPrimary
-                )
-            }
+            Header_Componente(
+                titulo = "Mis denuncias",
+                onBack = { navController.popBackStack() }
+            )
 
             when (denunciaState) {
                 is DenunciaUiState.Loading -> {

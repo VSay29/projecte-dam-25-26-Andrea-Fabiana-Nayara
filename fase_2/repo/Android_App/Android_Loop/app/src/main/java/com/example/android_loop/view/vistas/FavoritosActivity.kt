@@ -63,6 +63,7 @@ import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.sinAcentos
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Header_Componente
 import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.FavoritosUiState
 import com.example.android_loop.viewModel.FavoritosViewModel
@@ -112,10 +113,12 @@ fun Favoritos(navController: NavHostController) {
         // UI
 
         Column(
-            Modifier.fillMaxSize().padding(top = 24.dp),
+            Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Header_Componente(titulo = "Favoritos", onBack = { navController.popBackStack() })
 
             // Barra de búsqueda con filtros
 

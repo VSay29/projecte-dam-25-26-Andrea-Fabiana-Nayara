@@ -119,17 +119,20 @@ fun PerfilVendedor(
     val comentariosViewModel: ComentariosViewModel = viewModel()
     val viewmodelProducto: PerfilViewModel = viewModel()
 
-    val profileBitmap: ImageBitmap? = remember {
+    val cachedImage = remember {
         val cached = NavigationCache.profileImage
         NavigationCache.profileImage = null
-        cached
-            ?.takeIf { it.isNotBlank() && it != "false" }
-            ?.let {
-                try {
-                    val bytes = Base64.decode(it, Base64.DEFAULT)
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
-                } catch (e: Exception) { null }
-            }
+        cached?.takeIf { it.isNotBlank() && it != "false" }
+    }
+
+    val profileBitmap: ImageBitmap? = remember(cachedImage, viewmodelProducto.fotoVendedor) {
+        val fotoBase64 = cachedImage ?: viewmodelProducto.fotoVendedor
+        fotoBase64?.let {
+            try {
+                val bytes = Base64.decode(it, Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+            } catch (e: Exception) { null }
+        }
     }
 
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -172,6 +175,9 @@ fun PerfilVendedor(
     LaunchedEffect(storedToken) {
         if (storedToken != null) {
             viewmodelProducto.loadProductosUsuario(storedToken, vendedorId)
+            if (cachedImage == null) {
+                viewmodelProducto.cargarFotoVendedor(storedToken, vendedorId)
+            }
         }
     }
 

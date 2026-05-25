@@ -140,6 +140,38 @@ class CRUD_User_Controller(http.Controller):
 
 
     """
+    ENDPOINT: OBTENER PERFIL PÚBLICO DE UN USUARIO POR ID
+    """
+
+    @http.route('/api/v1/loop/users/<int:partner_id>', type='http', auth='none', csrf=False, cors='*', methods=['GET'])
+    def get_user_by_id(self, partner_id, **kw):
+        user = get_current_user_from_token()
+        if not user:
+            return request.make_response(
+                json.dumps({'error': 'Unauthorized'}),
+                headers=[('Content-Type', 'application/json')],
+                status=401
+            )
+
+        partner = request.env['res.partner'].sudo().browse(partner_id)
+        if not partner.exists():
+            return request.make_response(
+                json.dumps({'error': 'User not found'}),
+                headers=[('Content-Type', 'application/json')],
+                status=404
+            )
+
+        return request.make_response(
+            json.dumps({
+                'id': partner.id,
+                'nombre': partner.name,
+                'imagen': partner.image_1920.decode('utf-8') if partner.image_1920 else ''
+            }),
+            headers=[('Content-Type', 'application/json')],
+            status=200
+        )
+
+    """
     ENDPOINT: BORRAR USUARIO
     """
 
