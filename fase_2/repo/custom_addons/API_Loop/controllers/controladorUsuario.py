@@ -200,7 +200,7 @@ class CRUD_User_Controller(http.Controller):
 
         productos = []
         for p in user.favorito_ids:
-            imagenes = [img.imagen for img in p.imagen_ids]
+            imagenes = [img.imagen.decode('utf-8') if img.imagen else '' for img in p.imagen_ids]
             productos.append({
                 'id': p.id,
                 'nombre': p.nombre,
@@ -284,14 +284,18 @@ class CRUD_User_Controller(http.Controller):
 
         productos = []
         for p in user.carrito_ids:
-            imagenes = [img.imagen for img in p.imagen_ids]
+            imagenes = []
+            for img in p.imagen_ids:
+                if img.imagen:
+                    val = img.imagen
+                    if isinstance(val, bytes):
+                        val = val.decode('utf-8')
+                    imagenes.append(val)
 
-            propietario_data = None
-            if hasattr(p, 'propietario') and p.propietario:
-                propietario_data = {
-                    'id': p.propietario.id,
-                    'nombre': p.propietario.name if p.propietario.name else 'Sin nombre'
-                }
+            propietario_data = {
+                'id': p.propietario_id.id,
+                'nombre': p.propietario_id.name or 'Sin nombre'
+            } if p.propietario_id else {'id': 0, 'nombre': 'Sin nombre'}
 
             productos.append({
                 'id': p.id,
