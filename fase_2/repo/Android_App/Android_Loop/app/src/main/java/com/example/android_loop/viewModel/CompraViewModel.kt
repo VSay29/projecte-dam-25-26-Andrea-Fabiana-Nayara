@@ -16,17 +16,21 @@ class CompraViewModel(private val repo: CompraRepository = CompraRepository()) :
     var obtenerVentasState by mutableStateOf<ComprasUiState>(ComprasUiState.Idle)
     var cambiarEstadoState by mutableStateOf<ComprasUiState>(ComprasUiState.Idle)
 
-    fun realizarCompra(token: String, productoId: Int, vendedorId: Int) {
-        viewModelScope.launch {
-            comprarState = ComprasUiState.Loading
+    suspend fun realizarCompra(token: String, productoId: Int, vendedorId: Int, compradorId: Int): Boolean {
+        comprarState = ComprasUiState.Loading
 
-            val result = repo.realizarCompra(token, productoId, vendedorId)
+        val result = repo.realizarCompra(token, productoId, vendedorId, compradorId)
 
-            comprarState = result.fold(
-                onSuccess = { ComprasUiState.SuccessRealizarCompra(true) },
-                onFailure = { ComprasUiState.Error(it.message ?: "No fue posible realizar la compra") }
-            )
-        }
+        return result.fold(
+            onSuccess = {
+                comprarState = ComprasUiState.SuccessRealizarCompra(true)
+                true
+            },
+            onFailure = {
+                comprarState = ComprasUiState.Error(it.message ?: "No fue posible realizar la compra")
+                false
+            }
+        )
     }
 
     fun obtenerCompras(token: String) {
