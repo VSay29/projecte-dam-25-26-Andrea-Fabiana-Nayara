@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>loop_proyecto.models package &mdash; documentación de Loop - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4936afed"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=f85f4cfb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Loop
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">loop_proyecto.models package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.categoria">loop_proyecto.models.categoria module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.categoria.Categoria"><code class="docutils literal notranslate"><span class="pre">Categoria</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.comentario">loop_proyecto.models.comentario module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.comentario.Comentario"><code class="docutils literal notranslate"><span class="pre">Comentario</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.comentario.Comentario.comentador_id"><code class="docutils literal notranslate"><span class="pre">Comentario.comentador_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.comentario.Comentario.estado"><code class="docutils literal notranslate"><span class="pre">Comentario.estado</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.comentario.Comentario.moderador_id"><code class="docutils literal notranslate"><span class="pre">Comentario.moderador_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.comentario.Comentario.partner_id"><code class="docutils literal notranslate"><span class="pre">Comentario.partner_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.compra">loop_proyecto.models.compra module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.compra.Compra"><code class="docutils literal notranslate"><span class="pre">Compra</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.compra.Compra.comprador_id"><code class="docutils literal notranslate"><span class="pre">Compra.comprador_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.compra.Compra.producto_id"><code class="docutils literal notranslate"><span class="pre">Compra.producto_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.compra.Compra.state"><code class="docutils literal notranslate"><span class="pre">Compra.state</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.compra.Compra.vendedor_id"><code class="docutils literal notranslate"><span class="pre">Compra.vendedor_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.denuncia">loop_proyecto.models.denuncia module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.comentario_id"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.comentario_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.denunciante_id"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.denunciante_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.empleado_id"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.empleado_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.estado_moderacion"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.estado_moderacion</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.estado_usuario"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.estado_usuario</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.producto_id"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.producto_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.resultado_moderacion"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.resultado_moderacion</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.denuncia.DenunciaReporte.usuario_denunciado_id"><code class="docutils literal notranslate"><span class="pre">DenunciaReporte.usuario_denunciado_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.empleado">loop_proyecto.models.empleado module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.empleado.Empleado"><code class="docutils literal notranslate"><span class="pre">Empleado</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.empleado.Empleado.create"><code class="docutils literal notranslate"><span class="pre">Empleado.create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.etiqueta">loop_proyecto.models.etiqueta module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.etiqueta.EtiquetaProducto"><code class="docutils literal notranslate"><span class="pre">EtiquetaProducto</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.imagen_producto">loop_proyecto.models.imagen_producto module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.imagen_producto.ImagenProducto"><code class="docutils literal notranslate"><span class="pre">ImagenProducto</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.imagen_producto.ImagenProducto.producto_id"><code class="docutils literal notranslate"><span class="pre">ImagenProducto.producto_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.producto">loop_proyecto.models.producto module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto"><code class="docutils literal notranslate"><span class="pre">Producto</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto.categoria_id"><code class="docutils literal notranslate"><span class="pre">Producto.categoria_id</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto.estado"><code class="docutils literal notranslate"><span class="pre">Producto.estado</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto.etiqueta_ids"><code class="docutils literal notranslate"><span class="pre">Producto.etiqueta_ids</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto.imagen_ids"><code class="docutils literal notranslate"><span class="pre">Producto.imagen_ids</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.producto.Producto.propietario_id"><code class="docutils literal notranslate"><span class="pre">Producto.propietario_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.usuarios_app">loop_proyecto.models.usuarios_app module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.usuarios_app.UsuariosApp"><code class="docutils literal notranslate"><span class="pre">UsuariosApp</span></code></a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.usuarios_app.UsuariosApp.favorito_ids"><code class="docutils literal notranslate"><span class="pre">UsuariosApp.favorito_ids</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.usuarios_app.UsuariosApp.idioma"><code class="docutils literal notranslate"><span class="pre">UsuariosApp.idioma</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.usuarios_app.UsuariosApp.rol"><code class="docutils literal notranslate"><span class="pre">UsuariosApp.rol</span></code></a></li>
+<li><a class="reference internal" href="#loop_proyecto.models.usuarios_app.UsuariosApp.valoracion_ids"><code class="docutils literal notranslate"><span class="pre">UsuariosApp.valoracion_ids</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models.valoracion">loop_proyecto.models.valoracion module</a><ul>
+<li><a class="reference internal" href="#loop_proyecto.models.valoracion.Valoracion"><code class="docutils literal notranslate"><span class="pre">Valoracion</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-loop_proyecto.models">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Loop</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">loop_proyecto.models package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/loop_proyecto.models.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="loop-proyecto-models-package">
+<h1>loop_proyecto.models package<a class="headerlink" href="#loop-proyecto-models-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-loop_proyecto.models.categoria">
+<span id="loop-proyecto-models-categoria-module"></span><h2>loop_proyecto.models.categoria module<a class="headerlink" href="#module-loop_proyecto.models.categoria" title="Link to this heading"></a></h2>
+<p>Módulo de categorías.</p>
+<p>Contiene el modelo <cite>Categoria</cite> que representa las categorías de productos.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.categoria.Categoria">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.categoria.</span></span><span class="sig-name descname"><span class="pre">Categoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/categoria.html#Categoria"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.categoria.Categoria" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de categorías de productos.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>nombre (str): Nombre de la categoría.
+descripcion (str): Descripción detallada de la categoría.
+imagen (bytes): Imagen representativa de la categoría.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.comentario">
+<span id="loop-proyecto-models-comentario-module"></span><h2>loop_proyecto.models.comentario module<a class="headerlink" href="#module-loop_proyecto.models.comentario" title="Link to this heading"></a></h2>
+<p>Módulo de comentarios.</p>
+<p>Contiene el modelo <cite>Comentario</cite> para comentarios entre usuarios.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.comentario.Comentario">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.comentario.</span></span><span class="sig-name descname"><span class="pre">Comentario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/comentario.html#Comentario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.comentario.Comentario" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de comentarios de productos o usuarios.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>contenido (str): Contenido del comentario.
+fecha_creacion (datetime): Fecha de creación del comentario.
+comentador_id (res.partner): Usuario autor del comentario.
+partner_id (res.partner): Usuario valorado.
+estado (str): Estado del comentario (“published”, “hidden”, “deleted”).
+moderador_id (res.partner): Usuario que moderó el comentario.
+fecha_moderacion (datetime): Fecha de moderación.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.comentario.Comentario.comentador_id">
+<span class="sig-name descname"><span class="pre">comentador_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.comentario.Comentario.comentador_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.comentario.Comentario.estado">
+<span class="sig-name descname"><span class="pre">estado</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('published',</span> <span class="pre">'Publicado'),</span> <span class="pre">('hidden',</span> <span class="pre">'Oculto'),</span> <span class="pre">('deleted',</span> <span class="pre">'Eliminado')]</span></span><a class="headerlink" href="#loop_proyecto.models.comentario.Comentario.estado" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.comentario.Comentario.moderador_id">
+<span class="sig-name descname"><span class="pre">moderador_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.comentario.Comentario.moderador_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.comentario.Comentario.partner_id">
+<span class="sig-name descname"><span class="pre">partner_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.comentario.Comentario.partner_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.compra">
+<span id="loop-proyecto-models-compra-module"></span><h2>loop_proyecto.models.compra module<a class="headerlink" href="#module-loop_proyecto.models.compra" title="Link to this heading"></a></h2>
+<p>Módulo de compras.</p>
+<p>Contiene el modelo <cite>Compra</cite> para el carrito de compra.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.compra.Compra">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.compra.</span></span><span class="sig-name descname"><span class="pre">Compra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/compra.html#Compra"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.compra.Compra" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de carrito de compra.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>producto_id (loop_proyecto.producto): Producto comprado.
+comprador_id (res.partner): Comprador.
+vendedor_id (res.partner): Vendedor.
+state (str): Estado de la compra (“disponible”, “reservado”, “vendido”).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.compra.Compra.comprador_id">
+<span class="sig-name descname"><span class="pre">comprador_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.compra.Compra.comprador_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.compra.Compra.producto_id">
+<span class="sig-name descname"><span class="pre">producto_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.producto'</span></span><a class="headerlink" href="#loop_proyecto.models.compra.Compra.producto_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.compra.Compra.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('disponible',</span> <span class="pre">'Disponible'),</span> <span class="pre">('reservado',</span> <span class="pre">'Reservado'),</span> <span class="pre">('vendido',</span> <span class="pre">'Vendido')]</span></span><a class="headerlink" href="#loop_proyecto.models.compra.Compra.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.compra.Compra.vendedor_id">
+<span class="sig-name descname"><span class="pre">vendedor_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.compra.Compra.vendedor_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.denuncia">
+<span id="loop-proyecto-models-denuncia-module"></span><h2>loop_proyecto.models.denuncia module<a class="headerlink" href="#module-loop_proyecto.models.denuncia" title="Link to this heading"></a></h2>
+<p>Módulo de denuncias y reportes.</p>
+<p>Contiene el modelo <cite>DenunciaReporte</cite> para gestionar denuncias de comentarios
+o productos.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.denuncia.</span></span><span class="sig-name descname"><span class="pre">DenunciaReporte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/denuncia.html#DenunciaReporte"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de denuncia de comentarios o productos.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>denunciante_id (res.partner): Usuario denunciante.
+producto_id (loop_proyecto.producto): Producto denunciado.
+comentario_id (loop_proyecto.comentario): Comentario denunciado.
+comentario_texto (str): Contenido del comentario denunciado.
+usuario_denunciado_id (res.partner): Usuario denunciado.
+fecha_emision (datetime): Fecha de emisión de la denuncia.
+motivo_denuncia (str): Motivo de la denuncia.
+estado_moderacion (str): Estado de moderación (“pendiente”, “revisada”, “cerrada”).
+estado_usuario (str): Estado del usuario denunciado (“activa”, “retirada”).
+resultado_moderacion (str): Resultado de la moderación (“valida”, “no_valida”, “duplicada”).
+empleado_id (res.users): Empleado que revisa la denuncia.
+fecha_revision (datetime): Fecha de revisión de la denuncia.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.comentario_id">
+<span class="sig-name descname"><span class="pre">comentario_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.comentario'</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.comentario_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.denunciante_id">
+<span class="sig-name descname"><span class="pre">denunciante_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.denunciante_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.empleado_id">
+<span class="sig-name descname"><span class="pre">empleado_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.users'</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.empleado_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.estado_moderacion">
+<span class="sig-name descname"><span class="pre">estado_moderacion</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('pendiente',</span> <span class="pre">'Pendiente'),</span> <span class="pre">('revisada',</span> <span class="pre">'Revisada'),</span> <span class="pre">('cerrada',</span> <span class="pre">'Cerrada')]</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.estado_moderacion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.estado_usuario">
+<span class="sig-name descname"><span class="pre">estado_usuario</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('activa',</span> <span class="pre">'Activa'),</span> <span class="pre">('retirada',</span> <span class="pre">'Retirada')]</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.estado_usuario" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.producto_id">
+<span class="sig-name descname"><span class="pre">producto_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.producto'</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.producto_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.resultado_moderacion">
+<span class="sig-name descname"><span class="pre">resultado_moderacion</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('valida',</span> <span class="pre">'Denuncia</span> <span class="pre">válida'),</span> <span class="pre">('no_valida',</span> <span class="pre">'Denuncia</span> <span class="pre">no</span> <span class="pre">válida'),</span> <span class="pre">('duplicada',</span> <span class="pre">'Duplicada')]</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.resultado_moderacion" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.denuncia.DenunciaReporte.usuario_denunciado_id">
+<span class="sig-name descname"><span class="pre">usuario_denunciado_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.denuncia.DenunciaReporte.usuario_denunciado_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.empleado">
+<span id="loop-proyecto-models-empleado-module"></span><h2>loop_proyecto.models.empleado module<a class="headerlink" href="#module-loop_proyecto.models.empleado" title="Link to this heading"></a></h2>
+<p>Módulo de empleados.</p>
+<p>Contiene la extensión del modelo <cite>hr.employee</cite> para crear automáticamente
+usuarios de Odoo cuando se crea un empleado.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.empleado.Empleado">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.empleado.</span></span><span class="sig-name descname"><span class="pre">Empleado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/empleado.html#Empleado"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.empleado.Empleado" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Extensión de hr.employee para creación automática de usuario.</p>
+<p>Cuando se crea un empleado, se genera un usuario de Odoo con un login
+basado en el correo o nombre del empleado y se asigna al grupo
+base.group_user si existe.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="loop_proyecto.models.empleado.Empleado.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">odoo.models.Model</span></span></span><a class="headerlink" href="#loop_proyecto.models.empleado.Empleado.create" title="Link to this definition"></a></dt>
+<dd><p>Crea un empleado y genera un usuario de Odoo automáticamente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vals</strong> – Diccionario con valores para la creación del empleado.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>El registro del empleado creado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.etiqueta">
+<span id="loop-proyecto-models-etiqueta-module"></span><h2>loop_proyecto.models.etiqueta module<a class="headerlink" href="#module-loop_proyecto.models.etiqueta" title="Link to this heading"></a></h2>
+<p>Módulo de etiquetas de productos.</p>
+<p>Contiene el modelo <cite>EtiquetaProducto</cite> para gestionar etiquetas que se pueden
+asignar a los productos (máximo 5 por producto).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.etiqueta.EtiquetaProducto">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.etiqueta.</span></span><span class="sig-name descname"><span class="pre">EtiquetaProducto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/etiqueta.html#EtiquetaProducto"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.etiqueta.EtiquetaProducto" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de etiquetas para productos.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>name (str): Nombre de la etiqueta.
+active (bool): Estado de la etiqueta.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.imagen_producto">
+<span id="loop-proyecto-models-imagen-producto-module"></span><h2>loop_proyecto.models.imagen_producto module<a class="headerlink" href="#module-loop_proyecto.models.imagen_producto" title="Link to this heading"></a></h2>
+<p>Módulo de imágenes de productos.</p>
+<p>Contiene el modelo <cite>ImagenProducto</cite> para almacenar imágenes de productos,
+con control de 1 a 10 imágenes por producto.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.imagen_producto.ImagenProducto">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.imagen_producto.</span></span><span class="sig-name descname"><span class="pre">ImagenProducto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/imagen_producto.html#ImagenProducto"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.imagen_producto.ImagenProducto" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de imágenes asociadas a un producto.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>producto_id (loop_proyecto.producto): Producto asociado.
+imagen (bytes): Imagen del producto.
+sequence (int): Orden de visualización de la imagen.
+is_principal (bool): Indica si es la imagen principal del producto.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.imagen_producto.ImagenProducto.producto_id">
+<span class="sig-name descname"><span class="pre">producto_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.producto'</span></span><a class="headerlink" href="#loop_proyecto.models.imagen_producto.ImagenProducto.producto_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.producto">
+<span id="loop-proyecto-models-producto-module"></span><h2>loop_proyecto.models.producto module<a class="headerlink" href="#module-loop_proyecto.models.producto" title="Link to this heading"></a></h2>
+<p>Módulo de productos del Loop.</p>
+<p>Contiene el modelo <cite>Producto</cite> que representa los productos publicados
+por los usuarios, incluyendo información obligatoria, etiquetas,
+imágenes y validaciones sobre límites de etiquetas e imágenes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.producto.</span></span><span class="sig-name descname"><span class="pre">Producto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/producto.html#Producto"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.producto.Producto" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo que representa un producto publicado por un usuario.</p>
+<p>Incluye campos obligatorios, categorías, etiquetas y gestión de imágenes,
+así como validaciones sobre el número máximo de etiquetas y el rango
+de imágenes permitido.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>propietario_id (res.partner): Usuario propietario del producto.
+categoria_id (loop_proyecto.categoria): Categoría del producto.
+nombre (str): Nombre del producto.
+descripcion (str): Descripción detallada del producto.
+antiguedad (date): Fecha de antigüedad del producto.
+estado (str): Estado del producto (“nuevo”, “segunda_mano”, “reacondicionado”).
+precio (float): Precio del producto en euros.
+ubicacion (str): Ubicación del producto.
+disponible (bool): Indica si el producto está disponible.
+etiqueta_ids (loop_proyecto.etiqueta_producto): Etiquetas asociadas al producto (máximo 5).
+imagen_ids (loop_proyecto.producto_imagen): Imágenes asociadas al producto (1 a 10).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto.categoria_id">
+<span class="sig-name descname"><span class="pre">categoria_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.categoria'</span></span><a class="headerlink" href="#loop_proyecto.models.producto.Producto.categoria_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto.estado">
+<span class="sig-name descname"><span class="pre">estado</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('nuevo',</span> <span class="pre">'Nuevo'),</span> <span class="pre">('segunda_mano',</span> <span class="pre">'Segunda</span> <span class="pre">mano'),</span> <span class="pre">('reacondicionado',</span> <span class="pre">'Reacondicionado')]</span></span><a class="headerlink" href="#loop_proyecto.models.producto.Producto.estado" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto.etiqueta_ids">
+<span class="sig-name descname"><span class="pre">etiqueta_ids</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.etiqueta_producto'</span></span><a class="headerlink" href="#loop_proyecto.models.producto.Producto.etiqueta_ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto.imagen_ids">
+<span class="sig-name descname"><span class="pre">imagen_ids</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.producto_imagen'</span></span><a class="headerlink" href="#loop_proyecto.models.producto.Producto.imagen_ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.producto.Producto.propietario_id">
+<span class="sig-name descname"><span class="pre">propietario_id</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'res.partner'</span></span><a class="headerlink" href="#loop_proyecto.models.producto.Producto.propietario_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.usuarios_app">
+<span id="loop-proyecto-models-usuarios-app-module"></span><h2>loop_proyecto.models.usuarios_app module<a class="headerlink" href="#module-loop_proyecto.models.usuarios_app" title="Link to this heading"></a></h2>
+<p>Módulo de usuarios de la App.</p>
+<p>Extiende el modelo <cite>res.partner</cite> para incluir información específica
+de los usuarios de la aplicación, como nombre de usuario, rol, idioma,
+favoritos y valoraciones.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.usuarios_app.UsuariosApp">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.usuarios_app.</span></span><span class="sig-name descname"><span class="pre">UsuariosApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/usuarios_app.html#UsuariosApp"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.usuarios_app.UsuariosApp" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo que representa usuarios de la aplicación.</p>
+<p>Extiende <cite>res.partner</cite> añadiendo campos específicos de la App.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>username (str): Nombre único para iniciar sesión en la aplicación.
+password (str): Contraseña del usuario.
+date_joined (datetime): Fecha de registro del usuario.
+active (bool): Indica si el usuario está activo.
+rol (str): Rol del usuario (“cliente”, “empleado”, “admin”).
+idioma (str): Idioma preferido del usuario (“Español”, “Inglés”, “Catalán”).
+favorito_ids (loop_proyecto.producto): Productos favoritos del usuario.
+valoracion_ids (loop_proyecto.valoracion): Valoraciones recibidas por el usuario.
+valoracion_media (float): Valoración media calculada.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.usuarios_app.UsuariosApp.favorito_ids">
+<span class="sig-name descname"><span class="pre">favorito_ids</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.producto'</span></span><a class="headerlink" href="#loop_proyecto.models.usuarios_app.UsuariosApp.favorito_ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.usuarios_app.UsuariosApp.idioma">
+<span class="sig-name descname"><span class="pre">idioma</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('Español',</span> <span class="pre">'Español'),</span> <span class="pre">('Inglés',</span> <span class="pre">'Inglés'),</span> <span class="pre">('Catalán',</span> <span class="pre">'Catalán')]</span></span><a class="headerlink" href="#loop_proyecto.models.usuarios_app.UsuariosApp.idioma" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.usuarios_app.UsuariosApp.rol">
+<span class="sig-name descname"><span class="pre">rol</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('cliente',</span> <span class="pre">'Cliente'),</span> <span class="pre">('empleado',</span> <span class="pre">'Empleado'),</span> <span class="pre">('admin',</span> <span class="pre">'Administrador')]</span></span><a class="headerlink" href="#loop_proyecto.models.usuarios_app.UsuariosApp.rol" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="loop_proyecto.models.usuarios_app.UsuariosApp.valoracion_ids">
+<span class="sig-name descname"><span class="pre">valoracion_ids</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'loop_proyecto.valoracion'</span></span><a class="headerlink" href="#loop_proyecto.models.usuarios_app.UsuariosApp.valoracion_ids" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models.valoracion">
+<span id="loop-proyecto-models-valoracion-module"></span><h2>loop_proyecto.models.valoracion module<a class="headerlink" href="#module-loop_proyecto.models.valoracion" title="Link to this heading"></a></h2>
+<p>Módulo de valoraciones.</p>
+<p>Contiene el modelo <cite>Valoracion</cite> para que los usuarios puedan valorar
+a otros usuarios dentro de la aplicación.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="loop_proyecto.models.valoracion.Valoracion">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">loop_proyecto.models.valoracion.</span></span><span class="sig-name descname"><span class="pre">Valoracion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loop_proyecto/models/valoracion.html#Valoracion"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#loop_proyecto.models.valoracion.Valoracion" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de valoraciones entre usuarios.</p>
+<dl class="simple">
+<dt>Atributos:</dt><dd><p>comentario (str): Comentario opcional sobre la valoración.
+usuario_comentador (res.partner): Usuario que realiza la valoración.
+usuario_valorado (res.partner): Usuario que recibe la valoración.
+valoracion (float): Puntuación de 0 a 5 estrellas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-loop_proyecto.models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-loop_proyecto.models" title="Link to this heading"></a></h2>
+<p>Paquete de modelos de Loop Proyecto.</p>
+<p>Incluye modelos como:
+- Categoría
+- Producto
+- Comentario
+- Compra
+- Denuncia
+- Empleado
+- Etiqueta de producto
+- Imagen de producto
+- Usuario de la app
+- Valoración</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2026, Andrea, Fabiana, Nayara.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
