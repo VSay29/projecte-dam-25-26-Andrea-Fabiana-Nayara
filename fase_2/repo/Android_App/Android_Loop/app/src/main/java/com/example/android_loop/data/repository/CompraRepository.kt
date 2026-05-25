@@ -19,7 +19,7 @@ import kotlinx.serialization.json.put
 
 class CompraRepository(private val cliente: HttpClient = HttpClientProvider.cliente) {
 
-    suspend fun realizarCompra(token: String, productoId: Int, vendedorId: Int, compradorId: Int): Result<RealizarCompraResult> {
+    suspend fun realizarCompra(token: String, productoId: Int, vendedorId: Int): Result<RealizarCompraResult> {
         return try {
             val resp: RpcResponse<RealizarCompraResult> =
                 cliente.post("${Servidor.BASE_URL}/api/v1/loop/compra/comprar") {
@@ -33,7 +33,6 @@ class CompraRepository(private val cliente: HttpClient = HttpClientProvider.clie
                                 put("data", buildJsonObject {
                                     put("producto_id", productoId)
                                     put("vendedor_id", vendedorId)
-                                    put("comprador_id", compradorId)
                                     put("state", "vendido")
                                 })
                             })

@@ -96,7 +96,7 @@
             <xpath expr="//sheet/group[1]" position="after">
                 <group string="Datos de Usuario">
                     <field name="username"/>
-                    <field name="password" password="1"/>
+                    <field name="password" widget="password"/>
                     <field name="active"/>
                     <field name="rol"/>
                     <field name="idioma"/>
@@ -104,18 +104,6 @@
                     <field name="valoracion_ids" options="{'no_create': True}"/>
                     <field name="valoracion_media"/>
                 </group>
-            </xpath>
-
-            <xpath expr="//sheet/group[last()]" position="after">
-                <notebook>
-                    <page string="Carrito de Compras">
-                        <field name="carrito_ids">
-                            <list string="Productos en Carrito">
-                                <field name="nombre" string="Producto"/>
-                                </list>
-                        </field>
-                    </page>
-                </notebook>
             </xpath>
 
         </field>

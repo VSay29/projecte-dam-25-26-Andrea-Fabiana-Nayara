@@ -1,5 +1,6 @@
 package com.example.android_loop.view.vistas
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,6 +53,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_loop.R
+import com.example.android_loop.utils.encriptacionConfig.encriptarToken
 import com.example.android_loop.utils.navegacionConfig.ROUTES
 import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
@@ -68,7 +70,7 @@ fun Loggeo(navController: NavHostController) {
 
     var username by rememberSaveable { mutableStateOf("") }
     var passwd by rememberSaveable { mutableStateOf("") }
-    var errorUsername by remember { mutableStateOf(false) }
+    var errorNombre by remember { mutableStateOf(false) }
     var errorPasswd by remember { mutableStateOf(false) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -128,12 +130,12 @@ fun Loggeo(navController: NavHostController) {
                                 value = username,
                                 onValueChange = {
                                     username = it
-                                    errorUsername = username.isEmpty()
+                                    errorNombre = username.isEmpty()
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .border(4.dp, if (errorUsername) Color(0xFFE57373) else Color(0xFFF5F5F5), RoundedCornerShape(50.dp)),
-                                isError = errorUsername,
+                                    .border(4.dp, if (errorNombre) Color(0xFFE57373) else Color(0xFFF5F5F5), RoundedCornerShape(50.dp)),
+                                isError = errorNombre,
                                 singleLine = true,
                                 shape = RoundedCornerShape(50.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -144,15 +146,6 @@ fun Loggeo(navController: NavHostController) {
                                     unfocusedBorderColor = Color.Transparent,
                                     errorBorderColor = Color.Transparent,
                                 )
-                            )
-                        }
-
-                        if (errorUsername) {
-                            Text(
-                                text = "El nombre de usuario no puede estar vacío",
-                                color = Color(0xFFE57373),
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                             )
                         }
 
@@ -200,28 +193,19 @@ fun Loggeo(navController: NavHostController) {
                             )
                         }
 
-                        if (errorPasswd) {
-                            Text(
-                                text = "La contraseña no puede estar vacía",
-                                color = Color(0xFFE57373),
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
-                            )
-                        }
-
                         Spacer(Modifier.height(22.dp))
 
                         Boton_Componente(
                             texto = "Iniciar Sesión",
                             onClick = {
-                                errorUsername = username.isEmpty()
+                                errorNombre = username.isEmpty()
                                 errorPasswd = passwd.isEmpty()
-                                if (!errorUsername && !errorPasswd) {
+                                if (!errorNombre && !errorPasswd) {
                                     viewModelLogin.login(username, passwd)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            enabled = username.isNotEmpty() && passwd.isNotEmpty() && !errorUsername && !errorPasswd
+                            enabled = username.isNotEmpty() && passwd.isNotEmpty()
                         )
 
                         Spacer(Modifier.height(70.dp))

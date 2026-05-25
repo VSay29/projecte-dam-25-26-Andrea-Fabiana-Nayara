@@ -35,24 +35,19 @@ class CRUD_User_Controller(http.Controller):
         data = params.get('data') # recoge data con los parametros que se le pasan
 
         if not data:
-            return {'success': False, 'error': 'No se han rellenado los campos'}
+            return {'error': 'No se han enviado datos'}
         
         required = ['name','username','password','email'] # datos obligatorios que se controlará más tarde en la app del usuario
 
         for field in required:
             if field not in data:
-                return {'success': False, 'error': f'Falta el campo {field}'}
+                return {'error': f'Falta el campo {field}'}
             
 
         # Evitar duplicados, en la app también hay que controlar esto, pero se hace también por si acaso en la app se válido el usuario de alguna manera
 
-        usuario_existente = request.env['res.partner'].sudo().search(['|', ('username', '=', data['username']), ('email', '=', data['email'])], limit=1)
-
-        if usuario_existente:
-            if usuario_existente.username == data['username']:
-                return {'success': False, 'error': 'El nombre de usuario ya existe'}
-            else:
-                return {'success': False, 'error': 'Ya hay una cuenta asociada a este correo'}
+        if request.env['res.partner'].sudo().search([('username','=',data['username'])], limit=1):
+            return {'error': 'El username ya existe'}
         
         passwd_plano = data['password']
         passwd_encriptado = pwd_context.hash(passwd_plano)
@@ -74,9 +69,9 @@ class CRUD_User_Controller(http.Controller):
             except Exception as mail_e:
                 logger.error(f"Error enviando mail: {str(mail_e)}")
 
-            return {'success': True, 'error': ''}
+            return {'success': True}
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {'error': str(e)}
 
     """
     ENDPOINT: OBTENER USUARIO
@@ -217,7 +212,6 @@ class CRUD_User_Controller(http.Controller):
     ENDPOINT: AGREGAR FAVORITO
     """
 
-    
     @http.route('/api/v1/loop/favoritos/add', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def add_favorito(self, **params):
         user = get_current_user_from_token()
@@ -243,12 +237,9 @@ class CRUD_User_Controller(http.Controller):
         user.write({'favorito_ids': [(4, producto.id)]})
         return {'success': True}
     
-
-
     """
     ENDPOINT: ELIMINAR FAVORITO
     """
-
     
     @http.route('/api/v1/loop/favoritos/remove', type='json', auth='none', csrf=False, cors='*', methods=['POST'])
     def remove_favorito(self, **params):
@@ -270,8 +261,8 @@ class CRUD_User_Controller(http.Controller):
 
         user.sudo().write({'favorito_ids': [(3, producto_id)]})
         return {'success': True}
-    
-    
+
+
     """
     ENDPOINT: OBTENER CARRITO
     """
@@ -285,22 +276,13 @@ class CRUD_User_Controller(http.Controller):
         productos = []
         for p in user.carrito_ids:
             imagenes = [img.imagen for img in p.imagen_ids]
-
-            propietario_data = None
-            if hasattr(p, 'propietario') and p.propietario:
-                propietario_data = {
-                    'id': p.propietario.id,
-                    'nombre': p.propietario.name if p.propietario.name else 'Sin nombre'
-                }
-
             productos.append({
                 'id': p.id,
                 'nombre': p.nombre,
                 'descripcion': p.descripcion,
                 'precio': p.precio,
                 'ubicacion': p.ubicacion,
-                'imagenes': imagenes,
-                'propietario': propietario_data
+                'imagenes': imagenes
             })
 
         return {'productos': productos}

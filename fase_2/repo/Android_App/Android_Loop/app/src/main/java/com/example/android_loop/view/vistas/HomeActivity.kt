@@ -1,6 +1,7 @@
 package com.example.android_loop.view.vistas
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,8 +31,12 @@ import com.example.android_loop.utils.sinAcentos
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Spacer
-import com.example.android_loop.utils.getUserIdFromToken
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.android_loop.utils.setToken
 import com.example.android_loop.utils.tokenValido
+import com.example.android_loop.view.componentes.Busqueda_Componente
+import com.example.android_loop.view.theme.Android_LoopTheme
 import com.example.android_loop.viewModel.CarritoViewModel
 import com.example.android_loop.viewModel.FavoritosViewModel
 import com.example.android_loop.viewModel.HomeUiState
@@ -96,10 +101,8 @@ fun Home(navController: NavHostController) {
 
     // SECCION: FILTRADO Y AGRUPACIÓN DE PRODUCTOS Y CATEGORIAS
 
-    val id = remember(token) { getUserIdFromToken(token) }
-
-    val productosFiltrados = remember(productos, buscador, id) {
-        filtrarProductos(productos, buscador, id)
+    val productosFiltrados = remember(productos, buscador) {
+        filtrarProductos(productos, buscador)
     }
 
     val categoriasCargadas = remember(productosFiltrados) {
@@ -317,17 +320,10 @@ fun Home(navController: NavHostController) {
  * DOC: DEVUELVE LA LISTA DE PRODUCTOS FILTRADOS
  */
 
-fun filtrarProductos(productos: List<Producto>, buscador: String, id: Int?): List<Producto> {
+fun filtrarProductos(productos: List<Producto>, buscador: String): List<Producto> {
+    if(buscador.isEmpty()) return productos
 
-    val productosSinLosMios = if (id != null) {
-        productos.filter { it.propietario?.id != id }
-    } else {
-        productos
-    }
-
-    if(buscador.isEmpty()) return productosSinLosMios
-
-    return productosSinLosMios.filter {
+    return productos.filter {
         textoNormalizado(it.nombre).contains(textoNormalizado(buscador))
     }
 }

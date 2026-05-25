@@ -26,7 +26,7 @@ class UsuariosApp(models.Model):
 
     username = fields.Char(string='Nombre de Usuario', index=True, help='Nombre único para iniciar sesión en la aplicación.')
 
-    password = fields.Char(string='Contraseña', groups="base.group_system", help="Contraseña cifrada o credencial de la app")
+    password = fields.Char(string='Password', groups="base.group_system", password=True)
 
     date_joined = fields.Datetime(string='Fecha de Registro', default=fields.Datetime.now, readonly=True, help='Fecha y hora en que el usuario se registró en la aplicación.')
 

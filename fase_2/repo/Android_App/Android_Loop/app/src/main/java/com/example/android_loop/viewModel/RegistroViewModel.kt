@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.android_loop.data.repository.UsuarioRepository
 import kotlinx.coroutines.launch
 
-class RegistroViewModel(private val repo: UsuarioRepository = UsuarioRepository()): ViewModel() {
+class RegistroViewModel(private val repository: UsuarioRepository = UsuarioRepository()): ViewModel() {
 
     var registroState by mutableStateOf<RegistroUiState>(RegistroUiState.Idle)
 
@@ -17,18 +17,12 @@ class RegistroViewModel(private val repo: UsuarioRepository = UsuarioRepository(
 
             registroState = RegistroUiState.Loading
 
-            repo.registro(name, username, email, passwd)
+            val result = repository.registro(name, username, email, passwd)
 
-                .onSuccess { result ->
-
-                if (result.error.isNotEmpty()) registroState = RegistroUiState.Error(result.error)
-                else if (result.success) registroState = RegistroUiState.Success(true)
-
-                }
-
-                .onFailure { registroState = RegistroUiState.Error(it.message ?: "Error de conexión") }
-
-
+            registroState = result.fold(
+                onSuccess = { RegistroUiState.Success(true) },
+                onFailure = { RegistroUiState.Error(it.message ?: "Error desconocido") }
+            )
 
         }
     }

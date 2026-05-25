@@ -5,8 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RegistroResult(
 
-    val success: Boolean = false,
-    val error: String = ""
+    val success: Boolean
 
     /**
      * La respuesta devuelve si se pudo realizar un
