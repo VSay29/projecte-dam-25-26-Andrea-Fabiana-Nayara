@@ -79,18 +79,29 @@ fun calcularDistancia(locationMapa: DoubleArray, locationUsuario: DoubleArray): 
     return resultado[0]
 }
 
-fun traducirLatLngAUbicacion(context: Context, ubi: DoubleArray): String {
-    val geocoder = Geocoder(context, Locale.getDefault())
-    val resultado = ""
-    return try {
-        val lista = geocoder.getFromLocation(ubi[0], ubi[1], 1)
-        if (!lista.isNullOrEmpty()) {
-            resultado.plus(lista[0].locality + ", " +lista[0].adminArea + ", " +lista[0].countryName)
-        } else "No encontrado"
-    } catch (ex: Exception) {
-        "Error: " + ex.message
+suspend fun traducirLatLngAUbicacion(context: Context, ubi: DoubleArray): String =
+    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        try {
+            val url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=${ubi[0]}&lon=${ubi[1]}"
+            val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+            connection.setRequestProperty("User-Agent", "AndroidLoop/1.0")
+            connection.connectTimeout = 10_000
+            connection.readTimeout = 10_000
+            val response = connection.inputStream.bufferedReader().readText()
+            val json = org.json.JSONObject(response)
+            val address = json.getJSONObject("address")
+            val city = address.optString("city")
+                .ifEmpty { address.optString("town") }
+                .ifEmpty { address.optString("village") }
+                .ifEmpty { address.optString("municipality") }
+                .ifEmpty { address.optString("county") }
+            val state = address.optString("state")
+            val country = address.optString("country")
+            listOf(city, state, country).filter { it.isNotBlank() }.distinct().joinToString(", ")
+        } catch (_: Exception) {
+            ""
+        }
     }
-}
 
 
 /**
@@ -128,7 +139,9 @@ fun MapaCompose(location: DoubleArray, mostrarDistancia: Boolean, ubiUsuario: Do
         Circle(
             center = LatLng(location[0], location[1]),
             radius = 200.0,
-            fillColor = Color.Blue
+            fillColor = Color.Blue.copy(alpha = 0.25f),
+            strokeColor = Color.Blue,
+            strokeWidth = 3f
         )
 
         if(mostrarDistancia) {

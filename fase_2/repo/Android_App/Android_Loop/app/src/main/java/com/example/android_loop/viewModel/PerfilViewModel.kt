@@ -18,6 +18,14 @@ class PerfilViewModel(private val usuarioRepo: UsuarioRepository = UsuarioReposi
     var eliminarProductoUiState by mutableStateOf<PerfilUiState>(PerfilUiState.Idle)
 
     var products by mutableStateOf<List<Producto>>(emptyList())
+    var fotoVendedor by mutableStateOf<String?>(null)
+
+    fun cargarFotoVendedor(token: String, partnerId: Int) {
+        viewModelScope.launch {
+            usuarioRepo.getUsuarioPublico(token, partnerId)
+                .onSuccess { fotoVendedor = it.imagen.ifBlank { null } }
+        }
+    }
 
     fun loadProductosUsuario(token: String, idUsuario: Int) {
         viewModelScope.launch {

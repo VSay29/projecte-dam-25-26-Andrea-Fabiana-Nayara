@@ -101,7 +101,8 @@ fun CrearProducto(navController: NavController, productoId: Int?) {
     var descripcion by rememberSaveable { mutableStateOf("") }
     var descripcionTocada by rememberSaveable { mutableStateOf(false) }
     var precio by rememberSaveable { mutableStateOf("0") }
-    var ubicacion by rememberSaveable { mutableStateOf("39.324, -125.525") }
+    val ubiUsuario = com.example.android_loop.utils.obtenerUbiSP(context)
+    var ubicacion by rememberSaveable { mutableStateOf("${ubiUsuario[0]}, ${ubiUsuario[1]}") }
     val selectedEtiquetas = rememberSaveable { mutableStateListOf<Int>() }
     var busquedaEtiqueta by remember { mutableStateOf("") }
     var mostrarSugerencias by remember { mutableStateOf(false) }
